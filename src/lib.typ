@@ -1,33 +1,44 @@
 // ============================================================================
 // Dual-format Tufte Typst Template
 // Single-file implementation for both PDF and HTML output
-// ============================================================================
 //
 // Author: Jialin Lu <luxxxlucy@gmail.com>
+// ============================================================================
 //
 // Description:
 //   A Typst template that exports to both PDF and HTML formats with
 //   Tufte-style typography and margin notes. Inspired by Edward Tufte's
 //   design principles for presenting information.
 //
+// File Structure:
+//   1. Imports & Dependencies
+//   2. Target Detection (PDF vs HTML)
+//   3. Typography Constants (fonts, sizes)
+//   4. State Management (counters)
+//   5. Margin Notes (sidenote, marginnote)
+//   6. Shared Setup (common styles for both formats)
+//   7. PDF Setup (PDF-specific configuration)
+//   8. HTML Setup (HTML-specific configuration)
+//   9. Main Template (tufte function)
+//
 // References:
-//   Tufte LaTeX:
-//     - https://github.com/Tufte-LaTeX/tufte-latex
+//   Tufte LaTeX:  https://github.com/Tufte-LaTeX/tufte-latex
+//   Tufte CSS:    https://github.com/edwardtufte/tufte-css
+//   
+//   Tufte using Typst (PDF):
+//     - tufte-memo:    https://github.com/nogula/tufte-memo
+//     - tufte-typst:   https://github.com/fredguth/tufte-typst
+//     - toffee-tufte:  https://codeberg.org/jianweicheong/toffee-tufte
+//     - bookly:        https://github.com/maucejo/bookly
 //
-//   Tufte CSS:
-//     - https://github.com/edwardtufte/tufte-css
-//
-//   Tufte using Typst (PDF output):
-//     - https://github.com/nogula/tufte-memo
-//     - https://github.com/fredguth/tufte-typst
-//     - https://codeberg.org/jianweicheong/toffee-tufte
-//     - https://github.com/maucejo/bookly
-//
-//   Tufte using Typst (HTML output):
-//     - https://github.com/vsheg/tufted
-//     - https://github.com/Yousa-Mirage/Tufted-Blog-Template
+//   Tufte using Typst (HTML):
+//     - tufted:        https://github.com/vsheg/tufted
+//     - tufted-blog:   https://github.com/Yousa-Mirage/Tufted-Blog-Template
 //
 // ============================================================================
+
+// Import drafting package for PDF margin notes
+#import "@preview/drafting:0.2.2": margin-note, set-page-properties, set-margin-note-defaults
 
 // ============================================================================
 // TARGET DETECTION
@@ -43,17 +54,18 @@
 // TYPOGRAPHY
 // ============================================================================
 
-#let body-font = ("ET Book", "Palatino", "Georgia", "serif")
-#let sans-font = ("Gill Sans", "TeX Gyre Heros", "Helvetica", "sans-serif")
-#let mono-font = ("Consolas", "Monaco", "monospace")
+// Font stacks with fallbacks (Tufte-style typography)
+#let body-font = ("ET Book", "Palatino", "Georgia")    // Serif for body text
+#let sans-font = ("Gill Sans", "Helvetica")             // Sans-serif for captions, notes
+#let mono-font = ("Monaco", "Courier New")              // Monospace for code
 
+// Font size scale
 #let font-sizes = (
-  tiny: 8pt,      // Footnotes, sidenotes
+  tiny: 8pt,      // Sidenotes, footnotes
   small: 9pt,     // Small text, captions
-  normal: 11pt,   // Body text
-  large: 13pt,    // H2
-  larger: 14pt,   // H1
-  huge: 18pt,     // Display text
+  normal: 11pt,   // Body text and H3 (though we should not really expect H3 as recommended by Tufte)
+  large: 13pt,    // H2 headings
+  larger: 16pt,   // H1 headings
 )
 
 // ============================================================================
@@ -61,7 +73,110 @@
 // ============================================================================
 
 #let sidenote-counter = counter("sidenote")
-#let margin-figure-counter = counter("margin-figure")
+#let margin-figure-counter = counter("margin-figure")  // Reserved for Phase 4 (figures)
+
+// ============================================================================
+// MARGIN NOTES
+// ============================================================================
+
+// Sidenote paragraph formatting (tight line spacing per Tufte LaTeX)
+#let sidenote-par-settings(content) = {
+  set par(leading: 0.55em, spacing: 0.5em)
+  content
+}
+
+// Helper: Render numbered sidenote for HTML
+#let render-html-sidenote(num, body) = {
+  html.sup(num)
+  html.span(class: "marginnote", {
+    html.sup(num)
+    [ ]
+    body
+  })
+}
+
+// Helper: Render numbered sidenote for PDF
+#let render-pdf-sidenote(num, body, dy) = {
+  super(num)
+  text(size: font-sizes.tiny, margin-note(
+    sidenote-par-settings({
+      super(num)
+      [ ]
+      body
+    }),
+    dy: dy,
+  ))
+}
+
+/// Sidenote - a numbered or unnumbered note in the margin
+///
+/// Parameters:
+/// - numbered: Whether to display a number (default: true)
+/// - dy: Vertical offset to align note with text (default: -1.7em)
+///       Negative value aligns note upward with the superscript reference
+/// - body: The content of the sidenote
+#let sidenote(numbered: true, dy: -1.7em, body) = context {
+  if is-html() {
+    // HTML rendering
+    if numbered {
+      sidenote-counter.step()
+      render-html-sidenote(sidenote-counter.display(), body)
+    } else {
+      html.span(class: "marginnote", body)
+    }
+  } else {
+    // PDF rendering using drafting package
+    // Note: wrap margin-note() in text() to prevent newline after superscript
+    if numbered {
+      sidenote-counter.step()
+      render-pdf-sidenote(sidenote-counter.display(), body, dy)
+    } else {
+      text(size: font-sizes.tiny, margin-note(sidenote-par-settings(body), dy: dy))
+    }
+  }
+}
+
+/// Margin note - an unnumbered note in the margin
+#let marginnote(dy: -1.7em, body) = sidenote(numbered: false, dy: dy, body)
+
+// ============================================================================
+// SHARED SETUP
+// ============================================================================
+
+/// Apply common typography and styles shared by both PDF and HTML
+/// This sets base font, size, heading styles, and footnote conversion
+#let apply-common-styles(body) = {
+  // Base font and size (color/fill is format-specific)
+  set text(
+    font: body-font,
+    size: font-sizes.normal,
+  )
+  
+  
+  // Heading styles: H1 regular, H2/H3 italic
+  show heading.where(level: 1): it => {
+    set text(font: body-font, size: font-sizes.larger, style: "italic" ,weight: "regular")
+    set block(above: 4em, below: 1.5em)
+    it
+  }
+
+  show heading.where(level: 2): it => {
+    set text(font: body-font, size: font-sizes.large, style: "italic", weight: "regular")
+    set block(above: 2.1em, below: 1.4em)
+    it
+  }
+
+  show heading.where(level: 3): it => {
+    set text(font: body-font, size: font-sizes.normal, style: "italic", weight: "regular")
+    set block(above: 2em, below: 1.4em)
+    it
+  }
+  
+  // Convert footnotes to sidenotes
+  show footnote: it => sidenote(numbered: true, it.body)
+  
+  body
+}
 
 // ============================================================================
 // PDF SETUP
@@ -80,139 +195,98 @@
     ),
   )
 
-  // PDF base typography
-  set text(
-    font: body-font,
-    size: font-sizes.normal,
-    fill: luma(20%),  // Near-black, not pure black
+  // Configure drafting package for margin notes
+  set-page-properties()
+  set-margin-note-defaults(
+    stroke: none,
+    side: right,
+    margin-right: 2in,  // Width of margin area for notes
+    margin-left: 1in,   // Distance from text edge to note start
   )
 
-  // PDF paragraph formatting: indent, ragged right
+  // PDF-specific text color
+  set text(fill: luma(20%))
+
+  // PDF-specific paragraph formatting
   set par(
-    first-line-indent: 1em,  // 11pt for 11pt body
-    leading: 1.4em,  // 1.4x leading (15.4pt for 11pt text)
-    justify: false,  // Ragged right
+    first-line-indent: 1em,
+    leading: 1.4em,
+  )
+  
+  // Superscript styling for sidenote numbers
+  set super(
+    size: 0.65em,
+    baseline: -0.4em,
   )
 
-  // PDF heading styles
-  show heading.where(level: 1): it => {
-    set text(size: font-sizes.larger, weight: "regular")
-    set block(above: 4em, below: 1.5em)
-    it
-  }
-
-  show heading.where(level: 2): it => {
-    set text(size: font-sizes.large, style: "italic", weight: "regular")
-    set block(above: 2.1em, below: 1.4em)
-    it
-  }
-
-  show heading.where(level: 3): it => {
-    set text(size: font-sizes.normal, style: "italic", weight: "regular")
-    set block(above: 2em, below: 1.4em)
-    it
-  }
-
-  // PDF text elements
-  show link: set text(fill: blue)  // Colored links in PDF
+  // Link styling
+  show link: set text(fill: blue)
   
-  // PDF list styling: proper spacing, indentation, ragged right
-  // According to typography_concerns.md: indent 1em, body-indent 1em, justify false
-  // Applies to both unordered (-) and ordered (1., 2., etc.) lists
+  // List styling
   set list(
-    indent: 1em,      // 11pt indent for list items (Tufte LaTeX: 1pc = 12pt)
-    body-indent: 1em, // 11pt indent for list body
-    spacing: 0.5em,   // Item spacing (normal paragraph spacing)
+    indent: 1em,
+    body-indent: 1em,
+    spacing: 0.5em,
   )
   
-  // PDF code block styling: proper spacing, font, size
-  // According to typography_concerns.md: 10pt (slightly smaller), monospace font
+  // Code block styling
   show raw.where(block: true): it => {
-    set block(above: 1em, below: 1em)  // Space above and below code blocks
-    set text(font: mono-font, size: 10pt)  // Slightly smaller than body (11pt)
+    set block(above: 1em, below: 1em)
+    set text(font: mono-font, size: 10pt)
     it
   }
   
-  // PDF inline code styling: monospace font, same size as body
   show raw.where(block: false): set text(font: mono-font)
 
-  body
+  apply-common-styles(body)
 }
 
 // ============================================================================
 // HTML SETUP
 // ============================================================================
 
-/// HTML-specific setup and styling (following tufted pattern)
+/// HTML-specific setup and styling
 #let setup-html(title, lang, body) = {
   let doc-title = if title != none { title } else { "Document" }
 
-  // HTML-specific: CSS and JS (hidden behind target detection)
   let html-css = (
     "https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",
   )
   let html-js = ()
 
-  // HTML base typography
-  set text(
-    font: body-font,
-    size: font-sizes.normal,
-    fill: rgb("#111"),  // Near-black, not pure black
-  )
+  // Apply common styles first, then HTML-specific overrides
+  let styled-body = {
+    // HTML-specific text color
+    set text(fill: rgb("#111"))
 
-  // HTML paragraph formatting: spacing, no indent
-  set par(
-    spacing: 1.4em,  // Relative to font size
-    justify: false,  // Ragged right
-  )
-
-  // HTML heading styles
-  show heading.where(level: 1): it => {
-    set text(size: font-sizes.larger, weight: "regular")
-    set block(above: 4em, below: 1.5em)
-    it
+    // HTML-specific paragraph spacing
+    set par(spacing: 1.4em)
+    
+    // HTML-specific text elements
+    show link: set text(fill: rgb("#111"))
+    show list: set block(width: 50%)
+    
+    apply-common-styles(body)
   }
 
-  show heading.where(level: 2): it => {
-    set text(size: font-sizes.large, style: "italic", weight: "regular")
-    set block(above: 2.1em, below: 1.4em)
-    it
-  }
-
-  show heading.where(level: 3): it => {
-    set text(size: font-sizes.normal, style: "italic", weight: "regular")
-    set block(above: 2em, below: 1.4em)
-    it
-  }
-
-  // HTML text elements
-  show link: set text(fill: rgb("#111"))  // Inherit text color
-  show list: set block(width: 50%)  // Narrower than paragraphs
-
-  // Build HTML structure following tufted pattern
   html.html(
     lang: lang,
     {
-      // Head
       html.head({
         html.meta(charset: "utf-8")
         html.meta(name: "viewport", content: "width=device-width, initial-scale=1")
         html.title(doc-title)
 
-        // Stylesheets (HTML-specific, hidden behind target detection)
         for (css-link) in html-css {
           html.link(rel: "stylesheet", href: css-link)
         }
       })
 
-      // Body
       html.body({
-        // Main content
         html.article(
-          html.section(body),
+          html.section(styled-body),
         )
 
-        // JavaScript files (HTML-specific, hidden behind target detection)
         for (js-link) in html-js {
           html.script(src: js-link)
         }
