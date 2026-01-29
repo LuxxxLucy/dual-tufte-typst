@@ -106,7 +106,8 @@
 
     show raw.where(block: true): it => {
         set block(above: 1em, below: 1em)
-        set text(font: mono-font-family, size: 10pt)
+        set par(leading: 0.6em)
+        set text(font: mono-font-family, size: 9pt)
         it
     }
     show raw.where(block: false): set text(font: mono-font-family)
