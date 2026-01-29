@@ -1,0 +1,6 @@
+eout/
+*.pdf
+*.html
+!index.html
+!example/example.html
+!tests/references/*
