@@ -83,6 +83,9 @@ Install [ET Book](https://github.com/edwardtufte/et-book) for authentic Tufte ty
 - [Tufte CSS](https://github.com/edwardtufte/tufte-css)
 - [ET Book font](https://github.com/edwardtufte/et-book)
 
+**Typst packages:**
+- [marginalia](https://github.com/Tol0kk/marginalia) - This margin note package is neat!
+
 **Typst Tufte templates for PDF:**
 - [tufte-memo](https://github.com/nogula/tufte-memo)
 - [tufte-typst](https://github.com/fredguth/tufte-typst)

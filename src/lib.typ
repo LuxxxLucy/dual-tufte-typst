@@ -23,7 +23,7 @@
 //     - https://github.com/vsheg/tufted
 //     - https://github.com/Yousa-Mirage/Tufted-Blog-Template
 
-#import "common.typ": sidenote-counter, resolve-font, default-body-font, default-sans-font, default-mono-font
+#import "common.typ": resolve-font, body-font as default-body-font, sans-font as default-sans-font, mono-font as default-mono-font
 #import "pdf.typ"
 #import "html.typ"
 
@@ -40,6 +40,14 @@
 }
 
 #let marginnote(dy: auto, body) = sidenote(numbered: false, dy: dy, body)
+
+#let main-figure(content, caption: none, dy: auto) = context {
+    if is-html() {
+        html.main-figure-html(content, caption)
+    } else {
+        pdf.main-figure-pdf(content, caption, dy)
+    }
+}
 
 #let margin-figure(content, caption: none, dy: auto) = context {
     if is-html() {
@@ -86,6 +94,14 @@
         html.sidecite-html(key)
     } else {
         pdf.sidecite-pdf(key, dy)
+    }
+}
+
+#let sans(body) = context {
+    if is-html() {
+        html.sans-html(body)
+    } else {
+        pdf.sans-pdf(body)
     }
 }
 

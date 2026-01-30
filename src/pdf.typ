@@ -1,64 +1,97 @@
 // PDF-specific implementation
 
-#import "@preview/drafting:0.2.2": margin-note, set-page-properties, set-margin-note-defaults
+#import "@preview/marginalia:0.3.1" as marginalia: note, notefigure, wideblock
 #import "common.typ": *
 
+// State to control figure caption vertical offset for main-figure
+#let figure-dy-state = state("figure-dy", 0pt)
+
 #let sidenote-pdf(numbered, dy, body) = {
+    let dy-value = if dy == auto { 0pt } else { dy }
     if numbered {
-        sidenote-counter.step()
         context {
             let num = sidenote-counter.display()
             super(num)
-            text(size: font-sizes.tiny, margin-note(tight-par([#super(num) #body]), dy: dy))
+            note(
+                dy: dy-value,
+                counter: none,
+                text-style: (size: font-sizes.tiny),
+            )[#super(num) #body]
+            sidenote-counter.step()
         }
     } else {
-        text(size: font-sizes.tiny, margin-note(tight-par(body), dy: dy))
+        note(
+            dy: dy-value,
+            counter: none,
+            text-style: (size: font-sizes.tiny),
+        )[#body]
     }
 }
 
+#let main-figure-pdf(content, caption, dy) = {
+    let dy-value = if dy == auto { 0pt } else { dy }
+    figure-dy-state.update(dy-value + 1em)
+    figure(content, caption: caption)
+    figure-dy-state.update(0pt)
+}
+
 #let margin-figure-pdf(content, caption, dy) = {
-    margin-note({
-        set text(font: sans-font, size: font-sizes.small)
-        figure(content, caption: caption)
-    }, dy: dy)
+    let dy-value = if dy == auto { 0pt } else { dy }
+    notefigure(
+        content,
+        caption: caption,
+        dy: dy-value,
+        counter: none,
+    )
 }
 
 #let full-width-figure-pdf(content, caption) = {
-    block(width: full-width-size, figure(content, caption: caption))
+    wideblock(side: "outer", figure(content, caption: caption))
 }
 
 #let epigraph-pdf(quote, author) = {
-    block(width: 55%, inset: (left: 2em), {
-        set text(style: "italic", size: font-sizes.normal)
-        set par(leading: 1.2em)
+    block(inset: (left: 2em, right: 1em, top: 2em, bottom: 2em), {
+        set text(style: "italic", size: 10pt)
+        set par(leading: 0.6em)
         quote
         if author != none {
             linebreak()
-            text(style: "normal", size: font-sizes.small, [— ] + author)
+            align(right)[#text(style: "normal", size: font-sizes.small, [— ] + author)]
         }
     })
 }
 
 #let new-thought-pdf(body) = {
-    h(-1em)
+    h(-0.3em)
+    set text(size: font-sizes.large)
     smallcaps(body)
 }
 
-#let full-width-pdf(body) = block(width: full-width-size, body)
+#let full-width-pdf(body) = wideblock(side: "outer", body)
 
 #let sidecite-pdf(key, dy) = {
-    sidenote-counter.step()
+    let dy-value = if dy == auto { 0pt } else { dy }
     context {
         let num = sidenote-counter.display()
         super(num)
-        text(size: font-sizes.tiny, margin-note(tight-par([#super(num) #cite(key, form: "full")]), dy: dy))
+        note(
+            dy: dy-value,
+            counter: none,
+            text-style: (size: font-sizes.tiny),
+        )[#super(num) #cite(key, form: "full")]
+        sidenote-counter.step()
     }
+}
+
+#let sans-pdf(body) = {
+  set text(font: sans-font)
+  body
 }
 
 #let render-title-block-pdf(title, author, date) = {
     if title != none {
         set par(first-line-indent: 0em)
-        text(font: body-font, size: font-sizes.larger, style: "italic", title)
+        text(font: body-font, size: font-sizes.huge, style: "italic", weight: "bold", title)
         if author != none {
             v(0.5em)
             text(font: body-font, size: font-sizes.normal, author)
@@ -87,10 +120,19 @@
 }
 
 #let setup-pdf(paper, title, author, date, abstract, toc, fonts, body) = {
-    set page(paper: paper, margin: (left: 1in, right: 3in, top: 1in, bottom: 1in))
+    // Marginalia config - matches Tufte layout (1in left, 3in right)
+    let marginalia-config = (
+        inner: (far: 1in, width: 0in, sep: 0in),  // No inner margin notes
+        outer: (far: 0.5in, width: 2in, sep: 0.5in),  // Right margin for notes
+        top: 1in,
+        bottom: 1in,
+        book: false,  // Single-sided like Tufte handout
+    )
 
-    set-page-properties()
-    set-margin-note-defaults(stroke: none, side: right, margin-right: 2in, margin-left: 1in)
+    // Apply marginalia setup via show rule
+    show: marginalia.setup.with(..marginalia-config)
+
+    set page(paper: paper)
 
     let use-custom-fonts = fonts != auto
     let body-font-family = if use-custom-fonts { fonts.body } else { body-font }
@@ -98,32 +140,90 @@
     let mono-font-family = if use-custom-fonts { fonts.mono } else { mono-font }
 
     set text(fill: luma(20%))
-    set par(first-line-indent: 1em, leading: 1.4em)
+    set par(first-line-indent: 1em)
     set super(size: 0.65em, baseline: -0.4em)
     set list(indent: 1em, body-indent: 1em, spacing: 0.5em)
 
     show link: set text(fill: blue)
 
+    show heading.where(level: 1): it => {
+        set par(first-line-indent: 0em)
+        set text(font: body-font-family, size: font-sizes.huge, style: "italic", weight: "bold")
+        v(2em, weak: true)
+        block[
+          #it.body
+        ]
+        v(0.5em)
+    }
+
+    show heading.where(level: 2): it => {
+        set par(first-line-indent: 0em)
+        set text(font: body-font-family, size: font-sizes.larger, style: "italic", weight: "regular")
+        v(1.5em, weak: true)
+        block[
+          #it.body
+        ]
+        v(0.8em)
+    }
+
+    show heading.where(level: 3): it => {
+        set par(first-line-indent: 0em)
+        set text(font: body-font-family, size: font-sizes.large, style: "italic", weight: "regular")
+        v(1em, weak: true)
+        block[
+          #it.body
+        ]
+        v(0.4em)
+    }
+
     show raw.where(block: true): it => {
-        set block(above: 1em, below: 1em)
-        set par(leading: 0.6em)
-        set text(font: mono-font-family, size: 9pt)
-        it
+        set par(leading: 0.25em)
+        block(inset: (left: 2em, right: 0.9em, top: 0.5em, bottom: 0.5em), it)
     }
     show raw.where(block: false): set text(font: mono-font-family)
 
+    show quote.where(block: true): it => {
+        block(inset: (left: 2em, right: 1em), {
+            set text(size: 10pt)
+            set par(leading: 0.6em)
+            it.body
+            if it.attribution != none {
+                linebreak()
+                align(right)[#text(size: font-sizes.small, [— ] + it.attribution)]
+            }
+        })
+    }
+
     show figure: it => {
-        it.body
-        if it.caption != none {
-            text(size: font-sizes.small, margin-note(tight-par(it.caption), dy: auto))
+        context {
+            let dy-offset = figure-dy-state.get()
+            if it.caption != none and dy-offset != 0pt {
+                // Main figure: caption before body with dy offset
+                note(
+                    dy: dy-offset,
+                    counter: none,
+                    text-style: (size: font-sizes.small, font: sans-font),
+                )[#it.caption]
+                it.body
+            } else {
+                // Other figures: default behavior (body then caption)
+                it.body
+                if it.caption != none {
+                    note(
+                        dy: 0pt,
+                        counter: none,
+                        text-style: (size: font-sizes.small, font: sans-font),
+                    )[#it.caption]
+                }
+            }
         }
     }
 
     show footnote: it => sidenote-pdf(true, auto, it.body)
 
-    sidenote-counter.update(0)
+    sidenote-counter.update(1)
     render-title-block-pdf(title, author, date)
     render-abstract-pdf(abstract)
     render-toc-pdf(toc)
-    apply-common-styles(body, body-font-family: body-font-family, sans-font-family: sans-font-family)
+    body
 }

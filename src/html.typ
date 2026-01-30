@@ -3,41 +3,35 @@
 //   - Mobile toggle requires CSS adjacent sibling selector which Typst's HTML breaks; a workaround is to amend the css but I do not wish to do that.
 //   - Single <section> wraps all content (tufte-css uses one per h2)
 
-#import "common.typ": *
-
-// box[] keeps elements inline within paragraphs (prevents Typst from breaking into separate <p> tags)
 #let sidenote-html(numbered, body) = {
-    sidenote-counter.step()
-    context {
-        let prefix = if numbered { "sn-" } else { "mn-" }
-        let id = prefix + str(sidenote-counter.get().first())
-        let cls = if numbered { "margin-toggle sidenote-number" } else { "margin-toggle" }
-        let note-cls = if numbered { "sidenote" } else { "marginnote" }
-        box[
-            #html.elem("label", attrs: ("for": id, class: cls), if numbered { none } else { [\u{2295}] })
-            #html.elem("input", attrs: (type: "checkbox", id: id, class: "margin-toggle"))
-        ]
-        html.span(class: note-cls, body)
-    }
+    let note-cls = if numbered { "sidenote" } else { "marginnote" }
+    if numbered { html.span(class: "sidenote-number") }
+    html.span(class: note-cls, body)
+}
+
+#let main-figure-html(content, caption) = {
+    figure(content, caption: caption)
 }
 
 #let margin-figure-html(content, caption) = {
-    sidenote-counter.step()
-    context {
-        let id = "mn-mfig-" + str(sidenote-counter.get().first())
-        box[
-            #html.elem("label", attrs: ("for": id, class: "margin-toggle"), [\u{2295}])
-            #html.elem("input", attrs: (type: "checkbox", id: id, class: "margin-toggle"))
-        ]
-        html.span(class: "marginnote", { content; if caption != none { caption } })
+    // Use Typst's native figure to get automatic numbering
+    show figure: it => {
+        html.span(class: "marginnote", { it.body; it.caption })
     }
+    figure(content, caption: caption)
 }
 
 #let full-width-figure-html(content, caption) = {
-    html.figure(class: "fullwidth", {
-        content
-        if caption != none { html.figcaption(caption) }
+    // Use Typst's native figure to get automatic numbering
+    // Override both caption and figure show rules for full-width layout
+    show figure.caption: it => html.figcaption(
+        it.supplement + sym.space.nobreak + it.counter.display() + it.separator + it.body
+    )
+    show figure: it => html.figure(class: "fullwidth", {
+        it.body
+        it.caption
     })
+    figure(content, caption: caption)
 }
 
 #let epigraph-html(quote, author) = {
@@ -52,16 +46,11 @@
 #let full-width-html(body) = html.div(class: "fullwidth", body)
 
 #let sidecite-html(key) = {
-    sidenote-counter.step()
-    context {
-        let id = "sn-cite-" + str(sidenote-counter.get().first())
-        box[
-            #html.elem("label", attrs: ("for": id, class: "margin-toggle sidenote-number"))
-            #html.elem("input", attrs: (type: "checkbox", id: id, class: "margin-toggle"))
-        ]
-        html.span(class: "sidenote", cite(key, form: "full"))
-    }
+    html.span(class: "sidenote-number")
+    html.span(class: "sidenote", cite(key, form: "full"))
 }
+
+#let sans-html(body) = html.p(class: "sans", body)
 
 #let render-title-block-html(title, author, date) = {
     if title != none { html.h1(title) }
@@ -96,24 +85,24 @@
         show list: set block(width: 50%)
 
         show figure.caption: it => {
-            sidenote-counter.step()
-            context {
-                let id = "mn-fig-" + str(sidenote-counter.get().first())
-                box[
-                    #html.elem("label", attrs: ("for": id, class: "margin-toggle"), [\u{2295}])
-                    #html.elem("input", attrs: (type: "checkbox", id: id, class: "margin-toggle"))
-                ]
-                html.span(class: "marginnote", it.supplement + sym.space.nobreak + it.counter.display() + it.separator + it.body)
-            }
+            html.span(class: "marginnote", it.supplement + sym.space.nobreak + it.counter.display() + it.separator + it.body)
         }
         show figure: it => html.figure({ it.caption; it.body })
         show footnote: it => sidenote-html(true, it.body)
 
-        sidenote-counter.update(0)
+        show quote: it => {
+            html.blockquote({
+                html.p(it.body)
+                if it.attribution != none {
+                    html.footer(it.attribution)
+                }
+            })
+        }
+
         render-title-block-html(title, author, date)
         render-abstract-html(abstract)
         render-toc-html(toc)
-        apply-common-styles(body)
+        body
     }
 
     html.html(lang: lang, {
@@ -122,6 +111,10 @@
             html.meta(name: "viewport", content: "width=device-width, initial-scale=1")
             html.title(doc-title)
             for css-link in html-css { html.link(rel: "stylesheet", href: css-link) }
+            html.elem("style", {
+                ".subtitle + p { margin-top: 2.5em; }"
+                "p + h2, { margin-top: 5.5rem; }"
+            })
         })
         html.body(html.article(html.section(styled-body)))
     })
