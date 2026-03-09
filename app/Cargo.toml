@@ -1,0 +1,10 @@
+[package]
+name = "dual-typst-editor"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+eframe = "0.31"
+image = { version = "0.25", default-features = false, features = ["png"] }
+open = "5"
+rfd = "0.15"

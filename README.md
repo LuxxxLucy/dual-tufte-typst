@@ -2,6 +2,10 @@
 
 A Typst template for Edward Tufte's design principles with dual-format output: PDF and HTML from a single source.
 
+A [native desktop editor](#desktop-editor) is included for live preview.
+
+![Editor demo](app/assets/app_demo.png)
+
 ## Quick Start
 
 Basic usage:
@@ -39,6 +43,21 @@ typst compile --input target=html --features html document.typ out.html  # HTML
 ```
 
 See `example/example.typ` and `tests/test.typ` for complete usage.
+
+
+## Desktop Editor
+
+A minimal native editor lives in `app/` — split panel with source on the left and live PNG preview on the right, built with [egui](https://github.com/emilk/egui).
+
+Requires `typst` in PATH. Build and run:
+
+```bash
+cd app && cargo run --release
+```
+
+- **⌘S** — save and recompile
+- **PDF / HTML** toggle in the bottom toolbar (HTML opens in your browser)
+- Reopens the last edited file on startup
 
 ## Features
 
