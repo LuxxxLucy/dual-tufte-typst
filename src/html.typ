@@ -132,7 +132,26 @@ article h1, article h2, article h3 { max-width: 55%; }
 div.fullwidth { font-size: 1.4rem; line-height: 2rem; }
 div.fullwidth > table { width: 100%; }
 h4 { font-style: italic; font-weight: 400; font-size: 1.4rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }
-h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }"
+h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }
+.typst-frame use { fill: currentColor; }"
+
+#let _heading-slug(idx) = "h-" + str(idx + 1)
+
+#let toc-html-block() = context {
+    let hs = query(heading)
+    if hs.len() == 0 { return }
+    html.elem("nav", attrs: (("class"): "toc"))[
+        #html.elem("h2")[Contents]
+        #html.elem("ul", attrs: (("style"): "list-style: none; padding-left: 0;"))[
+            #for (i, h) in hs.enumerate() {
+                let indent = str((h.level - 1) * 1.2) + "rem"
+                html.elem("li", attrs: (("style"): "margin-left: " + indent))[
+                    #html.elem("a", attrs: (("href"): "#" + _heading-slug(i)))[#h.body]
+                ]
+            }
+        ]
+    ]
+}
 
 #let setup-html(cfg, title, author, email, date, abstract, toc, lang, css-urls, body) = {
     let doc-title = if title != none { title } else { "Document" }
@@ -141,14 +160,21 @@ h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem;
                    else { css-urls }
 
     _id-counter.update(0)
-    let _ = toc  // accepted for parity with PDF; HTML TOC not implemented.
 
     let body-section = html.elem("section")[
         #set text(fill: rgb("#111"))
         #set par(spacing: 1.4em)
-        // Numbering rule needed even though equations are dropped, so
-        // `@eq-label` references don't error.
         #set math.equation(numbering: "(1)")
+        #show heading: it => context {
+            let idx = query(heading).position(h => h.location() == it.location())
+            let tag = "h" + str(it.level)
+            html.elem(tag, attrs: (("id"): _heading-slug(idx)))[#it.body]
+        }
+        // typst/typst#5512: no native MathML emit; inline SVG via html.frame.
+        #show math.equation: it => {
+            show: if it.block { x => x } else { box }
+            html.frame(it)
+        }
         #show link: set text(fill: rgb("#111"))
         #show list: set block(width: 50%)
 
@@ -182,6 +208,7 @@ h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem;
     let article-body = {
         _render-title-block-html(title, author, email, date)
         if abstract != none { html.elem("p")[#abstract] }
+        if toc { toc-html-block() }
         body-section
     }
 
@@ -189,6 +216,9 @@ h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem;
         #html.elem("head")[
             #html.elem("meta", attrs: (("charset"): "utf-8"))[]
             #html.elem("meta", attrs: (("name"): "viewport", ("content"): "width=device-width, initial-scale=1"))[]
+            // Override via `--input color-scheme=light` for deterministic refs.
+            #let scheme = sys.inputs.at("color-scheme", default: "light dark")
+            #html.elem("meta", attrs: (("name"): "color-scheme", ("content"): scheme))[]
             #html.elem("title")[#doc-title]
             #for css-link in html-css {
                 html.elem("link", attrs: (
@@ -197,6 +227,8 @@ h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem;
                 ))[]
             }
             #html.elem("style")[#_INLINE_STYLE]
+            #let extra = cfg.at("html-extra-css", default: none)
+            #if extra != none and extra != "" { html.elem("style")[#extra] }
         ]
         #html.elem("body")[
             #html.elem("article")[#article-body]

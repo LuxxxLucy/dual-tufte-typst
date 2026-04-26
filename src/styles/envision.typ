@@ -29,5 +29,13 @@
         leading: 0.3em,
     ),
     link: (fill: rgb("#222222"), underline: true),
-    css: auto,
+    // tufte.css first, envisioned.css overlay second (cascade order: the
+    // overlay swaps body font, bg, colour and `.numeral`, `.sidenote-number`
+    // font; its `@import` pulls Roboto Condensed).
+    css: (
+        "https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",
+        "https://cdn.jsdelivr.net/gh/rstudio/tufte@main/inst/rmarkdown/templates/tufte_html/resources/envisioned.css",
+    ),
+    // Override tufte-css link underline (gradient clashes with Roboto descenders).
+    "html-extra-css": "a:link, a:visited { text-shadow: none; background-image: none; text-decoration: underline; text-decoration-skip-ink: auto; text-underline-offset: 0.15em; color: inherit; }",
 ))

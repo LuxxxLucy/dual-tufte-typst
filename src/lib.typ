@@ -66,6 +66,14 @@
     else        { pdf.sans-pdf(body) }
 }
 
+// Wrap CeTZ / arbitrary drawable content so HTML output gets inline SVG.
+// HTML target drops raw frames; `html.frame` lays the body out and embeds
+// the SVG. PDF target needs no wrapper. Use: `#diagram(cetz.canvas(...))`.
+#let diagram(body) = {
+    if _IS-HTML { html.frame(body) }
+    else        { body }
+}
+
 // `style` selects a record from `src/styles/registry.typ` (string name) or
 // uses a passed record literal directly. `config` further overrides on top
 // of the resolved style. Merge order: default-config → style → config.
