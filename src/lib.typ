@@ -26,9 +26,9 @@
 
 #let marginnote(dy: auto, body) = sidenote(numbered: false, dy: dy, body)
 
-#let main-figure(content, caption: none, dy: auto) = {
+#let main-figure(content, caption: none) = {
     if _IS-HTML { html.main-figure-html(content, caption) }
-    else        { pdf.main-figure-pdf(content, caption, dy) }
+    else        { pdf.main-figure-pdf(content, caption) }
 }
 
 #let margin-figure(content, caption: none, dy: auto) = {

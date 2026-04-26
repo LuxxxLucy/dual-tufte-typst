@@ -36,3 +36,28 @@ tc_png() {
         "$@" "$src" "$out" >/dev/null 2>&1 \
         || { echo "FAIL png:  $src" >&2; return 1; }
 }
+
+# Build every <dir>/case.typ under the calling script's cwd to sibling
+# out.{html,png}. `root` is the path from each case dir back to the project
+# root. Used by tests/cases/ and tests/limitations/ build-all.sh.
+tc_build_all_cases() {
+    local root="$1"
+    build_one() {
+        local dir="$1" root="$2"
+        (
+            cd "$dir"
+            rm -f out.pdf
+            tc_html "$root" case.typ out.html || exit 1
+            tc_png  "$root" case.typ out.png  || exit 1
+            if [[ -f out-1.png ]]; then
+                mv -f out-1.png out.png
+                rm -f out-[0-9]*.png
+            fi
+            echo "==> $dir"
+        )
+    }
+    export -f build_one tc_html tc_png
+    find . -name case.typ -print0 \
+        | xargs -0 -n1 -P "$(sysctl -n hw.ncpu 2>/dev/null || echo 4)" \
+            -I{} bash -c 'set -e; build_one "$(dirname "$1")" "$2"' _ {} "$root"
+}

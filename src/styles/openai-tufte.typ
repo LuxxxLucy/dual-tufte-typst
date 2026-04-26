@@ -1,22 +1,19 @@
-// openai-tufte — OpenAI blog aesthetic in a Tufte two-column handout.
-// Söhne sans body (Inter fallback), pure white page, near-black text.
-// Geometric headings (semibold, upright); OpenAI green link accent.
-// Söhne is commercial — falls through to Inter / system-ui.
-//
-// Inherits tufte-original's geometry/headings; overrides body face,
-// link accent, and switches to web-paragraphing.
+// openai-tufte — OpenAI blog aesthetic over the Tufte handout.
+// Söhne body (Inter fallback), white page, near-black text, geometric
+// upright headings, OpenAI green link.
 
 #import "../config.typ": merge-config
+#import "_stacks.typ" as stacks
 #import "tufte-original.typ": tufte-original
 
 #let openai-tufte = merge-config(tufte-original, (
     name: "openai-tufte",
     page: (fill: none),
     fonts: (
-        body:   ("Söhne", "Inter", "Helvetica Neue", "Helvetica", "Arial"),
-        sans:   ("Söhne", "Inter", "Helvetica Neue", "Helvetica", "Arial"),
-        mono:   ("Söhne Mono", "JetBrains Mono", "Menlo", "Monaco"),
-        header: ("Söhne", "Inter", "Helvetica Neue"),
+        body:   stacks.sohne,
+        sans:   stacks.sohne,
+        mono:   stacks.sohne-mono,
+        header: stacks.sohne,
     ),
     sizes: (body: 10.5pt),
     headings: (
@@ -24,15 +21,8 @@
         h2: (weight: "semibold", style: "normal", size: 1.2em),
         h3: (weight: "medium",   style: "normal", size: 1em),
     ),
-    margin-note: (
-        font: ("Söhne", "Inter", "Helvetica Neue"),
-        style: "normal",
-    ),
-    title-block: (
-        font: auto,
-        weight: "semibold",
-        meta-style: "normal",
-    ),
+    margin-note: (font: stacks.sohne, style: "normal"),
+    title-block: (font: auto, weight: "semibold", meta-style: "normal"),
     text: (
         fill: rgb("#0d0d0d"),
         first-line-indent: 0em,

@@ -1,14 +1,5 @@
 // HTML target — emits canonical tufte-css markup.
-//
 // Reference: https://edwardtufte.github.io/tufte-css/ (1.8.0).
-// Cross-reference: github.com/LuxxxLucy/web-tufte-typst (Mr. Lucy's
-// already-working Typst→tufte-css repo). The label+input+span triplet
-// pattern below is mirrored from there: box wraps only the label/input
-// pair so Typst doesn't break the surrounding paragraph at the emission
-// point; the visible <span> sits as a sibling outside the box.
-//
-// Math, real TOC, and in-Typst diagram rendering (CeTZ etc.) are
-// out of scope; see status.md "Deferred".
 
 #let _CLS = (
     sidenote: "sidenote",
@@ -22,18 +13,19 @@
     subtitle: "subtitle",
 )
 
-// Single per-document counter — browsers require id uniqueness, not
-// per-kind numbering, so one counter + distinct id prefixes (sn-, mn-,
-// mn-fig-) is enough.
+// Inner span style for newthought: explicit font-variant ensures small
+// caps render even without the tufte stylesheet.
+#let _NEWTHOUGHT_INNER = "font-variant-caps: small-caps"
+
+// Single per-document counter — id uniqueness only; per-kind numbering
+// not needed.
 #let _id-counter = counter("dual-tufte-id")
 
 #let _MN-GLYPH = "⊕"
 
-// Emit `<label class="margin-toggle ..."><input type="checkbox" .../>`
-// wrapped in `box[...]`. The box keeps Typst from breaking the surrounding
-// paragraph at the emission point — without it, label+input land in their
-// own `<p>` and the trailing visible `<span>` opens a fresh paragraph
-// after them, severing the inline anchor flow.
+// label+input wrapped in `box[...]` so Typst doesn't break the
+// surrounding paragraph between the toggle and the trailing visible
+// `<span>`. The span sits as a sibling outside the box.
 #let _toggle(prefix, glyph: "", extra-class: "") = context {
     _id-counter.step()
     let id = prefix + str(_id-counter.get().first())
@@ -59,8 +51,6 @@
     if numbered { _sidenote-triplet(body) } else { _marginnote-triplet(body) }
 }
 
-// Main figure: image is the body, caption hoisted into the margin via a
-// marginnote triplet — all inside <figure>.
 #let main-figure-html(content, caption) = {
     html.elem("figure")[
         #if caption != none {
@@ -71,9 +61,8 @@
     ]
 }
 
-// Margin figure: image + caption live entirely in the margin column,
-// inline-adjacent to the surrounding paragraph. NOT wrapped in <figure>
-// (matches web-tufte-typst — the image goes inside the marginnote span).
+// Margin figure: image + caption live inside the marginnote span — not
+// wrapped in <figure>, matches web-tufte-typst.
 #let margin-figure-html(content, caption) = {
     _toggle("mn-fig-", glyph: _MN-GLYPH)
     html.elem("span", attrs: (("class"): _CLS.marginnote))[
@@ -82,9 +71,6 @@
     ]
 }
 
-// Full-width figure: spans across main + margin via tufte-css `.fullwidth`.
-// Must be a child of <article>/<section>; the document scaffold places body
-// content inside <section>, so this lands correctly.
 #let full-width-figure-html(content, caption) = {
     html.elem("figure", attrs: (("class"): _CLS.fullwidth))[
         #content
@@ -94,8 +80,6 @@
     ]
 }
 
-// Single epigraph — wrapped in <div class="epigraph"> so tufte-css's
-// `div.epigraph > blockquote` italic + offset styling applies.
 #let epigraph-html(quote, author) = {
     html.elem("div", attrs: (("class"): _CLS.epigraph))[
         #html.elem("blockquote")[
@@ -105,13 +89,9 @@
     ]
 }
 
-// Newthought: span.newthought wrapping inner small-caps span (matches
-// web-tufte-typst output; CSS class alone isn't always enough — the
-// inner explicit `font-variant-caps: small-caps` ensures small-caps
-// renders even without the tufte stylesheet).
 #let new-thought-html(body) = {
     html.elem("span", attrs: (("class"): _CLS.newthought))[
-        #html.elem("span", attrs: (("style"): "font-variant-caps: small-caps"))[#body]
+        #html.elem("span", attrs: (("style"): _NEWTHOUGHT_INNER))[#body]
     ]
 }
 
@@ -121,14 +101,19 @@
 
 #let sans-html(body) = html.elem("p", attrs: (("class"): _CLS.sans))[#body]
 
-#let _render-title-block-html(title, author, email, date) = {
-    if title != none { html.elem("h1")[#title] }
+#let _format-meta-parts(author, email, date) = {
     let parts = ()
     if author != none { parts.push(author) }
     if email != none { parts.push(email) }
     if date != none {
         parts.push(if type(date) == datetime { date.display() } else { date })
     }
+    parts
+}
+
+#let _render-title-block-html(title, author, email, date) = {
+    if title != none { html.elem("h1")[#title] }
+    let parts = _format-meta-parts(author, email, date)
     if parts.len() > 0 {
         html.elem("p", attrs: (("class"): _CLS.subtitle))[#parts.join(", ")]
     }
@@ -137,34 +122,39 @@
 // CDN by default. For offline / pinned builds pass `html-css: "tufte.min.css"`.
 #let _default-css = ("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",)
 
+// Inline overrides on top of tufte-css: subtitle margin, h1..h3 width
+// (so heading-embedded sidenotes float into the right margin), full-width
+// scoping for div.fullwidth + nested table, and h4/h5 styling that
+// tufte-css doesn't cover.
+#let _INLINE_STYLE = ".subtitle + p { margin-top: 2.5em; }
+p + h2 { margin-top: 5.5rem; }
+article h1, article h2, article h3 { max-width: 55%; }
+div.fullwidth { font-size: 1.4rem; line-height: 2rem; }
+div.fullwidth > table { width: 100%; }
+h4 { font-style: italic; font-weight: 400; font-size: 1.4rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }
+h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }"
+
 #let setup-html(cfg, title, author, email, date, abstract, toc, lang, css-urls, body) = {
     let doc-title = if title != none { title } else { "Document" }
     let html-css = if css-urls == auto { _default-css }
                    else if type(css-urls) == str { (css-urls,) }
                    else { css-urls }
 
-    // Reset counter so ids are stable across rebuilds.
     _id-counter.update(0)
-    // `toc` is accepted to mirror the PDF target's signature; HTML TOC
-    // generation isn't implemented yet (see status.md "Deferred").
-    let _ = toc
+    let _ = toc  // accepted for parity with PDF; HTML TOC not implemented.
 
     let body-section = html.elem("section")[
         #set text(fill: rgb("#111"))
         #set par(spacing: 1.4em)
-        // HTML export drops equations but `@`-references still need a
-        // numbering rule to exist, otherwise `@eq-label` errors hard.
+        // Numbering rule needed even though equations are dropped, so
+        // `@eq-label` references don't error.
         #set math.equation(numbering: "(1)")
         #show link: set text(fill: rgb("#111"))
         #show list: set block(width: 50%)
 
-        // Raw `#figure(...)` → main-figure default (caption in margin).
-        // `main-figure(...)`, `margin-figure(...)`, `full-width-figure(...)`
-        // bypass this rule by emitting HTML directly.
-        // Render full caption (supplement + counter + body) so "Figure N: ..."
-        // numbering is visible. tufte-css's figcaption styling applies to
-        // <figcaption>; here the caption sits inside <span class="marginnote">,
-        // so we emit the text directly.
+        // Raw `#figure(...)` → main-figure (caption in margin). Render
+        // full caption (supplement + counter + body) so "Figure N: ..."
+        // numbering is visible.
         #show figure: it => {
             let cap = if it.has("caption") and it.caption != none {
                 {
@@ -178,12 +168,9 @@
             main-figure-html(it.body, cap)
         }
         #show footnote: it => _sidenote-triplet(it.body)
-
-        // Typst's `#line(...)` is page-geometry primitive — invisible in
-        // HTML by default. Map it to <hr/> so a horizontal rule survives
-        // the export.
+        // Typst's `line()` is a page-geometry primitive — invisible in
+        // HTML by default. Map to <hr/>.
         #show line: it => html.elem("hr")[]
-
         #show quote: it => html.elem("blockquote")[
             #html.p(it.body)
             #if it.attribution != none { html.elem("footer")[#it.attribution] }
@@ -209,29 +196,7 @@
                     ("href"): css-link,
                 ))[]
             }
-            #html.elem("style")[
-                .subtitle + p { margin-top: 2.5em; }
-                p + h2 { margin-top: 5.5rem; }
-                /* tufte-css doesn't constrain h1..h3 width; without this,
-                   a sidenote/marginnote inside a heading floats relative
-                   to the full section width and lands far right of the
-                   margin column. Match the 55% body width so the float
-                   anchors at the same edge as a sidenote inside `<p>`. */
-                article h1, article h2, article h3 { max-width: 55%; }
-                /* tufte-css scopes body-text size to `p`; mirror it on
-                   bare full-width prose so a `<div class=fullwidth>`
-                   containing inline text reads at the same size. */
-                div.fullwidth { font-size: 1.4rem; line-height: 2rem; }
-                /* tufte-css's table.fullwidth rule requires the class on
-                   the <table>; our wrapper places it on the parent <div>,
-                   so propagate width to a directly-nested <table>. */
-                div.fullwidth > table { width: 100%; }
-                /* tufte-css styles h1..h3 only; deeper Typst headings
-                   land on <h4>+ and would inherit the browser default
-                   (smaller than body). Match the h3 italic+size scale. */
-                h4 { font-style: italic; font-weight: 400; font-size: 1.4rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }
-                h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }
-            ]
+            #html.elem("style")[#_INLINE_STYLE]
         ]
         #html.elem("body")[
             #html.elem("article")[#article-body]

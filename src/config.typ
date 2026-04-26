@@ -2,6 +2,8 @@
 // via `merge-config`; pass `style:` (registry name or record) and/or
 // `config:` (per-call overrides) to `tufte()`.
 
+#import "styles/_stacks.typ" as stacks
+
 #let default-config = (
     page: (
         paper: "us-letter",
@@ -13,8 +15,8 @@
         sep: 0.7in,
     ),
     fonts: (
-        body: ("ETBembo", "Palatino", "Georgia"),
-        sans: ("Gill Sans", "Helvetica"),
+        body: stacks.etbembo,
+        sans: stacks.gillsans,
         mono: ("Monaco", "Courier New"),
         header: ("Berkeley Mono", "Menlo", "Monaco"),
     ),
@@ -37,7 +39,7 @@
     ),
     margin-note: (
         size: 0.65em,
-        font: ("Gill Sans", "Helvetica"),
+        font: stacks.gillsans,
         style: "italic",
         leading: 0.5em,
         marker-sep: 0.4em,
@@ -74,7 +76,7 @@
     title-block: (
         size: 1.8em,
         weight: "regular",
-        font: ("Gill Sans", "Helvetica"),
+        font: stacks.gillsans,
         meta-size: 0.85em,
         meta-style: "normal",
         meta-sep: 1.2em,

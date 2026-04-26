@@ -1,18 +1,14 @@
-// jialin — Mr. Lucy's web-handout look. Layered on `tufte-original` so
-// the layout invariants (geometry, leading ratios, heading shape, caption
-// font selection) stay consistent across the gallery; this file only
-// declares the *intentional* deltas vs. the LaTeX-faithful baseline:
-//
-//   * 9pt body (matches the bezierlogue handout — ETBembo reads tighter
+// jialin — Mr. Lucy's web-handout look. Layered on `tufte-original`;
+// only intentional deltas vs. the LaTeX-faithful baseline:
+//   - 9pt body (matches the bezierlogue handout — ETBembo reads tighter
 //     at 10pt than ETBook does in print).
-//   * Gill Sans for the title block + running header (web-handout
-//     convention; LaTeX uses italic body serif).
-//   * Web-style paragraphing: no first-line indent, gap between paragraphs
-//     instead.
-//   * Italic Gill Sans margin/sidenote/caption (mirrors `sfsidenotes`
+//   - Gill Sans for title block + running header (web-handout convention).
+//   - Web-style paragraphing: no first-line indent, gap between paragraphs.
+//   - Italic Gill Sans margin/sidenote/caption (mirrors `sfsidenotes`
 //     option in tufte-handout, but italic for visual softness).
 
 #import "../config.typ": merge-config
+#import "_stacks.typ" as stacks
 #import "tufte-original.typ": tufte-original
 
 #let jialin = merge-config(tufte-original, (
@@ -28,7 +24,6 @@
     ),
     sizes: (
         body: 9pt,
-        // Section heads scaled down a little since body shrank.
         large: 1.1em,
         larger: 1.2em,
         huge: 1.8em,
@@ -41,13 +36,13 @@
     ),
     margin-note: (
         size: 0.65em,
-        font: ("Gill Sans", "Helvetica"),
+        font: stacks.gillsans,
         style: "italic",
         leading: 0.5em,
         marker-sep: 0.4em,
     ),
     fonts: (
-        sans: ("Gill Sans", "Helvetica"),
+        sans: stacks.gillsans,
         header: ("Berkeley Mono", "Menlo", "Monaco"),
     ),
     header: (
@@ -58,7 +53,7 @@
     ),
     title-block: (
         size: 1.8em,
-        font: ("Gill Sans", "Helvetica"),
+        font: stacks.gillsans,
         meta-size: 0.85em,
         meta-style: "normal",
         meta-sep: 1.2em,
