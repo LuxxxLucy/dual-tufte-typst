@@ -198,6 +198,12 @@ PAGE = """<!doctype html>
   details.case:has(.diff-row) {{ border-color: #fcc; background: #fff8f8; }}
   .missing {{ display: flex; align-items: center; justify-content: center;
               color: #aaa; font-style: italic; min-height: 8rem; }}
+  .banner {{ background: #fff5f5; border: 1px solid #fcc; border-radius: 6px;
+             margin: 0.6rem 0; padding: 0.5rem 0.9rem; }}
+  .banner > summary {{ cursor: pointer; font-size: 13px; }}
+  .banner pre {{ font-size: 12px; overflow-x: auto; margin: 0.5rem 0 0;
+                 background: #fff; padding: 0.6rem; border: 1px solid #fcc;
+                 border-radius: 4px; line-height: 1.4; }}
 </style>
 
 <h1>dual-tufte-typst <small>— test index</small></h1>
@@ -211,6 +217,8 @@ PAGE = """<!doctype html>
   <button onclick="setAll(false)">Collapse all</button>
 </div>
 
+{banners}
+
 {cases_section}
 {repros_section}
 {limits_section}
@@ -223,11 +231,36 @@ function setAll(open) {{
 """
 
 
+_FAIL_MARKERS = ("FAIL ", "mismatch", "missing", "duplicate", "Traceback")
+
+
+def banner(name: str, label: str) -> str:
+    """Render a collapsible failure banner if the *.log shows real failures.
+
+    Both _smoke.py and check.sh always write some output (counts, "PASS"),
+    so a non-empty file is not enough; only surface the banner when the
+    log contains a known failure marker.
+    """
+    try:
+        txt = (ROOT / name).read_text().strip()
+    except FileNotFoundError:
+        return ""
+    if not txt or not any(m in txt for m in _FAIL_MARKERS):
+        return ""
+    return f"""
+<details class="banner" open>
+  <summary><span class="badge bad">FAIL</span> {html.escape(label)}</summary>
+  <pre>{html.escape(txt)}</pre>
+</details>"""
+
+
 def main() -> None:
     cases = collect("cases")
     repros = collect("reproductions")
     limits = collect("limitations")
     print(PAGE.format(
+        banners=banner("_smoke.log", "structural smoke test")
+              + banner("_check.log", "ref-diff check"),
         cases_section=section("Cases", cases),
         repros_section=section("Reproductions", repros),
         limits_section=section("Limitations (documented broken patterns)", limits),

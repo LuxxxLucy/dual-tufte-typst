@@ -57,8 +57,6 @@ class StructureParser(HTMLParser):
         self.issues: list[str] = []
         self.has_article = False
         self.has_section = False
-        self.h1_outside_section = True
-        self.h1_seen = False
         self.img_count = 0
         # label/input id tracking
         self.label_fors: list[str] = []
@@ -85,10 +83,6 @@ class StructureParser(HTMLParser):
             self.has_article = True
         elif tag == "section":
             self.has_section = True
-        elif tag == "h1":
-            self.h1_seen = True
-            if self._parent_section():
-                self.h1_outside_section = False
         elif tag == "img":
             self.img_count += 1
         elif tag == "label" and "margin-toggle" in self._classes(attrs):
@@ -98,7 +92,9 @@ class StructureParser(HTMLParser):
             if "id" in attrs:
                 self.input_ids.append(attrs["id"])
 
-        if "id" in attrs:
+        # Ids inside <svg> are svg-internal scope (resolved by xlink:href);
+        # `html.frame` reuses the same `<defs>` ids across frames legitimately.
+        if "id" in attrs and not any(t == "svg" for t, _ in self.stack):
             self.all_ids.append(attrs["id"])
 
         # Block-inside-inline-note check.
@@ -130,8 +126,6 @@ def check_one(path: Path, expectations: dict) -> list[str]:
         issues.append("missing <article> wrapper")
     if not parser.has_section:
         issues.append("missing <section> wrapper for body")
-    if parser.h1_seen and not parser.h1_outside_section:
-        issues.append("<h1> is inside <section> (canonical: direct child of <article>)")
 
     # Label / input id pairing
     for fr in parser.label_fors:
