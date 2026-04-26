@@ -52,6 +52,26 @@ The `tufte.with()` function accepts additional parameters:
 )
 ```
 
+Pick a style by name, or pass `--input style=<name>` at the command line:
+
+```typst
+#show: tufte.with(title: [...], style: "envision")
+```
+
+```bash
+typst compile --input style=envision --input target=html --features html doc.typ out.html
+```
+
+Registered styles: `tufte-original`, `envision`, `jialin`, `terpret`, `claude-tufte`, `openai-tufte`. Each style record can also carry a `css:` field listing one or more stylesheet URLs that the HTML target injects (`envision` loads tufte.min.css plus rstudio's envisioned overlay this way). Override the active style's CSS for a single document with the `html-css:` parameter:
+
+```typst
+#show: tufte.with(
+  title: [...],
+  style: "tufte-original",
+  html-css: ("https://my-cdn.example/custom-tufte.css",),
+)
+```
+
 Compile with:
 
 ```bash

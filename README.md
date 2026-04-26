@@ -37,15 +37,29 @@ Two ready styles, both calibrated against authoritative sources:
 
 `jialin`, `terpret`, `claude-tufte`, `openai-tufte` are work-in-progress experiments — they layer on top of `tufte-original` but haven't been calibrated yet.
 
-Per-style HTML CSS isn't wired in yet (the HTML target always emits canonical tufte-css). PDF rendering varies by style.
-
 Pass the style by name:
 
 ```typst
 #show: tufte.with(title: [...], style: "envision")
 ```
 
-Or pass an inline override:
+Or at the command line via `--input`:
+
+```bash
+typst compile --input style=envision --features html --input target=html doc.typ out.html
+```
+
+Override the style's HTML stylesheet for a single document with `html-css:`:
+
+```typst
+#show: tufte.with(
+    title: [...],
+    style: "tufte-original",
+    html-css: ("https://my-cdn.example/custom-tufte.css",),
+)
+```
+
+Or pass an inline config override:
 
 ```typst
 #show: tufte.with(
@@ -96,6 +110,13 @@ ET Book / Palatino / Gill Sans are expected from the system. macOS ships Palatin
 ```
 
 The gallery (`tests/gallery/`) renders `example/example.typ` through every registered style for visual side-by-side comparison.
+
+## Limitations
+
+- Per-style HTML CSS: only `envision` ships its own overlay (tufte.min.css + envisioned.css). Other styles emit canonical tufte-css.
+- HTML math: Typst HTML has no native MathML emit (tracking [typst/typst#5512](https://github.com/typst/typst/issues/5512)). We render each `$...$` as inline SVG via `html.frame`. PDF math stays native. SVG glyphs are not selectable text and carry no MathML accessibility; they use `currentColor` so they follow light/dark color-scheme.
+- HTML CeTZ / drawables: HTML target drops raw frames. Wrap canvases in `diagram(...)` from `src/lib.typ` to emit them as inline SVG.
+- HTML TOC: anchors are positional (`h-1`, `h-2`, ...), not semantic slugs.
 
 ## References
 
