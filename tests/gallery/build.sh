@@ -3,11 +3,7 @@
 # is the canonical demo of our public API; gallery shows how each style
 # renders the same source.
 #
-# PDF + per-page PNG only. HTML output is currently style-agnostic
-# (always emits canonical tufte-css markup) — per-style HTML CSS support
-# is a TODO; once it lands, restore an HTML pane in the index.
-#
-# Output: tests/gallery/<style>/out.pdf + tests/gallery/<style>/out-N.png
+# Output: tests/gallery/<style>/out.{pdf,html} + tests/gallery/<style>/out-N.png
 
 set -euo pipefail
 cd "$(dirname "$0")"
@@ -23,6 +19,7 @@ build_one() {
     rm -f "$style"/out.pdf "$style"/out.html "$style"/out-*.png "$style"/out.png
     tc_pdf  "$ROOT" "$SRC" "$style/out.pdf"           --input style="$style" &
     tc_png  "$ROOT" "$SRC" "$style/out-{n}.png"       --input style="$style" &
+    tc_html "$ROOT" "$SRC" "$style/out.html"          --input style="$style" &
     wait
     echo "==> $style"
 }

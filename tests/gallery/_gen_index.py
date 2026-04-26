@@ -2,9 +2,8 @@
 """Generate tests/gallery/index.html — one row per style.
 
 Each row shows the per-page PNG stack of example/example.typ rendered
-through that style. PDF download link in the header. HTML is omitted:
-per-style HTML/CSS support is a TODO (current target always emits the
-canonical tufte-css markup, which doesn't vary across styles).
+through that style alongside the live HTML output (in an iframe). PDF
++ HTML download links in the row header.
 """
 from __future__ import annotations
 import html
@@ -35,17 +34,34 @@ def png_stack(d: Path) -> str:
     )
 
 
+def html_pane(d: Path, style: str) -> str:
+    h = d / "out.html"
+    if not h.exists():
+        return '<div class="missing">no html</div>'
+    src = html.escape(f"{style}/out.html")
+    return f'<iframe src="{src}" loading="lazy"></iframe>'
+
+
 def row(style: str) -> str:
     d = ROOT / style
     pdf = d / "out.pdf"
-    pdf_link = f' <a href="{style}/out.pdf">pdf</a>' if pdf.exists() else ""
+    htmlf = d / "out.html"
+    links = []
+    if pdf.exists():
+        links.append(f'<a href="{style}/out.pdf">pdf</a>')
+    if htmlf.exists():
+        links.append(f'<a href="{style}/out.html">html</a>')
+    links_html = " ".join(links)
     return f"""
 <details class="style" open>
   <summary>
     <span class="label">{html.escape(style)}</span>
-    <span class="links">{pdf_link}</span>
+    <span class="links">{links_html}</span>
   </summary>
-  <div class="pane png-stack">{png_stack(d)}</div>
+  <div class="panes">
+    <div class="pane png-stack">{png_stack(d)}</div>
+    <div class="pane html-frame">{html_pane(d, style)}</div>
+  </div>
 </details>"""
 
 
@@ -53,7 +69,7 @@ PAGE = """<!doctype html>
 <meta charset=utf-8>
 <title>dual-tufte-typst — style gallery</title>
 <style>
-  body {{ font: 14px/1.5 system-ui, sans-serif; max-width: 70rem; margin: 1.5rem auto;
+  body {{ font: 14px/1.5 system-ui, sans-serif; max-width: 100rem; margin: 1.5rem auto;
           padding: 0 1rem; color: #222; }}
   h1 {{ font-weight: 300; margin-bottom: 0.2rem; }}
   h1 small {{ color: #888; font-size: 0.6em; }}
@@ -70,20 +86,23 @@ PAGE = """<!doctype html>
   .style[open] > summary::before {{ content: "▼"; }}
   .style .label {{ font-family: ui-monospace, Menlo, monospace; font-size: 14px; color: #111; }}
   .style .links {{ margin-left: auto; font-size: 12px; }}
-  .style .links a {{ color: #06c; text-decoration: none; }}
-  .pane.png-stack {{ border: 1px solid #e3e3e3; background: white;
-                     overflow-y: auto; max-height: 80rem; margin: 0 0.9rem 0.9rem; }}
+  .style .links a {{ color: #06c; text-decoration: none; margin-left: 0.5rem; }}
+  .panes {{ display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;
+            margin: 0 0.9rem 0.9rem; }}
+  .pane {{ border: 1px solid #e3e3e3; background: white; overflow: auto;
+           height: 80rem; }}
   .pane.png-stack img {{ display: block; width: 100%; height: auto; }}
   .pane.png-stack img + img {{ border-top: 1px dashed #eee; }}
+  .pane.html-frame iframe {{ width: 100%; height: 100%; border: 0; display: block; }}
   .missing {{ display: flex; align-items: center; justify-content: center;
               color: #aaa; font-style: italic; min-height: 8rem; }}
 </style>
 
 <h1>dual-tufte-typst <small>— style gallery</small></h1>
 <p class="lede">Same source (<code>example/example.typ</code>) rendered through
-every registered style. PDF link in each row header; per-page PNG stack
-inline. <em>HTML output is style-agnostic for now (always tufte-css);
-per-style HTML CSS support is a TODO.</em></p>
+every registered style. Each row shows the PDF (per-page PNG stack, left)
+and the HTML output (live iframe, right). PDF + HTML download links in
+the row header.</p>
 
 <div class="controls">
   <button onclick="setAll(true)">Expand all</button>
