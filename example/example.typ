@@ -11,7 +11,7 @@
 #show: tufte.with(
   title: [Dual-Tufte-Typst: Tufte Style for Both PDF and HTML],
   author: "Jialin Lu",
-  date: datetime.today(),
+  date: [2026-01-28 (last updated: #datetime.today().display())],
   style: sys.inputs.at("style", default: "jialin"),
 )
 
