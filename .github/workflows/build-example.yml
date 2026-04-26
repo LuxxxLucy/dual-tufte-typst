@@ -1,0 +1,63 @@
+# Build example/example.typ → example.html + example.pdf and deploy
+# example.html to GitHub Pages on every push to main. The lib is local
+# (not on Typst Universe), so the action checks out the repo and points
+# `typst compile --root ..` at it — same as the local build.sh.
+
+name: build-example
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: typst-community/setup-typst@v4
+        with:
+          typst-version: latest
+
+      - name: Install uv (for the font fetch script)
+        uses: astral-sh/setup-uv@v6
+
+      - name: Fetch optional fonts
+        run: ./assets/fonts/fetch.sh
+
+      - name: Build example.pdf and example.html
+        working-directory: example
+        run: |
+          typst compile --root .. --font-path ../assets/fonts example.typ example.pdf
+          typst compile --root .. --font-path ../assets/fonts \
+            --features html --input target=html example.typ example.html
+
+      - name: Stage site
+        run: |
+          mkdir -p _site
+          cp example/example.html _site/index.html
+          cp example/example.pdf  _site/example.pdf
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

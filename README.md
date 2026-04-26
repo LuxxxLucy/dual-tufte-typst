@@ -1,120 +1,109 @@
 # Dual-Tufte-Typst
 
-A Typst template for Edward Tufte's design principles with dual-format output: PDF and HTML from a single source.
+Tufte-style documents in Typst.
+One source compiles to PDF (marginalia handout) and HTML (tufte-css).
 
-A [native desktop editor](#desktop-editor) is included for live preview.
-
-![Editor demo](app/assets/app_demo.png)
-
-## Quick Start
-
-Basic usage:
-
-```typst
-#import "src/lib.typ": tufte, sidenote
-
-#show: tufte.with(title: [Document Title], author: "Author Name")
-
-Content with #sidenote[margin notes].
-```
-
-With common parameters:
+## Quick start
 
 ```typst
 #import "src/lib.typ": tufte, sidenote
 
 #show: tufte.with(
-  title: [Document Title],
-  author: "Author Name",
-  date: datetime.today(),                    // Publication date
-  abstract: [Brief document summary...],     // Optional abstract
-  lang: "en",                                // Document language
-  paper: "us-letter",                        // Paper size for PDF
+    title: [Document Title],
+    author: "Author Name",
+    style: "tufte-original",
 )
 
 Content with #sidenote[margin notes].
 ```
 
-Compile:
-
 ```bash
-typst compile document.typ                                            # PDF
-typst compile --input target=html --features html document.typ out.html  # HTML
+typst compile --root . --font-path assets/fonts document.typ
+typst compile --root . --font-path assets/fonts \
+    --features html --input target=html document.typ out.html
 ```
 
-See `example/example.typ` and `tests/test.typ` for complete usage.
+See `example/example.typ`.
+The rendered example ships at <https://luxxxlucy.github.io/dual-tufte-typst/> via the build workflow.
 
+## Styles
 
-## Desktop Editor
+Two ready styles, both calibrated against authoritative sources:
 
-A minimal native editor lives in `app/` — split panel with source on the left and live PNG preview on the right, built with [egui](https://github.com/emilk/egui).
+| Style | Mirrors | Status |
+|---|---|---|
+| `tufte-original` | tufte-LaTeX `tufte-handout` class (`.refs/style-research/tufte-common.def`) | ready |
+| `envision`       | rstudio/tufte's envisioned variant (<https://rstudio.github.io/tufte/envisioned/>) | ready |
 
-Requires `typst` in PATH. Build and run:
+`jialin`, `terpret`, `claude-tufte`, `openai-tufte` are work-in-progress experiments — they layer on top of `tufte-original` but haven't been calibrated yet.
 
-```bash
-cd app && cargo run --release
+Per-style HTML CSS isn't wired in yet (the HTML target always emits canonical tufte-css). PDF rendering varies by style.
+
+Pass the style by name:
+
+```typst
+#show: tufte.with(title: [...], style: "envision")
 ```
 
-- **⌘S** — save and recompile
-- **PDF / HTML** toggle in the bottom toolbar (HTML opens in your browser)
-- Reopens the last edited file on startup
+Or pass an inline override:
 
-## Features
-
-Sidenotes, margin notes, margin figures, full-width figures, epigraphs, new-thought openers, side citations (`sidecite`), abstract, and table of contents. Footnotes convert to sidenotes automatically.
-
-## Template Parameters
-
-The `tufte.with()` function accepts:
-- `title`: Document title
-- `author`: Author name
-- `date`: Publication date (e.g., `datetime.today()`)
-- `abstract`: Brief document summary (optional)
-- `toc`: Enable table of contents (default: `false`; HTML: placeholder only)
-- `lang`: Document language (default: `"en"`)
-- `paper`: Paper size for PDF (default: `"us-letter"`)
-- Font customization: `body-font`, `sans-font`, `mono-font`
-
-## Limitations
-
-- **HTML**: Experimental. Math ignored, TOC placeholder only, mobile sidenote toggle not supported (requires CSS amendments).
-- **PDF**: Minor style differences from canonical Tufte-LaTeX; some fine-tuning expected.
-
-## Font
-
-Install [ET Book](https://github.com/edwardtufte/et-book) for authentic Tufte typography. Falls back to Palatino/Georgia if unavailable.
-
-## Test
-
-```bash
-./test.sh            # compare against reference files
-./test.sh --generate # regenerate reference files
+```typst
+#show: tufte.with(
+    title: [...],
+    config: (
+        page: (margin-x: 1in),
+        sizes: (body: 9pt),
+    ),
+)
 ```
 
-## Font Setup
+## Repo layout
 
-Install [ET Book](https://github.com/edwardtufte/et-book) for authentic Tufte typography. Falls back to Palatino/Georgia if unavailable.
+```
+src/                  template engine + style registry
+  lib.typ             public API + tufte()
+  config.typ          default-config + merge-config
+  pdf.typ             PDF target (marginalia handout)
+  html.typ            HTML target (tufte-css)
+  styles/             per-style configs (tufte-original is the pivot)
+example/              demo doc + GH Pages source
+assets/fonts/         optional fonts (gitignored; run fetch.sh)
+tests/                regression harness + style gallery
+```
+
+## Fonts
+
+Bundled fonts live under `assets/fonts/` (gitignored). Run the fetch script once to populate:
+
+```bash
+./assets/fonts/fetch.sh
+```
+
+Pulls Roboto Condensed, JetBrains Mono, and extra Inter weights from the npm `@fontsource` mirror, converts WOFF→TTF, and renames Roboto Condensed in place to bypass a Typst 0.14 family-grouping quirk. Requires `uv` (for the fonttools conversion).
+
+ET Book / Palatino / Gill Sans are expected from the system. macOS ships Palatino + Gill Sans; on Linux, install `et-book` + a Gill Sans clone (e.g. URW Gothic).
+
+## Tests
+
+`tests/cases/<feature>/<name>/case.typ` holds atomic single-feature snippets, one case per directory.
+
+`tests/reproductions/<name>/` holds whole-document reproductions of real `.typ` files, each with a `source` symlink and a `build.sh` that sed-patches imports so the original compiles through this template unchanged.
+
+```bash
+./tests/serve.sh                 # build everything + serve on :8765
+./tests/check.sh                 # verify PNG (pixel-diff) + HTML (byte-equal) refs
+./tests/check.sh --update        # copy live → ref after intentional changes
+```
+
+The gallery (`tests/gallery/`) renders `example/example.typ` through every registered style for visual side-by-side comparison.
 
 ## References
 
-**Tufte handout:**
-- [Tufte-LaTeX](https://github.com/Tufte-LaTeX/tufte-latex)
-- [Tufte CSS](https://github.com/edwardtufte/tufte-css)
-- [ET Book font](https://github.com/edwardtufte/et-book)
-
-**Typst packages:**
-- [marginalia](https://github.com/Tol0kk/marginalia) - This margin note package is neat!
-
-**Typst Tufte templates for PDF:**
-- [tufte-memo](https://github.com/nogula/tufte-memo)
-- [tufte-typst](https://github.com/fredguth/tufte-typst)
-- [toffee-tufte](https://codeberg.org/jianweicheong/toffee-tufte)
-- [bookly](https://github.com/maucejo/bookly)
-
-**Typst Tufte templates for HTML:**
-- [tufted](https://github.com/vsheg/tufted)
-- [Tufted-Blog-Template](https://github.com/Yousa-Mirage/Tufted-Blog-Template)
+- [Tufte-LaTeX](https://github.com/Tufte-LaTeX/tufte-latex) — handout class, ground truth for `tufte-original`.
+- [Tufte CSS](https://github.com/edwardtufte/tufte-css) — HTML emit reference.
+- [rstudio/tufte](https://github.com/rstudio/tufte) — envisioned variant, ground truth for `envision`.
+- [marginalia](https://typst.app/universe/package/marginalia) — Typst margin-note primitives.
 
 ## License
 
-MIT
+MIT.

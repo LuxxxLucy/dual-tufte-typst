@@ -1,6 +1,44 @@
-eout/
+# Generated output — built by .github/workflows/build-example.yml and
+# deployed to GitHub Pages. Only the .typ source is tracked.
+out/
 *.pdf
 *.html
 !index.html
-!example/example.html
-!tests/references/*
+
+# Diff metadata next to live test artifacts (stats for the index).
+tests/cases/*/*/diff.txt
+tests/limitations/*/diff.txt
+tests/reproductions/*/diff.txt
+
+# OS / editor / accidents
+.DS_Store
+~/
+
+# Reference-only files (local-only)
+tufte.min.css
+tufte-common.def
+tufte_css.html
+
+# App build artefacts
+app/Cargo.lock
+app/target/
+
+# Style research scrapes (local-only)
+.refs/
+
+# Fonts: fetched locally via fetch.sh, not tracked.
+assets/fonts/*
+!assets/fonts/fetch.sh
+
+# Editor screenshots etc. — not part of the template, not needed in PRs.
+app/assets/
+
+# Test artifacts — regenerated locally
+tests/refs/
+tests/gallery/*/
+tests/gallery/index.html
+tests/reproductions/*/out.*
+tests/reproductions/*/out-*.png
+tests/cases/*/*/diff.png
+tests/limitations/*/diff.png
+tests/limitations/*/out.png

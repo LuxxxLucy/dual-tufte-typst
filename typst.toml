@@ -1,0 +1,12 @@
+[package]
+name = "dual-tufte"
+version = "0.1.0"
+entrypoint = "src/lib.typ"
+authors = ["Jialin Lu <luxxxlucy@gmail.com>"]
+license = "MIT"
+description = "Tufte-style documents with dual PDF/HTML output from a single source"
+repository = "https://github.com/LuxxxLucy/dual-tufte-typst"
+keywords = ["tufte", "html", "sidenote", "margin-note", "dual-format"]
+categories = ["paper", "report", "layout"]
+exclude = ["references/", "out/", "tests/", "*.pdf", "*.html", "!index.html", "!example/example.html"]
+

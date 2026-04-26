@@ -5,10 +5,14 @@
 
 #import "../src/lib.typ": tufte, sidenote, marginnote, main-figure, margin-figure, full-width-figure, epigraph, new-thought, full-width, sidecite
 
+// `--input style=<name>` selects a registered style (jialin,
+// tufte-original, envision, terpret, claude-tufte, openai-tufte). The
+// gallery uses this to render the same document under every style.
 #show: tufte.with(
   title: [Dual-Tufte-Typst: Tufte Style for Both PDF and HTML],
   author: "Jialin Lu",
   date: datetime.today(),
+  style: sys.inputs.at("style", default: "jialin"),
 )
 
 A Typst template produces Tufte handout in both PDF and HTML from a single source.#sidenote[PDF uses the `marginalia` package for margin notes; HTML generates Tufte CSS markup. Same API, both outputs.] Tufte's style is known for simplicity, sidenotes over footnotes, and tight integration of graphics with text.

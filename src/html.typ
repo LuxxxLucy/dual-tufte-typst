@@ -1,121 +1,205 @@
-// HTML-specific implementation for tufte-css output
-// Known limitations:
-//   - Mobile toggle requires CSS adjacent sibling selector which Typst's HTML breaks; a workaround is to amend the css but I do not wish to do that.
-//   - Single <section> wraps all content (tufte-css uses one per h2)
+// HTML target — emits canonical tufte-css markup.
+// Reference: https://edwardtufte.github.io/tufte-css/ (1.8.0).
+
+#let _CLS = (
+    sidenote: "sidenote",
+    marginnote: "marginnote",
+    sidenote-num: "sidenote-number",
+    margin-toggle: "margin-toggle",
+    newthought: "newthought",
+    fullwidth: "fullwidth",
+    epigraph: "epigraph",
+    sans: "sans",
+    subtitle: "subtitle",
+)
+
+// Inner span style for newthought: explicit font-variant ensures small
+// caps render even without the tufte stylesheet.
+#let _NEWTHOUGHT_INNER = "font-variant-caps: small-caps"
+
+// Single per-document counter — id uniqueness only; per-kind numbering
+// not needed.
+#let _id-counter = counter("dual-tufte-id")
+
+#let _MN-GLYPH = "⊕"
+
+// label+input wrapped in `box[...]` so Typst doesn't break the
+// surrounding paragraph between the toggle and the trailing visible
+// `<span>`. The span sits as a sibling outside the box.
+#let _toggle(prefix, glyph: "", extra-class: "") = context {
+    _id-counter.step()
+    let id = prefix + str(_id-counter.get().first())
+    let cls = if extra-class != "" { _CLS.margin-toggle + " " + extra-class }
+              else { _CLS.margin-toggle }
+    box[
+        #html.elem("label", attrs: (("for"): id, ("class"): cls))[#glyph]
+        #html.elem("input", attrs: (("type"): "checkbox", ("id"): id, ("class"): _CLS.margin-toggle))[]
+    ]
+}
+
+#let _sidenote-triplet(body) = {
+    _toggle("sn-", extra-class: _CLS.sidenote-num)
+    html.elem("span", attrs: (("class"): _CLS.sidenote))[#body]
+}
+
+#let _marginnote-triplet(body) = {
+    _toggle("mn-", glyph: _MN-GLYPH)
+    html.elem("span", attrs: (("class"): _CLS.marginnote))[#body]
+}
 
 #let sidenote-html(numbered, body) = {
-    let note-cls = if numbered { "sidenote" } else { "marginnote" }
-    if numbered { html.span(class: "sidenote-number") }
-    html.span(class: note-cls, body)
+    if numbered { _sidenote-triplet(body) } else { _marginnote-triplet(body) }
 }
 
 #let main-figure-html(content, caption) = {
-    figure(content, caption: caption)
+    html.elem("figure")[
+        #if caption != none {
+            _toggle("mn-fig-", glyph: _MN-GLYPH)
+            html.elem("span", attrs: (("class"): _CLS.marginnote))[#caption]
+        }
+        #content
+    ]
 }
 
+// Margin figure: image + caption live inside the marginnote span — not
+// wrapped in <figure>, matches web-tufte-typst.
 #let margin-figure-html(content, caption) = {
-    // Use Typst's native figure to get automatic numbering
-    show figure: it => {
-        html.span(class: "marginnote", { it.body; it.caption })
-    }
-    figure(content, caption: caption)
+    _toggle("mn-fig-", glyph: _MN-GLYPH)
+    html.elem("span", attrs: (("class"): _CLS.marginnote))[
+        #box[#content]
+        #if caption != none [ #caption]
+    ]
 }
 
 #let full-width-figure-html(content, caption) = {
-    // Use Typst's native figure to get automatic numbering
-    // Override both caption and figure show rules for full-width layout
-    show figure.caption: it => html.figcaption(
-        it.supplement + sym.space.nobreak + it.counter.display() + it.separator + it.body
-    )
-    show figure: it => html.figure(class: "fullwidth", {
-        it.body
-        it.caption
-    })
-    figure(content, caption: caption)
+    html.elem("figure", attrs: (("class"): _CLS.fullwidth))[
+        #content
+        #if caption != none {
+            html.elem("figcaption")[#caption]
+        }
+    ]
 }
 
 #let epigraph-html(quote, author) = {
-    html.div(class: "epigraph", html.blockquote({
-        html.p(quote)
-        if author != none { html.footer(author) }
-    }))
+    html.elem("div", attrs: (("class"): _CLS.epigraph))[
+        #html.elem("blockquote")[
+            #html.p(quote)
+            #if author != none { html.elem("footer")[#author] }
+        ]
+    ]
 }
 
-#let new-thought-html(body) = html.span(class: "newthought", body)
-
-#let full-width-html(body) = html.div(class: "fullwidth", body)
-
-#let sidecite-html(key) = {
-    html.span(class: "sidenote-number")
-    html.span(class: "sidenote", cite(key, form: "full"))
+#let new-thought-html(body) = {
+    html.elem("span", attrs: (("class"): _CLS.newthought))[
+        #html.elem("span", attrs: (("style"): _NEWTHOUGHT_INNER))[#body]
+    ]
 }
 
-#let sans-html(body) = html.p(class: "sans", body)
+#let full-width-html(body) = html.elem("div", attrs: (("class"): _CLS.fullwidth))[#body]
 
-#let render-title-block-html(title, author, date) = {
-    if title != none { html.h1(title) }
-    if author != none or date != none {
-        let subtitle = if author != none and date != none {
-            author + ", " + date.display()
-        } else if author != none { author } else { date.display() }
-        html.p(class: "subtitle", subtitle)
+#let sidecite-html(key) = _sidenote-triplet(cite(key, form: "full"))
+
+#let sans-html(body) = html.elem("p", attrs: (("class"): _CLS.sans))[#body]
+
+#let _format-meta-parts(author, email, date) = {
+    let parts = ()
+    if author != none { parts.push(author) }
+    if email != none { parts.push(email) }
+    if date != none {
+        parts.push(if type(date) == datetime { date.display() } else { date })
+    }
+    parts
+}
+
+#let _render-title-block-html(title, author, email, date) = {
+    if title != none { html.elem("h1")[#title] }
+    let parts = _format-meta-parts(author, email, date)
+    if parts.len() > 0 {
+        html.elem("p", attrs: (("class"): _CLS.subtitle))[#parts.join(", ")]
     }
 }
 
-#let render-abstract-html(abstract) = {
-    if abstract != none { html.p(abstract) }
-}
+// CDN by default. For offline / pinned builds pass `html-css: "tufte.min.css"`.
+#let _default-css = ("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",)
 
-#let render-toc-html(toc) = {
-    if toc == true {
-        html.nav(class: "toc", { html.h2[Contents]; html.p[Table of contents displays section headings.] })
-    }
-}
+// Inline overrides on top of tufte-css: subtitle margin, h1..h3 width
+// (so heading-embedded sidenotes float into the right margin), full-width
+// scoping for div.fullwidth + nested table, and h4/h5 styling that
+// tufte-css doesn't cover.
+#let _INLINE_STYLE = ".subtitle + p { margin-top: 2.5em; }
+p + h2 { margin-top: 5.5rem; }
+article h1, article h2, article h3 { max-width: 55%; }
+div.fullwidth { font-size: 1.4rem; line-height: 2rem; }
+div.fullwidth > table { width: 100%; }
+h4 { font-style: italic; font-weight: 400; font-size: 1.4rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }
+h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }"
 
-#let setup-html(title, author, date, abstract, toc, lang, css-urls, body) = {
+#let setup-html(cfg, title, author, email, date, abstract, toc, lang, css-urls, body) = {
     let doc-title = if title != none { title } else { "Document" }
-    let html-css = if css-urls == auto {
-        ("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",)
-    } else if type(css-urls) == str { (css-urls,) } else { css-urls }
+    let html-css = if css-urls == auto { _default-css }
+                   else if type(css-urls) == str { (css-urls,) }
+                   else { css-urls }
 
-    let styled-body = {
-        set text(fill: rgb("#111"))
-        set par(spacing: 1.4em)
-        show link: set text(fill: rgb("#111"))
-        show list: set block(width: 50%)
+    _id-counter.update(0)
+    let _ = toc  // accepted for parity with PDF; HTML TOC not implemented.
 
-        show figure.caption: it => {
-            html.span(class: "marginnote", it.supplement + sym.space.nobreak + it.counter.display() + it.separator + it.body)
-        }
-        show figure: it => html.figure({ it.caption; it.body })
-        show footnote: it => sidenote-html(true, it.body)
+    let body-section = html.elem("section")[
+        #set text(fill: rgb("#111"))
+        #set par(spacing: 1.4em)
+        // Numbering rule needed even though equations are dropped, so
+        // `@eq-label` references don't error.
+        #set math.equation(numbering: "(1)")
+        #show link: set text(fill: rgb("#111"))
+        #show list: set block(width: 50%)
 
-        show quote: it => {
-            html.blockquote({
-                html.p(it.body)
-                if it.attribution != none {
-                    html.footer(it.attribution)
+        // Raw `#figure(...)` → main-figure (caption in margin). Render
+        // full caption (supplement + counter + body) so "Figure N: ..."
+        // numbering is visible.
+        #show figure: it => {
+            let cap = if it.has("caption") and it.caption != none {
+                {
+                    it.caption.supplement
+                    sym.space.nobreak
+                    it.caption.counter.display()
+                    it.caption.separator
+                    it.caption.body
                 }
-            })
+            } else { none }
+            main-figure-html(it.body, cap)
         }
+        #show footnote: it => _sidenote-triplet(it.body)
+        // Typst's `line()` is a page-geometry primitive — invisible in
+        // HTML by default. Map to <hr/>.
+        #show line: it => html.elem("hr")[]
+        #show quote: it => html.elem("blockquote")[
+            #html.p(it.body)
+            #if it.attribution != none { html.elem("footer")[#it.attribution] }
+        ]
 
-        render-title-block-html(title, author, date)
-        render-abstract-html(abstract)
-        render-toc-html(toc)
-        body
+        #body
+    ]
+
+    let article-body = {
+        _render-title-block-html(title, author, email, date)
+        if abstract != none { html.elem("p")[#abstract] }
+        body-section
     }
 
-    html.html(lang: lang, {
-        html.head({
-            html.meta(charset: "utf-8")
-            html.meta(name: "viewport", content: "width=device-width, initial-scale=1")
-            html.title(doc-title)
-            for css-link in html-css { html.link(rel: "stylesheet", href: css-link) }
-            html.elem("style", {
-                ".subtitle + p { margin-top: 2.5em; }"
-                "p + h2, { margin-top: 5.5rem; }"
-            })
-        })
-        html.body(html.article(html.section(styled-body)))
-    })
+    html.elem("html", attrs: (("lang"): lang))[
+        #html.elem("head")[
+            #html.elem("meta", attrs: (("charset"): "utf-8"))[]
+            #html.elem("meta", attrs: (("name"): "viewport", ("content"): "width=device-width, initial-scale=1"))[]
+            #html.elem("title")[#doc-title]
+            #for css-link in html-css {
+                html.elem("link", attrs: (
+                    ("rel"): "stylesheet",
+                    ("href"): css-link,
+                ))[]
+            }
+            #html.elem("style")[#_INLINE_STYLE]
+        ]
+        #html.elem("body")[
+            #html.elem("article")[#article-body]
+        ]
+    ]
 }
