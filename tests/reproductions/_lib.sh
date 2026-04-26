@@ -21,15 +21,7 @@ build() {
 
     [[ -f "$src" ]] || { echo "missing $src" >&2; exit 1; }
 
-    sed \
-        -e 's|#import "tufte-handout\.typ"|#import "../../../src/tufte-handout-compat.typ"|g' \
-        -e 's|image("\./asset/|image("./source/asset/|g' \
-        -e 's|image("asset/|image("source/asset/|g' \
-        -e 's|read("\./asset/|read("./source/asset/|g' \
-        -e 's|read("asset/|read("source/asset/|g' \
-        -e 's|bibliography("refs\.bib"|bibliography("source/refs.bib"|g' \
-        -e 's|bibliography("\./refs\.bib"|bibliography("source/refs.bib"|g' \
-        "$src" > "$patched"
+    python3 "$(dirname "${BASH_SOURCE[0]}")/_rewrite.py" "$src" "$patched"
 
     tc_pdf  "$root" "$patched" out.pdf  &
     tc_html "$root" "$patched" out.html &
