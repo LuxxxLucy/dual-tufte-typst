@@ -39,6 +39,9 @@ tests/gallery/*/
 tests/gallery/index.html
 tests/reproductions/*/out.*
 tests/reproductions/*/out-*.png
+# Asset trees pulled from upstream; large, regenerable from the source repos.
+tests/reproductions/*/asset/
+tests/reproductions/*/cover.png
 tests/cases/*/*/diff.png
 tests/limitations/*/diff.png
 tests/limitations/*/out.png

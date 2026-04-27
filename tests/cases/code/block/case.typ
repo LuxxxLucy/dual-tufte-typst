@@ -1,6 +1,4 @@
 // Block code rendering — left-inset, mono font.
-#import "../../../../src/lib.typ": tufte
-#show: tufte.with(style: "jialin", title: [Code block])
 
 Inline `code` first, then a block:
 

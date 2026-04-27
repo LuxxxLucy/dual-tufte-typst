@@ -17,13 +17,11 @@ limitation was fixed (rejoice and graduate it back into `tests/cases/`).
   `<p>` inside `<span class="sidenote">` is reparented by browsers.
 - `multi-paragraph-marginnote/` — same root cause, marginnote variant.
   This is what hits the bezierlogue reproductions.
-- `inline-math-dropped/` — Typst HTML export drops `$...$` and display
-  equations. Upstream issue, revisit periodically.
 
 ## Graduating a limitation
 
 1. Fix the underlying emit (most likely in `src/html.typ`).
-2. Re-run `tests/_smoke.py` — the limitation case should now pass.
+2. Re-run `tests/_smoke.py`; the limitation case should pass.
 3. Move the directory from `tests/limitations/<name>/` to
    `tests/cases/<group>/<name>/`.
 4. Update the smoke test's expectations in `_smoke.py` if needed.

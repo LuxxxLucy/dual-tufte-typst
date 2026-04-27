@@ -1,5 +1,5 @@
-// Dual-format Tufte template — one .typ source → PDF (marginalia handout)
-// or HTML (tufte-css). All knobs in `config.typ`.
+// Dual-format Tufte template. One .typ source compiles to PDF (marginalia
+// handout) or HTML (tufte-css). All configuration in `config.typ`.
 //
 // Author: Jialin Lu <luxxxlucy@gmail.com>
 // License: MIT
@@ -14,10 +14,8 @@
 #import "pdf.typ"
 #import "html.typ"
 
-// `target` is fixed per compile, so resolve once and dispatch without
-// wrapping every call in a `context` block.
+// Resolved once per compile so the dispatch helpers below need no `context`.
 #let _IS-HTML = sys.inputs.at("target", default: "pdf") == "html"
-#let is-html() = _IS-HTML
 
 #let sidenote(numbered: true, dy: auto, body) = {
     if _IS-HTML { html.sidenote-html(numbered, body) }
@@ -95,7 +93,7 @@
     let style-rec = if type(style) == str { styles.resolve(style) } else { style }
     let cfg = merge-config(default-config, style-rec)
     cfg = merge-config(cfg, if config == auto { (:) } else { config })
-    // Per-style CSS for HTML target — overridden by explicit html-css= arg.
+    // Per-style CSS for HTML target; overridden by explicit html-css= arg.
     let css = if html-css != auto { html-css }
               else if "css" in cfg and cfg.css != auto { cfg.css }
               else { auto }

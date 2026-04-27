@@ -1,7 +1,5 @@
 // List item containing an inline sidenote — checks that the sidenote
 // triplet folds inside <li> without breaking list structure.
-#import "../../../../src/lib.typ": tufte, sidenote
-#show: tufte.with(style: "jialin", title: [List with inline sidenote])
 
 A short list with a sidenote on the second item:
 

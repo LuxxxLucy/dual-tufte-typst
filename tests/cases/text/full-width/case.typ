@@ -1,6 +1,4 @@
 // full-width body block: spans main + margin column.
-#import "../../../../src/lib.typ": tufte, full-width
-#show: tufte.with(style: "jialin", title: [Full-width block])
 
 Normal-width prose first, constrained to the main column.
 

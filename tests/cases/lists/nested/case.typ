@@ -1,6 +1,4 @@
 // Lists — bullet, ordered, nested.
-#import "../../../../src/lib.typ": tufte
-#show: tufte.with(style: "jialin", title: [Lists])
 
 Unordered:
 - Top-level item

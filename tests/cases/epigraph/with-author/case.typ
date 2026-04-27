@@ -1,6 +1,4 @@
 // Epigraph with attribution.
-#import "../../../../src/lib.typ": tufte, epigraph
-#show: tufte.with(style: "jialin", title: [Epigraph])
 
 #epigraph(
     [Above all else show the data.],

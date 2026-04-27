@@ -138,8 +138,12 @@ config: (page: (width: 25cm, height: 230cm))          // poster
 ## Tests
 
 `tests/cases/<feature>/<name>/case.typ` holds atomic single-feature snippets, one per directory.
+Each `case.typ` is body-only; the build script wraps it with the shared preamble (`#import "/src/lib.typ": *` plus `#show: tufte.with(style: "jialin")`) before compiling.
+Per-case overrides go in a `// !with: (...)` directive at the top of the file (spread into `tufte.with()`).
+
 `tests/reproductions/<name>/` holds whole-document reproductions of real `.typ` files.
-Each reproduction has a `source` symlink and a `build.sh` that rewrites imports so the original compiles through this template unchanged.
+Each reproduction is a local copy of the upstream document, edited to import `/src/lib.typ` directly.
+Asset trees (`asset/`, `cover.png`) are gitignored; pull them from the upstream repos when re-running locally.
 
 ```bash
 ./tests/serve.sh                 # build everything, serve on :8765

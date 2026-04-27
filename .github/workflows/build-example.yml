@@ -36,11 +36,7 @@ jobs:
         run: ./assets/fonts/fetch.sh
 
       - name: Build example.pdf and example.html
-        working-directory: example
-        run: |
-          typst compile --root .. --font-path ../assets/fonts example.typ example.pdf
-          typst compile --root .. --font-path ../assets/fonts \
-            --features html --input target=html example.typ example.html
+        run: ./example/build.sh
 
       - name: Stage site
         run: |

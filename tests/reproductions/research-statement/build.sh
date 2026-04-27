@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")"
-source ../_lib.sh
-build "what_I_want_to_do_jialin_lu.typ"
-build_ref "what_I_want_to_do_jialin_lu.typ"
+source ../../_compile.sh
+
+ROOT=../../..
+ENTRY=what_I_want_to_do_jialin_lu.typ
+tc_pdf  "$ROOT" "$ENTRY" out.pdf  &
+tc_html "$ROOT" "$ENTRY" out.html &
+wait
+echo "Built: $(pwd)/{out.pdf,out.html}"

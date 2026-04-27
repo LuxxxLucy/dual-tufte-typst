@@ -1,4 +1,4 @@
-// openai-tufte — OpenAI blog aesthetic over the Tufte handout.
+// openai-tufte: OpenAI blog aesthetic over the Tufte handout.
 // Söhne body (Inter fallback), white page, near-black text, geometric
 // upright headings, OpenAI green link.
 
@@ -7,7 +7,6 @@
 #import "tufte-original.typ": tufte-original
 
 #let openai-tufte = merge-config(tufte-original, (
-    name: "openai-tufte",
     page: (fill: none),
     fonts: (
         body:   stacks.sohne,

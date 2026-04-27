@@ -1,5 +1,5 @@
 // Style registry. A style is any record with the same shape as
-// `src/config.typ:default-config`; partial dicts work — `merge-config`
+// `src/config.typ:default-config`; partial dicts work because `merge-config`
 // deep-merges over the defaults. Add a new style by creating a file here
 // and adding it to `registry` below.
 //

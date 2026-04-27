@@ -1,7 +1,5 @@
 // Sidenote attached to a heading — exercises the triplet folding
 // inside <h2> rather than <p>.
-#import "../../../../src/lib.typ": tufte, sidenote
-#show: tufte.with(style: "jialin", title: [Sidenote in heading])
 
 Intro paragraph.
 

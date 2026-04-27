@@ -1,4 +1,4 @@
-// Default config — the jialin style baseline. Other styles override on top
+// Default config (the jialin style baseline). Other styles override on top
 // via `merge-config`; pass `style:` (registry name or record) and/or
 // `config:` (per-call overrides) to `tufte()`.
 
@@ -24,13 +24,8 @@
     // (8pt) read too tight at the meta + sidenote ratios below.
     sizes: (
         body: 9pt,
-        tiny: 0.65em,    // sidenote / margin-note text
         small: 0.7em,
         normal: 1em,
-        large: 1.1em,    // h2
-        larger: 1.2em,   // h1, new-thought
-        huge: 1.8em,     // title block
-        header: 5pt,     // running header
     ),
     headings: (
         h1: (weight: "extralight", size: 1.2em, style: "italic", v-before: 0.35em, v-after: -0.3em),
