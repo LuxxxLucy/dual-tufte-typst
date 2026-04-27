@@ -2,7 +2,7 @@
 // a div.fullwidth and spans across main + margin via tufte-css's
 // `div.fullwidth, table.fullwidth { width: 100% }` rule.
 #import "../../../../src/lib.typ": tufte, full-width
-#show: tufte.with(title: [Full-width table])
+#show: tufte.with(style: "jialin", title: [Full-width table])
 
 Body before the table.
 

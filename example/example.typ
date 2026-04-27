@@ -45,10 +45,13 @@ The `tufte.with()` function accepts additional parameters:
 #show: tufte.with(
   title: [Document Title],
   author: "Author Name",
-  date: datetime.today(),                    // Publication date
-  abstract: [Brief document summary...],     // Optional abstract
-  lang: "en",                                // Document language
-  paper: "us-letter",                        // Paper size for PDF
+  email: "you@example.com",
+  date: datetime.today(),
+  abstract: [Brief document summary...],
+  toc: true,
+  lang: "en",
+  bib: bibliography("refs.bib"),             // runs after body
+  config: (page: (paper: "us-letter")),
 )
 ```
 
@@ -93,9 +96,7 @@ Organize your document with titles and headings. The document title is set via `
 
 Body text uses ET Book (or Palatino/Georgia fallback), with slightly muted colors for reduced contrast.#sidenote[PDF: `fill: luma(20%)`. HTML: `#111` on `#fffff8` background.] Links appear as #link("#")[underlined text], matching body color rather than distracting blue.
 
-Standard formatting: _emphasis_, *strong*, `code`. Math works inline $E = m c^2$ and displayed:
-
-$ integral_0^infinity e^(-x^2) dif x = sqrt(pi)/2 $
+Standard formatting: _emphasis_, *strong*, `code`. Math is covered in its own section below.
 
 = Sidenotes
 
@@ -153,6 +154,40 @@ Epigraphs introduce sections with thematic quotations:
   [For a successful technology, reality must take precedence over public relations, for Nature cannot be fooled.],
   author: [Richard P. Feynman],
 )
+
+= Mathematics
+
+Inline math sits in running text, e.g. $E = m c^2$, $alpha + beta = gamma$, or a triangle-inequality bound $norm(u + v) <= norm(u) + norm(v)$. Greek and common symbols use Typst names: $alpha, beta, gamma, pi, infinity, partial, nabla, plus.minus, tilde.equiv$.
+
+Display math centers on its own line and auto-numbers#sidenote[Numbering set in `setup-html` / `setup-pdf` via `set math.equation(numbering: "(1)")`. Override locally with another `set math.equation(...)` rule.]:
+
+$ integral_0^infinity e^(-x^2) dif x = sqrt(pi) / 2 $
+
+Aligned multi-line derivations use `&` to mark the alignment column:
+
+$ (a + b)^2 &= (a + b)(a + b) \
+            &= a^2 + 2 a b + b^2 $
+
+Sums and products with bounds:
+
+$ sum_(k=1)^n k = n(n+1)/2, quad product_(k=1)^n k = n! $
+
+Fractions, roots, and matrices:
+
+$ phi = (1 + sqrt(5)) / 2, quad
+  A = mat(
+    cos theta, -sin theta;
+    sin theta,  cos theta
+  ) $
+
+Cases and piecewise definitions:
+
+$ abs(x) = cases(
+    x   & "if " x >= 0,
+    -x  & "if " x < 0,
+  ) $
+
+In HTML output every equation renders as inline SVG via `html.frame` (`typst/typst#5512`); SVG glyphs use `currentColor` to follow the surrounding text colour but carry no MathML accessibility data and are not selectable as text.
 
 = Code
 

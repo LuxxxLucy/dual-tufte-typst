@@ -87,7 +87,7 @@
     toc: false,
     bib: none,
     html-css: auto,
-    style: "jialin",
+    style: "tufte-original",
     config: auto,
     body,
 ) = {

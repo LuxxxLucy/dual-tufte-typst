@@ -3,7 +3,7 @@
 // styling at 760px and below; on wider viewports the table just sits at
 // section width.
 #import "../../../../src/lib.typ": tufte
-#show: tufte.with(title: [Body table])
+#show: tufte.with(style: "jialin", title: [Body table])
 
 A short table with three columns and four rows:
 

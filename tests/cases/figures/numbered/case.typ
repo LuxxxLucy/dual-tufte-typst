@@ -1,7 +1,7 @@
 // Two main-figures in sequence — verifies figure counter advances and
 // margin captions stack correctly without overlap.
 #import "../../../../src/lib.typ": tufte, main-figure
-#show: tufte.with(title: [Numbered figures])
+#show: tufte.with(style: "jialin", title: [Numbered figures])
 
 Body before the first figure.
 

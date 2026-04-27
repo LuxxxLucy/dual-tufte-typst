@@ -216,8 +216,12 @@ h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem;
         #html.elem("head")[
             #html.elem("meta", attrs: (("charset"): "utf-8"))[]
             #html.elem("meta", attrs: (("name"): "viewport", ("content"): "width=device-width, initial-scale=1"))[]
-            // Override via `--input color-scheme=light` for deterministic refs.
-            #let scheme = sys.inputs.at("color-scheme", default: "light dark")
+            // Per-style default via `cfg.html-color-scheme`; CLI override
+            // via `--input color-scheme=light` wins for deterministic refs.
+            #let scheme = sys.inputs.at(
+                "color-scheme",
+                default: cfg.at("html-color-scheme", default: "light dark"),
+            )
             #html.elem("meta", attrs: (("name"): "color-scheme", ("content"): scheme))[]
             #html.elem("title")[#doc-title]
             #for css-link in html-css {

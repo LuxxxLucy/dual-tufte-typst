@@ -198,11 +198,19 @@
     let cfg = config
     _config-state.update(cfg)
 
-    set page(
-        paper: cfg.page.paper,
-        fill: cfg.page.at("fill", default: none),
-        header: if title != none { _render-header(title, cfg) },
-    )
+    let w = cfg.page.at("width", default: none)
+    let h = cfg.page.at("height", default: none)
+    let scroll = h == auto
+    let page-args = (fill: cfg.page.at("fill", default: none))
+    if w != none { page-args.insert("width", w) }
+    if h != none { page-args.insert("height", h) }
+    if w == none and h == none { page-args.insert("paper", cfg.page.paper) }
+    // Suppress the running header in scroll mode; it would render once on
+    // the single tall page.
+    if title != none and not scroll {
+        page-args.insert("header", _render-header(title, cfg))
+    }
+    set page(..page-args)
 
     show: marginalia.setup.with(
         inner: (far: cfg.page.margin-x, width: 0pt, sep: 0pt),

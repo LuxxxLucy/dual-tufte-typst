@@ -1,6 +1,6 @@
 // new-thought: small-caps section opener (no heading).
 #import "../../../../src/lib.typ": tufte, new-thought
-#show: tufte.with(title: [New thought])
+#show: tufte.with(style: "jialin", title: [New thought])
 
 Closing the previous section. The next paragraph opens with small caps instead of a heading.
 

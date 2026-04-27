@@ -9,6 +9,9 @@
 
 #let envision = merge-config(tufte-original, (
     name: "envision",
+    // envisioned.css ships no dark-mode rules; force light so dark-OS
+    // browsers don't recolor surrounding chrome over a light page.
+    "html-color-scheme": "light",
     page: (fill: rgb("#fefefe")),
     fonts: (
         body:   stacks.roboto-condensed,

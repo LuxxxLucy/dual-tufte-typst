@@ -35,6 +35,10 @@
         author: name,
         email: email,
         date: date,
+        // The standalone handout calibrates against the `jialin` look
+        // (web-handout body 9pt, Gill Sans title); pin it so reproductions
+        // remain stable when the dual-template default changes.
+        style: "jialin",
         config: config,
     )
     doc
