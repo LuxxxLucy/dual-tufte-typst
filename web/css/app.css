@@ -166,8 +166,7 @@ select {
 .showcase-row::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
 
 .showcase-card {
-    flex: 0 0 36rem;
-    max-width: 90vw;
+    flex: 0 0 min(92vw, 60rem);
     scroll-snap-align: center;
     border: 1px solid var(--border);
     border-radius: var(--radius);
