@@ -107,5 +107,12 @@ fetch_face inter 5.2.6 500 normal "inter/Inter-Medium.ttf"
 fetch_face inter 5.2.6 600 normal "inter/Inter-SemiBold.ttf"
 fetch_face inter 5.2.6 700 normal "inter/Inter-Bold.ttf"
 
+# Public Sans — free Colfax substitute for the `terpret` style. SIL OFL.
+echo "Public Sans:"
+fetch_face public-sans 5.2.6 400 normal "public-sans/PublicSans-Regular.ttf"
+fetch_face public-sans 5.2.6 500 normal "public-sans/PublicSans-Medium.ttf"
+fetch_face public-sans 5.2.6 600 normal "public-sans/PublicSans-SemiBold.ttf"
+fetch_face public-sans 5.2.6 400 italic "public-sans/PublicSans-Italic.ttf"
+
 echo ""
 echo "done. Verify with: typst fonts --font-path assets/fonts | grep -iE 'roboto cond|jetbrains|inter'"

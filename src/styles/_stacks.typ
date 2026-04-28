@@ -5,9 +5,15 @@
 #let gillsans = ("Gill Sans", "Helvetica")
 
 // Inter, bundled via assets/fonts/fetch.sh. Used by orange-happy/bluewhite
-// as a free sans alternative to commercial faces (Söhne, Colfax).
+// as a free sans alternative to commercial faces (Söhne).
 #let inter = ("Inter", "Helvetica Neue", "Helvetica", "Arial")
 #let inter-mono = ("JetBrains Mono", "Menlo", "Monaco", "Courier")
+
+// Public Sans (USWDS, OFL) — free humanist sans close to Colfax. Used by
+// terpret. "Input" mono follows the original 2020 page; falls back to
+// JetBrains Mono if not installed.
+#let public-sans = ("Public Sans", "Colfax", "Neue Helvetica W02", "Helvetica Neue", "Helvetica", "Arial")
+#let input-mono  = ("Input", "JetBrains Mono", "Menlo", "Monaco", "Courier")
 
 // Roboto Condensed renamed in-place to "RobotoCondensed" by fetch.sh
 // because Typst 0.14 strips axis-suffix words (turning "Roboto
