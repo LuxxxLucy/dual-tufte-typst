@@ -231,14 +231,6 @@ h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem;
                 ))[]
             }
             #html.elem("style")[#_INLINE_STYLE]
-            // Match HTML rendered size to PDF: tufte-css's typography is
-            // rem-based (titles 3.2rem, body 1.4rem) on a 15px html base.
-            // Scaling html font-size against `cfg.sizes.body` shrinks the
-            // whole document proportionally so the HTML title visually
-            // tracks the PDF title.
-            #let body-pt = cfg.sizes.body / 1pt
-            #let base = calc.max(10, calc.min(15, body-pt * 0.95))
-            #html.elem("style")[#("html { font-size: " + str(base) + "px; }")]
             #let extra = cfg.at("html-extra-css", default: none)
             #if extra != none and extra != "" { html.elem("style")[#extra] }
         ]
