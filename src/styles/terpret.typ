@@ -1,15 +1,14 @@
 // terpret: modeled on https://luxxxlucy.github.io/projects/2020_terpret/terpret.html.
-// Sans body (Colfax → Public Sans free fallback), Input mono, web
-// paragraphing, link colour inherits from body (tufte-css gradient
-// underline). Inherits tufte-original sizes.
+// Sans body (Colfax → Public Sans free fallback), Input mono, link colour
+// inherits from body. Inherits all of tufte-original's geometry, sizes,
+// and paragraphing — only fonts (and quote-size compensation for sans)
+// differ.
 
 #import "../config.typ": merge-config
 #import "_stacks.typ" as stacks
 #import "tufte-original.typ": tufte-original
 
 #let terpret = merge-config(tufte-original, (
-    page: (margin-x: 1.1in, margin-y: 1in),
-    margin-col: (width: 2.4in, sep: 0.6in),
     fonts: (
         body:   stacks.public-sans,
         sans:   stacks.public-sans,
@@ -17,18 +16,12 @@
         header: stacks.public-sans,
     ),
     headings: (
-        // Sans body wants upright weight contrast, not italic.
         h1: (weight: "semibold", style: "normal"),
         h2: (weight: "semibold", style: "normal"),
         h3: (weight: "medium",   style: "normal"),
     ),
     margin-note: (font: stacks.public-sans, style: "normal"),
     title-block: (font: auto, weight: "semibold", meta-style: "normal"),
-    text: (
-        first-line-indent: 0em,
-        par-spacing: 1.3em,
-        leading: auto,
-    ),
     quote: (size: 1em, leading: 0.5em),
     link: (fill: rgb("#111111"), underline: true),
     "html-color-scheme": "light",

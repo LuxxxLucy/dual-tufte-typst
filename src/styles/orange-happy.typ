@@ -20,12 +20,7 @@
     ),
     margin-note: (font: stacks.inter, style: "normal"),
     title-block: (font: auto, meta-style: "normal"),
-    text: (
-        fill: rgb("#1a1a1a"),
-        first-line-indent: 0em,
-        par-spacing: 1.1em,
-        leading: auto,
-    ),
+    text: (fill: rgb("#1a1a1a")),
     quote: (size: 1em, leading: 0.5em),
     link: (fill: rgb("#d97757"), underline: true),
     "html-color-scheme": "light",
