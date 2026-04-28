@@ -4,10 +4,10 @@
 #let etbembo = ("ETBembo", "Palatino", "Georgia")
 #let gillsans = ("Gill Sans", "Helvetica")
 
-// Söhne is paid; Inter (bundled via assets/fonts/fetch.sh) is the free
-// fallback. JetBrains Mono is bundled too.
-#let sohne = ("Söhne", "Inter", "Helvetica Neue", "Helvetica", "Arial")
-#let sohne-mono = ("Söhne Mono", "JetBrains Mono", "Menlo", "Monaco")
+// Inter, bundled via assets/fonts/fetch.sh. Used by orange-happy/bluewhite
+// as a free sans alternative to commercial faces (Söhne, Colfax).
+#let inter = ("Inter", "Helvetica Neue", "Helvetica", "Arial")
+#let inter-mono = ("JetBrains Mono", "Menlo", "Monaco", "Courier")
 
 // Roboto Condensed renamed in-place to "RobotoCondensed" by fetch.sh
 // because Typst 0.14 strips axis-suffix words (turning "Roboto

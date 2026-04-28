@@ -9,7 +9,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 source ../_compile.sh
 
-STYLES=(jialin tufte-original envision terpret claude-tufte openai-tufte)
+STYLES=(jialin tufte-original envision terpret orange-happy bluewhite)
 ROOT=../..
 SRC=../../example/example.typ
 

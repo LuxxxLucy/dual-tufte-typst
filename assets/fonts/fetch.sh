@@ -5,8 +5,8 @@
 #   ./assets/fonts/fetch.sh
 #
 # `assets/fonts/` is .gitignored; this script is the canonical way to
-# repopulate it on a new clone or in CI. The .github/workflows/build-example.yml
-# action runs it before compiling the example.
+# repopulate it on a new clone or in CI. The .github/workflows/build-web.yml
+# action runs it before building the web app.
 #
 # Apache / SIL fonts only. Commercial faces (Söhne, Berkeley Mono,
 # Colfax, Input, SF Mono) are not pulled — styles that mention them
@@ -92,7 +92,7 @@ fetch_face roboto-condensed 5.0.4 400 normal "roboto/RobotoCondensed-Regular.ttf
 fetch_face roboto-condensed 5.0.4 700 normal "roboto/RobotoCondensed-Bold.ttf"    "RobotoCondensed"
 fetch_face roboto-condensed 5.0.4 400 italic "roboto/RobotoCondensed-Italic.ttf"  "RobotoCondensed"
 
-# JetBrains Mono — free mono fallback for claude-tufte / openai-tufte.
+# JetBrains Mono — free mono fallback for orange-happy / bluewhite.
 # Apache 2.0.
 echo "JetBrains Mono:"
 fetch_face jetbrains-mono 5.0.21 400 normal "jetbrains-mono/JetBrainsMono-Regular.ttf"
@@ -100,7 +100,7 @@ fetch_face jetbrains-mono 5.0.21 700 normal "jetbrains-mono/JetBrainsMono-Bold.t
 fetch_face jetbrains-mono 5.0.21 400 italic "jetbrains-mono/JetBrainsMono-Italic.ttf"
 
 # Inter extra weights — back the existing Inter-Regular / Italic so
-# semibold / medium heading specs in claude-tufte / openai-tufte
+# semibold / medium heading specs in orange-happy / bluewhite
 # resolve to real glyphs instead of synthesized bold. SIL OFL.
 echo "Inter:"
 fetch_face inter 5.2.6 500 normal "inter/Inter-Medium.ttf"

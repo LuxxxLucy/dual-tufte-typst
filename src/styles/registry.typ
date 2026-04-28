@@ -10,16 +10,16 @@
 #import "tufte-original.typ": tufte-original
 #import "envision.typ": envision
 #import "terpret.typ": terpret
-#import "claude-tufte.typ": claude-tufte
-#import "openai-tufte.typ": openai-tufte
+#import "orange-happy.typ": orange-happy
+#import "bluewhite.typ": bluewhite
 
 #let registry = (
     jialin: jialin,
     tufte-original: tufte-original,
     envision: envision,
     terpret: terpret,
-    claude-tufte: claude-tufte,
-    openai-tufte: openai-tufte,
+    "orange-happy": orange-happy,
+    bluewhite: bluewhite,
 )
 
 #let names = registry.keys()
