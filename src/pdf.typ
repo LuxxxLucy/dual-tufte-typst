@@ -130,8 +130,11 @@
         tracking: cfg.header.tracking,
         font: cfg.fonts.header,
     )
-    // Push the header into the right margin column (away from main column).
-    let push = -(cfg.margin-col.width + cfg.margin-col.sep / 2)
+    // Push the header to the page right edge. The text frame here ends at
+    // the main-column right; the margin column + sep sits between it and
+    // the page edge, so a negative right pad of (sep + width) lands the
+    // right-aligned content flush with the page edge.
+    let push = -(cfg.margin-col.width + cfg.margin-col.sep)
     pad(right: push, align(right, if cfg.header.upper { upper(title) } else { title }))
     v(2.5em)
 }
