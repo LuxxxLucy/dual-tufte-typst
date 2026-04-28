@@ -1,6 +1,4 @@
 // Full-width figure: spans across main column and right margin.
-#import "../../../../src/lib.typ": tufte, full-width-figure
-#show: tufte.with(title: [Full-width figure])
 
 Body text before.
 

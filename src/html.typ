@@ -1,4 +1,4 @@
-// HTML target — emits canonical tufte-css markup.
+// HTML target. Emits canonical tufte-css markup.
 // Reference: https://edwardtufte.github.io/tufte-css/ (1.8.0).
 
 #let _CLS = (
@@ -17,8 +17,8 @@
 // caps render even without the tufte stylesheet.
 #let _NEWTHOUGHT_INNER = "font-variant-caps: small-caps"
 
-// Single per-document counter — id uniqueness only; per-kind numbering
-// not needed.
+// Single per-document counter for id uniqueness; per-kind numbering
+// is not needed.
 #let _id-counter = counter("dual-tufte-id")
 
 #let _MN-GLYPH = "⊕"
@@ -61,8 +61,8 @@
     ]
 }
 
-// Margin figure: image + caption live inside the marginnote span — not
-// wrapped in <figure>, matches web-tufte-typst.
+// Margin figure: image + caption live inside the marginnote span (not
+// wrapped in <figure>), matching web-tufte-typst.
 #let margin-figure-html(content, caption) = {
     _toggle("mn-fig-", glyph: _MN-GLYPH)
     html.elem("span", attrs: (("class"): _CLS.marginnote))[
@@ -194,8 +194,8 @@ h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem;
             main-figure-html(it.body, cap)
         }
         #show footnote: it => _sidenote-triplet(it.body)
-        // Typst's `line()` is a page-geometry primitive — invisible in
-        // HTML by default. Map to <hr/>.
+        // Typst's `line()` is a page-geometry primitive (invisible in
+        // HTML by default). Map to <hr/>.
         #show line: it => html.elem("hr")[]
         #show quote: it => html.elem("blockquote")[
             #html.p(it.body)
@@ -216,8 +216,12 @@ h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem;
         #html.elem("head")[
             #html.elem("meta", attrs: (("charset"): "utf-8"))[]
             #html.elem("meta", attrs: (("name"): "viewport", ("content"): "width=device-width, initial-scale=1"))[]
-            // Override via `--input color-scheme=light` for deterministic refs.
-            #let scheme = sys.inputs.at("color-scheme", default: "light dark")
+            // Per-style default via `cfg.html-color-scheme`; CLI override
+            // via `--input color-scheme=light` wins for deterministic refs.
+            #let scheme = sys.inputs.at(
+                "color-scheme",
+                default: cfg.at("html-color-scheme", default: "light dark"),
+            )
             #html.elem("meta", attrs: (("name"): "color-scheme", ("content"): scheme))[]
             #html.elem("title")[#doc-title]
             #for css-link in html-css {

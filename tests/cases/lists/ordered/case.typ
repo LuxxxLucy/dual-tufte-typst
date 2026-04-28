@@ -1,7 +1,5 @@
 // Ordered list (numbered enumeration) — exercises Typst's `+` enum syntax
 // and our list show-rules for HTML.
-#import "../../../../src/lib.typ": tufte
-#show: tufte.with(title: [Ordered list])
 
 A short numbered list:
 

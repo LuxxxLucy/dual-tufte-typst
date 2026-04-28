@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
+cd "$(dirname "$0")"
+source ../tests/_compile.sh
 
-# Build example.typ to PDF and HTML
-
-echo "Building PDF..."
-typst compile --root .. example.typ
-
-echo "Building HTML..."
-typst compile --root .. --input target=html --features html example.typ example.html
-
-echo "Done: example.pdf, example.html"
-
+ROOT=..
+tc_pdf  "$ROOT" example.typ example.pdf  &
+tc_html "$ROOT" example.typ example.html &
+wait
+echo "Built: $(pwd)/{example.pdf,example.html}"

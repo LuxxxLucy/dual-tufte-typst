@@ -1,4 +1,4 @@
-// tufte-original — Tufte-LaTeX `tufte-handout` ported to Typst.
+// tufte-original: Tufte-LaTeX `tufte-handout` ported to Typst.
 // Source: .refs/style-research/tufte-common.def + tufte-handout.cls.
 // All numbers below quote those files by line number.
 //
@@ -8,8 +8,7 @@
 #import "_stacks.typ" as stacks
 
 #let tufte-original = (
-    name: "tufte-original",
-    // Geometry from tufte-common.def:446 — left=1in, textwidth=26pc
+    // Geometry from tufte-common.def:446: left=1in, textwidth=26pc
     // (4.33in), marginparsep=2pc (0.33in), marginparwidth=12pc (2in).
     page: (
         paper: "us-letter",
@@ -26,23 +25,17 @@
     fonts: (
         body:   stacks.etbembo,
         sans:   stacks.gillsans,
-        mono:   stacks.menlo-mono,
+        mono:   ("Menlo", "Monaco", "Courier"),
         header: ("ETBembo", "Palatino"),
     ),
+    // \normalsize = 10pt / 14pt leading (tufte-common.def:367-374);
+    // \footnotesize = 8pt / 10pt (tufte-common.def:388-389).
     sizes: (
-        // \normalsize = 10pt / 14pt leading (tufte-common.def:367-374)
         body: 10pt,
-        // \footnotesize = 8pt / 10pt (tufte-common.def:388-389)
-        tiny: 0.8em,
         small: 0.8em,
         normal: 1em,
-        // \large = 11pt/15pt; \Large = 12pt/16pt (lines 401-402)
-        large: 1.2em,    // h2 (\subsection)
-        larger: 1.4em,   // h1 (\section); \LARGE = 14pt/18pt
-        huge: 1.4em,     // title block (\LARGE)
-        header: 8pt,
     ),
-    // tufte-common.def:1622-1647 — \section = \Large\itshape (12pt
+    // tufte-common.def:1622-1647: \section = \Large\itshape (12pt
     // italic), \subsection = \large\itshape (11pt italic). LaTeX
     // \titlespacing values trimmed for Typst because `\@startsection`
     // collapses adjacent skips; Typst stacks v-after + v-before
@@ -54,7 +47,7 @@
         h2: (weight: "regular", size: 1.1em, style: "italic", v-before: 0.4em, v-after: 0.2em),
         h3: (weight: "regular", size: 1em,   style: "italic", v-before: 0.4em, v-after: 0.1em),
     ),
-    // \@tufte@marginfont = \normalfont\footnotesize (line 471) — 8pt
+    // \@tufte@marginfont = \normalfont\footnotesize (line 471): 8pt
     // roman upright. Italic / sans variants are tufte-css and the
     // `sfsidenotes` option, not the handout default.
     margin-note: (
@@ -64,12 +57,12 @@
         leading: 0.4em,
         marker-sep: 0.3em,
     ),
-    // tufte-common.def:975 — superscript at \footnotesize.
+    // tufte-common.def:975: superscript at \footnotesize.
     sidenote-number: (
         anchor-size: 0.7em,
         margin-size: 0.85em,
     ),
-    // tufte-common.def:779-782 — `\noindent\textsc{#1}`. Body-size,
+    // tufte-common.def:779-782 `\noindent\textsc{#1}`: body-size,
     // no tracking; lowercase-scale fakes small caps for fonts without
     // smcp glyphs (see new-thought-pdf).
     newthought: (

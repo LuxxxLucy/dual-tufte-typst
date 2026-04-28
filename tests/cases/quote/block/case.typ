@@ -1,6 +1,4 @@
 // Block quote with attribution.
-#import "../../../../src/lib.typ": tufte
-#show: tufte.with(title: [Block quote])
 
 Lead-in prose.
 

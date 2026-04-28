@@ -1,4 +1,4 @@
-// envision — rstudio/tufte's "envisioned" overlay (rstudio.github.io/tufte/envisioned/).
+// envision: rstudio/tufte's "envisioned" overlay (rstudio.github.io/tufte/envisioned/).
 // Thin overlay on tufte-original: Roboto Condensed body, warm #fefefe page,
 // #222 text. Heading + sidenote-marker fonts follow `cfg.fonts.body` /
 // `cfg.margin-note.font` from pdf.typ, so the body swap covers them too.
@@ -8,12 +8,14 @@
 #import "tufte-original.typ": tufte-original
 
 #let envision = merge-config(tufte-original, (
-    name: "envision",
+    // envisioned.css ships no dark-mode rules; force light so dark-OS
+    // browsers don't recolor surrounding chrome over a light page.
+    "html-color-scheme": "light",
     page: (fill: rgb("#fefefe")),
     fonts: (
         body:   stacks.roboto-condensed,
         sans:   stacks.roboto-condensed,
-        mono:   stacks.roboto-mono,
+        mono:   ("Roboto Mono", "Menlo", "Monaco", "Courier New"),
         header: stacks.roboto-condensed,
     ),
     // CSS renders 1.4rem on 15px screen base; for print, 9pt + tightened

@@ -6,8 +6,7 @@
 // marginnote across those documents.
 //
 // PDF target renders correctly via marginalia.note.
-#import "../../../src/lib.typ": tufte, marginnote
-#show: tufte.with(title: [Multi-paragraph marginnote (HTML limitation)])
+// !with: (title: [Multi-paragraph marginnote (HTML limitation)])
 
 Body sentence with a substantial margin aside.#marginnote[
     First paragraph of the marginnote.

@@ -154,7 +154,6 @@ def check_one(path: Path, expectations: dict) -> list[str]:
 LIMITATION_KIND = {
     "multi-paragraph-sidenote":   "structural",
     "multi-paragraph-marginnote": "structural",
-    "inline-math-dropped":        "content",  # smoke test can't detect
 }
 
 

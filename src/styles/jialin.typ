@@ -1,6 +1,6 @@
-// jialin — Mr. Lucy's web-handout look. Layered on `tufte-original`;
-// only intentional deltas vs. the LaTeX-faithful baseline:
-//   - 9pt body (matches the bezierlogue handout — ETBembo reads tighter
+// jialin: web-handout look layered on `tufte-original`. Intentional deltas
+// vs. the LaTeX-faithful baseline:
+//   - 9pt body (matches the bezierlogue handout; ETBembo reads tighter
 //     at 10pt than ETBook does in print).
 //   - Gill Sans for title block + running header (web-handout convention).
 //   - Web-style paragraphing: no first-line indent, gap between paragraphs.
@@ -12,7 +12,6 @@
 #import "tufte-original.typ": tufte-original
 
 #let jialin = merge-config(tufte-original, (
-    name: "jialin",
     page: (
         margin-x: 0.68in,
         margin-y: 2cm,
@@ -22,13 +21,7 @@
         width: 2.25in,
         sep: 0.7in,
     ),
-    sizes: (
-        body: 9pt,
-        large: 1.1em,
-        larger: 1.2em,
-        huge: 1.8em,
-        header: 5pt,
-    ),
+    sizes: (body: 9pt),
     headings: (
         h1: (weight: "extralight", size: 1.2em, style: "italic", v-before: 0.35em, v-after: -0.3em),
         h2: (weight: "extralight", size: 1em,   style: "italic", v-before: 0.4em,  v-after: 0.1em),

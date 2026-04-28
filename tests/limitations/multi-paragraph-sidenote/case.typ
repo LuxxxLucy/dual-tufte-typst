@@ -4,8 +4,7 @@
 // number lands in the margin, the body escapes into top-level flow.
 //
 // PDF target renders correctly via marginalia.note.
-#import "../../../src/lib.typ": tufte, sidenote
-#show: tufte.with(title: [Multi-paragraph sidenote (HTML limitation)])
+// !with: (title: [Multi-paragraph sidenote (HTML limitation)])
 
 A claim that needs an extended sidenote#sidenote[
     First paragraph of the sidenote, anchored to the marker.

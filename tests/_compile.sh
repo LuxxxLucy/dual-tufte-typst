@@ -42,19 +42,27 @@ tc_png() {
 # Build every <dir>/case.typ under the calling script's cwd to sibling
 # out.{html,png}. `root` is the path from each case dir back to the project
 # root. Used by tests/cases/ and tests/limitations/ build-all.sh.
+#
+# Each case.typ is wrapped via tests/_wrap.py into _wrapped.typ in the same
+# directory; the wrapper applies the shared `tufte.with(style: "jialin")`
+# preamble and embeds the case body, so case files hold body content only.
+# The `// !with: (...)` directive in a case.typ injects per-case args into
+# the preamble.
 tc_build_all_cases() {
     local root="$1"
     build_one() {
         local dir="$1" root="$2"
         (
             cd "$dir"
-            rm -f out.pdf
-            tc_html "$root" case.typ out.html || exit 1
-            tc_png  "$root" case.typ out.png  || exit 1
+            rm -f out.pdf out-*.png _wrapped.typ
+            python3 "$root/tests/_wrap.py" case.typ >/dev/null
+            tc_html "$root" _wrapped.typ out.html || exit 1
+            tc_png  "$root" _wrapped.typ out.png  || exit 1
             if [[ -f out-1.png ]]; then
                 mv -f out-1.png out.png
                 rm -f out-[0-9]*.png
             fi
+            rm -f _wrapped.typ
             echo "==> $dir"
         )
     }

@@ -1,4 +1,4 @@
-// claude-tufte — Anthropic blog aesthetic over the Tufte handout.
+// claude-tufte: Anthropic blog aesthetic over the Tufte handout.
 // Söhne body (Inter fallback), warm #faf9f5 page, dark text #1a1a1a,
 // claude-orange #d97757 link accent.
 
@@ -7,7 +7,6 @@
 #import "tufte-original.typ": tufte-original
 
 #let claude-tufte = merge-config(tufte-original, (
-    name: "claude-tufte",
     page: (fill: rgb("#faf9f5")),
     fonts: (
         body:   stacks.sohne,

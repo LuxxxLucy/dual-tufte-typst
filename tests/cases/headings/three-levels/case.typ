@@ -1,7 +1,5 @@
 // All three heading levels in one document — verify hierarchy rendering
 // (h1 > h2 > h3) and consistent extralight italic styling.
-#import "../../../../src/lib.typ": tufte
-#show: tufte.with(title: [Heading hierarchy])
 
 Body intro paragraph.
 

@@ -1,4 +1,4 @@
-// PDF target — handout style on top of the marginalia package.
+// PDF target. Handout style on top of the marginalia package.
 
 #import "@preview/marginalia:0.3.1" as marginalia: note, notefigure, wideblock
 #import "config.typ": default-config
@@ -6,9 +6,9 @@
 #let _config-state = state("dual-tufte-config", default-config)
 #let _cfg() = _config-state.get()
 
-// Set inside `margin-figure-pdf` so our `show figure: ...` rule can
-// skip — marginalia.notefigure builds its own figure and renders its
-// own caption; without this gate we'd stomp it.
+// Gate the `show figure: ...` rule. notefigure builds its own figure
+// and renders its own caption; without this flag the show rule stomps
+// the inner caption.
 #let _in-margin-figure = state("in-margin-figure", false)
 
 #let _dy(dy) = if dy == auto { 0pt } else { dy }
@@ -20,7 +20,7 @@
 )
 #let _margin-par-style(cfg) = (leading: cfg.margin-note.leading)
 
-// Tufte-LaTeX: \@tufte@caption@font = \@tufte@marginfont — caption
+// Tufte-LaTeX `\@tufte@caption@font = \@tufte@marginfont`: caption
 // inherits margin-note typography.
 #let _caption-style(cfg) = (
     size: cfg.sizes.small,
@@ -96,7 +96,7 @@
 }
 
 // Synthetic small-caps. Typst's `smallcaps()` no-ops on fonts without
-// smcp glyphs (typst#7009 — open). Uppercase the lowercase runs and
+// smcp glyphs (typst#7009, open). Uppercase the lowercase runs and
 // shrink them so original capitals retain body size.
 #let new-thought-pdf(body) = context {
     let nt = _cfg().newthought
@@ -198,11 +198,19 @@
     let cfg = config
     _config-state.update(cfg)
 
-    set page(
-        paper: cfg.page.paper,
-        fill: cfg.page.at("fill", default: none),
-        header: if title != none { _render-header(title, cfg) },
-    )
+    let w = cfg.page.at("width", default: none)
+    let h = cfg.page.at("height", default: none)
+    let scroll = h == auto
+    let page-args = (fill: cfg.page.at("fill", default: none))
+    if w != none { page-args.insert("width", w) }
+    if h != none { page-args.insert("height", h) }
+    if w == none and h == none { page-args.insert("paper", cfg.page.paper) }
+    // Suppress the running header in scroll mode; it would render once on
+    // the single tall page.
+    if title != none and not scroll {
+        page-args.insert("header", _render-header(title, cfg))
+    }
+    set page(..page-args)
 
     show: marginalia.setup.with(
         inner: (far: cfg.page.margin-x, width: 0pt, sep: 0pt),
@@ -213,8 +221,9 @@
     )
 
     // Hyphenation explicit so it survives a custom `lang:`. Typst has no
-    // microtype-equivalent (typst#638), so hyphenation is the only knob
-    // we have against visible inter-word stretch in justified columns.
+    // microtype-equivalent (typst#638), so hyphenation is the only
+    // available adjustment against visible inter-word stretch in
+    // justified columns.
     set text(
         font: cfg.fonts.body,
         size: cfg.sizes.body,

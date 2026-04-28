@@ -1,6 +1,4 @@
 // Margin-figure: image + caption sit entirely in the right margin column.
-#import "../../../../src/lib.typ": tufte, margin-figure
-#show: tufte.with(title: [Margin figure])
 
 Body text before the margin figure.#margin-figure(
     image("../../../../assets/images/rhino.png", width: 100%),

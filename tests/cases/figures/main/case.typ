@@ -1,6 +1,4 @@
 // Main-figure: image in main column, caption hoisted into the margin.
-#import "../../../../src/lib.typ": tufte, main-figure
-#show: tufte.with(title: [Main figure])
 
 Body text before the figure.
 
