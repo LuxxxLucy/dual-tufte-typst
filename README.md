@@ -2,7 +2,7 @@
 
 Write a Tufte-style document once in [Typst](https://typst.app/). Get a print-ready PDF (handout layout, sidenotes in the margin) and a tufte-css web page from the same source. Same API, both outputs.
 
-**[→ Live web app](https://luxxxlucy.github.io/dual-tufte-typst/)** — six styles in side-by-side PDF/HTML, plus an in-browser editor that compiles Typst with [typst.ts](https://github.com/Myriad-Dreamin/typst.ts). Rebuilt by `.github/workflows/build-web.yml` on every push to `main`.
+**[→ Live web app](https://luxxxlucy.github.io/dual-tufte-typst/)** — every public style rendered side-by-side as PDF and HTML. Rebuilt by `.github/workflows/build-web.yml` on every push to `main`.
 
 ## Try it locally
 
@@ -191,7 +191,7 @@ src/                  template engine + style registry
 example/              demo doc (rendered in the live web app)
 assets/fonts/         optional fonts (gitignored; run fetch.sh)
 tests/                regression harness + local style gallery
-web/                  public web app (gallery + WASM editor)
+web/                  public web app (gallery)
 ```
 
 ## Tests
@@ -215,14 +215,11 @@ The local gallery (`tests/gallery/`) renders `example/example.typ` through every
 ./web/serve.sh                   # build + serve on http://localhost:8000
 ```
 
-`web/_site/` is the GitHub Pages artifact (gitignored). Four views:
+`web/_site/` is the GitHub Pages artifact (gitignored). Three viewer modes:
 
-- **Scroll all styles** (default): horizontal-snap row of cards, ←/→ to page through styles, format toggle (HTML / PDF / PNG stack) shared across cards.
-- **Side by side**: two independent panes, each with its own style + format dropdown — compare PDF-of-X vs HTML-of-Y in any combination.
-- **Grid**: every style at once, PNG stack on the left, HTML iframe on the right.
-- **Editor**: in-browser typst.ts editor. First compile downloads ~15 MB of WASM (cached after).
-
-The editor and gallery share the same source bundle, so the styles you see in the gallery are the styles your edits compile against.
+- **Showcase** (default): one style at a time. Style selector + HTML/PDF toggle in the card head.
+- **Side-by-side**: two panes, each with its own style + format dropdown — compare any two outputs.
+- **Grid**: every style at once.
 
 ## Fonts
 
@@ -236,7 +233,6 @@ ET Book, Palatino, Gill Sans come from the system. macOS ships Palatino and Gill
 - [Tufte CSS](https://github.com/edwardtufte/tufte-css), the HTML emit reference.
 - [rstudio/tufte](https://github.com/rstudio/tufte), the envisioned variant. Pivot for `envision`.
 - [marginalia](https://typst.app/universe/package/marginalia), the Typst margin-note primitive.
-- [typst.ts](https://github.com/Myriad-Dreamin/typst.ts), the WASM compiler powering the live editor.
 
 ## License
 

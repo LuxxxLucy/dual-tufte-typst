@@ -7,12 +7,11 @@
 # Renders example/example.typ through every PUBLIC style (excludes jialin —
 # uses Berkeley Mono, which is not freely redistributable). Output:
 #
-#   _site/index.html                 # web app entry (router; views below)
+#   _site/index.html                 # landing page
 #   _site/css/, _site/js/            # app shell (copied from web/)
 #   _site/manifest.json              # {styles, pages: {<style>: N}}
 #   _site/styles/<style>/out.{pdf,html}, out-N.png
-#   _site/example.typ                # source (linked by editor view)
-#   _site/src/...                    # template source (loaded by WASM editor)
+#   _site/example.typ                # source (linked from the hero)
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -50,16 +49,13 @@ for s in "${STYLES[@]}"; do
 done
 for p in "${pids[@]}"; do wait "$p"; done
 
-# App shell: index.html + js + css. Source bundle: typst.ts in the editor
-# view fetches /src/manifest.json then every listed file.
+# App shell: index.html + js + css. example.typ kept so the hero links
+# to the source.
 cp web/index.html "$OUT/index.html"
 cp -r web/css "$OUT/css"
 cp -r web/js  "$OUT/js"
-mkdir -p "$OUT/src"
-cp -r src/* "$OUT/src/"
 cp example/example.typ "$OUT/example.typ"
 
-# Manifests: one for the gallery views, one for the editor's source bundle.
 python3 - "$OUT" "${STYLES[@]}" <<'PY'
 import json, sys
 from pathlib import Path
@@ -68,11 +64,6 @@ styles = sys.argv[2:]
 pages = {s: len(list((out / "styles" / s).glob("out-*.png"))) for s in styles}
 (out / "manifest.json").write_text(
     json.dumps({"styles": styles, "pages": pages}, indent=2)
-)
-src_files = sorted(p.relative_to(out).as_posix()
-                   for p in (out / "src").rglob("*.typ"))
-(out / "src" / "manifest.json").write_text(
-    json.dumps({"files": src_files}, indent=2)
 )
 PY
 
