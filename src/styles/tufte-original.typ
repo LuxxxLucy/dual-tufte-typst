@@ -96,6 +96,7 @@
         leading: 0.4em,
         justify: true,
     ),
+    quote: (size: 1.25em, leading: 0.6em),
     link: (fill: rgb("#111111"), underline: true),
     css: ("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",),
 )

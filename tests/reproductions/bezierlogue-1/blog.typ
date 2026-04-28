@@ -30,6 +30,7 @@
   author: "Jialin Lu",
   email: "luxxxlucy@gmail.com",
   date: "2025-04-30",
+  style: "jialin",
 )
 
 #debug-note[

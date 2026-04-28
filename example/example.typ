@@ -6,7 +6,7 @@
 #import "../src/lib.typ": tufte, sidenote, marginnote, main-figure, margin-figure, full-width-figure, epigraph, new-thought, full-width, sidecite
 
 // `--input style=<name>` selects a registered style (jialin,
-// tufte-original, envision, terpret, claude-tufte, openai-tufte). The
+// tufte-original, envision, terpret, orange-happy, bluewhite). The
 // gallery uses this to render the same document under every style.
 #show: tufte.with(
   title: [Dual-Tufte-Typst: Tufte Style for Both PDF and HTML],
@@ -65,7 +65,7 @@ Pick a style by name, or pass `--input style=<name>` at the command line:
 typst compile --input style=envision --input target=html --features html doc.typ out.html
 ```
 
-Registered styles: `tufte-original`, `envision`, `jialin`, `terpret`, `claude-tufte`, `openai-tufte`. Each style record can also carry a `css:` field listing one or more stylesheet URLs that the HTML target injects (`envision` loads tufte.min.css plus rstudio's envisioned overlay this way). Override the active style's CSS for a single document with the `html-css:` parameter:
+Registered styles: `tufte-original`, `envision`, `jialin`, `terpret`, `orange-happy`, `bluewhite`. Each style record can also carry a `css:` field listing one or more stylesheet URLs that the HTML target injects (`envision` loads tufte.min.css plus rstudio's envisioned overlay this way). Override the active style's CSS for a single document with the `html-css:` parameter:
 
 ```typst
 #show: tufte.with(

@@ -1,9 +1,9 @@
-# Build example/example.typ → example.html + example.pdf and deploy
-# example.html to GitHub Pages on every push to main. The lib is local
-# (not on Typst Universe), so the action checks out the repo and points
-# `typst compile --root ..` at it — same as the local build.sh.
+# Build the public web app at web/_site/ and deploy it to GitHub Pages
+# on every push to main. The web app renders example/example.typ through
+# every public style and ships three viewer modes (Showcase /
+# Side-by-side / Grid).
 
-name: build-example
+name: build-web
 
 on:
   push:
@@ -35,18 +35,12 @@ jobs:
       - name: Fetch optional fonts
         run: ./assets/fonts/fetch.sh
 
-      - name: Build example.pdf and example.html
-        run: ./example/build.sh
-
-      - name: Stage site
-        run: |
-          mkdir -p _site
-          cp example/example.html _site/index.html
-          cp example/example.pdf  _site/example.pdf
+      - name: Build web/_site/
+        run: ./web/build.sh
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: web/_site
 
   deploy:
     needs: build

@@ -1,0 +1,251 @@
+/* dual-tufte-typst landing page. The H1 and lede paragraph use et-book
+   (canonical tufte-css serif); everything else is system sans. */
+
+@font-face {
+    font-family: "et-book";
+    src: url("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff") format("woff");
+    font-weight: normal; font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "et-book";
+    src: url("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.woff") format("woff");
+    font-weight: normal; font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: "et-book";
+    src: url("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/et-book/et-book-bold-line-figures/et-book-bold-line-figures.woff") format("woff");
+    font-weight: 700; font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --bg:        #fffff8;
+    --paper:     #fffff8;
+    --ink:       #111;
+    --muted:     #6b665e;
+    --rule:      #d9d2c2;
+    --rule-soft: #ece6d6;
+    --serif:     "et-book", Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+    --sans:      -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --mono:      Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    --max:       62rem;
+    --radius:    3px;
+}
+
+* { box-sizing: border-box; }
+html { font-size: 15px; }
+body {
+    margin: 0;
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+a { color: var(--ink); text-decoration: underline; text-decoration-skip-ink: auto; text-underline-offset: 0.15em; }
+a:hover { text-decoration-thickness: 2px; }
+code { font-family: var(--mono); font-size: 1rem; }
+
+/* ----- hero ----- */
+
+.hero {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 4rem 2rem 1.5rem;
+}
+.hero h1 {
+    /* tufte-css h1: et-book at 3.2rem / line-height 1, but upright
+       per Mr. Lucy's preference (canonical tufte-css uses italic). */
+    font-family: var(--serif);
+    font-weight: 400;
+    font-style: normal;
+    font-size: 3.2rem;
+    line-height: 1;
+    margin: 0 0 1.5rem;
+}
+.hero .lede {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    line-height: 2rem;
+    margin: 0 0 1.4rem;
+    max-width: 55ch;
+}
+.hero-meta {
+    color: var(--muted);
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+.hero-meta + .hero-meta { margin-top: 0.3rem; }
+.hero-meta a { color: var(--muted); }
+.meta-label { margin-right: 0.45rem; opacity: 0.7; }
+.style-links .sep { margin: 0 0.45rem; opacity: 0.55; text-decoration: none; }
+
+/* ----- viewer ----- */
+
+.viewer {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 1.5rem 2rem 2rem;
+}
+.viewer-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.tabs {
+    display: inline-flex;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--paper);
+}
+.tabs button {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 1rem;
+    padding: 0.3rem 1rem;
+    cursor: pointer;
+}
+.tabs button + button { border-left: 1px solid var(--rule); }
+.tabs button.active { background: var(--ink); color: var(--paper); }
+
+.btn-group {
+    display: inline-flex;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--paper);
+}
+.btn-group button {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.95rem;
+    line-height: 1.3;
+    height: 1.85rem;
+    padding: 0 0.8rem;
+    cursor: pointer;
+}
+.btn-group button + button { border-left: 1px solid var(--rule); }
+.btn-group button.active { background: var(--ink); color: var(--paper); }
+
+.viewer-format-slot {
+    margin-left: auto;
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    color: var(--muted);
+    font: inherit;
+    font-size: 1rem;
+}
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    font: inherit;
+    font-size: 0.95rem;
+    line-height: 1.3;
+    height: 1.85rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background-color: var(--paper);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path fill='%236b665e' d='M3 5l3 3 3-3z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.45rem center;
+    background-size: 10px;
+    color: var(--ink);
+    padding: 0 1.7rem 0 0.7rem;
+    cursor: pointer;
+}
+select:hover { border-color: var(--ink); }
+select:focus { outline: none; border-color: var(--ink); }
+
+.viewer-stage {
+    height: clamp(28rem, 58vh, 44rem);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: white;
+    overflow: hidden;
+}
+
+/* ----- viewer modes ----- */
+
+.mode-scroll { height: 100%; display: flex; flex-direction: column; }
+.mode-scroll > .card { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+
+.mode-compare {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.mode-compare > .card + .card { border-left: 1px solid var(--rule-soft); }
+.mode-compare > .card { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+
+.mode-grid {
+    height: 100%;
+    overflow: auto;
+    padding: 0.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: 0.5rem;
+    background: var(--paper);
+}
+.mode-grid > .card {
+    background: white;
+    border: 1px solid var(--rule-soft);
+    border-radius: var(--radius);
+    overflow: hidden;
+    height: 22rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.card-head {
+    padding: 0.35rem 0.7rem;
+    border-bottom: 1px solid var(--rule-soft);
+    font: inherit;
+    font-size: 0.95rem;
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    background: var(--paper);
+    flex-wrap: wrap;
+}
+.card-head .name { color: var(--ink); }
+.card-head .links { margin-left: auto; }
+.card-head .links a { margin-left: 0.55rem; color: var(--muted); }
+.card-body { flex: 1; overflow: auto; background: white; min-height: 0; }
+.card-body iframe { width: 100%; height: 100%; border: 0; display: block; }
+.card-body .png-stack img { display: block; width: 100%; height: auto; }
+.card-body .png-stack img + img { border-top: 1px dashed var(--rule-soft); }
+
+.page-footer {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 1rem 2rem 3rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+@media (max-width: 760px) {
+    .hero { padding: 2.5rem 1.4rem 1rem; }
+    .hero h1 { font-size: 2.6rem; }
+    .viewer, .page-footer { padding-left: 1.4rem; padding-right: 1.4rem; }
+    .mode-compare { grid-template-columns: 1fr; }
+    .mode-compare > .card + .card { border-left: 0; border-top: 1px solid var(--rule-soft); }
+}

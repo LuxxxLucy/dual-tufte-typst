@@ -4,12 +4,24 @@
 #let etbembo = ("ETBembo", "Palatino", "Georgia")
 #let gillsans = ("Gill Sans", "Helvetica")
 
-// Söhne is paid; Inter (bundled via assets/fonts/fetch.sh) is the free
-// fallback. JetBrains Mono is bundled too.
-#let sohne = ("Söhne", "Inter", "Helvetica Neue", "Helvetica", "Arial")
-#let sohne-mono = ("Söhne Mono", "JetBrains Mono", "Menlo", "Monaco")
+// Inter, bundled via assets/fonts/fetch.sh. Used by orange-happy/bluewhite
+// as a free sans alternative to commercial faces (Söhne).
+#let inter = ("Inter", "Helvetica Neue", "Helvetica", "Arial")
+#let inter-mono = ("JetBrains Mono", "Menlo", "Monaco", "Courier")
+#let jetbrains-mono = ("JetBrains Mono", "Menlo", "Monaco", "Courier")
+
+// Public Sans (USWDS, OFL) — free humanist sans close to Colfax. Used by
+// terpret. "Input" mono follows the original 2020 page; falls back to
+// JetBrains Mono if not installed.
+#let public-sans = ("Public Sans", "Colfax", "Neue Helvetica W02", "Helvetica Neue", "Helvetica", "Arial")
+#let input-mono  = ("Input", "JetBrains Mono", "Menlo", "Monaco", "Courier")
 
 // Roboto Condensed renamed in-place to "RobotoCondensed" by fetch.sh
 // because Typst 0.14 strips axis-suffix words (turning "Roboto
 // Condensed" into "Roboto"). The no-space form survives.
 #let roboto-condensed = ("RobotoCondensed", "Roboto", "Helvetica Neue", "Helvetica", "Arial")
+
+#let space-grotesk = ("Space Grotesk", "Inter", "Helvetica Neue", "Helvetica", "Arial")
+#let newsreader   = ("Newsreader", "Source Serif 4", "Georgia", "Palatino", "serif")
+#let fraunces     = ("Fraunces", "Newsreader", "Georgia", "Palatino", "serif")
+#let source-serif = ("Source Serif 4", "Source Serif Pro", "Georgia", "Palatino", "serif")

@@ -161,9 +161,11 @@ h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem;
 
     _id-counter.update(0)
 
+    let html-text-fill = cfg.at("html-text-fill", default: cfg.text.fill)
+    let html-par-spacing = cfg.at("html-par-spacing", default: 1.4em)
     let body-section = html.elem("section")[
-        #set text(fill: rgb("#111"))
-        #set par(spacing: 1.4em)
+        #set text(fill: html-text-fill)
+        #set par(spacing: html-par-spacing)
         #set math.equation(numbering: "(1)")
         #show heading: it => context {
             let idx = query(heading).position(h => h.location() == it.location())
@@ -175,7 +177,7 @@ h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem;
             show: if it.block { x => x } else { box }
             html.frame(it)
         }
-        #show link: set text(fill: rgb("#111"))
+        #show link: set text(fill: cfg.at("html-link-fill", default: html-text-fill))
         #show list: set block(width: 50%)
 
         // Raw `#figure(...)` → main-figure (caption in margin). Render

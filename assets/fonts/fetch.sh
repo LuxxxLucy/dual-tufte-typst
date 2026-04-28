@@ -5,8 +5,8 @@
 #   ./assets/fonts/fetch.sh
 #
 # `assets/fonts/` is .gitignored; this script is the canonical way to
-# repopulate it on a new clone or in CI. The .github/workflows/build-example.yml
-# action runs it before compiling the example.
+# repopulate it on a new clone or in CI. The .github/workflows/build-web.yml
+# action runs it before building the web app.
 #
 # Apache / SIL fonts only. Commercial faces (Söhne, Berkeley Mono,
 # Colfax, Input, SF Mono) are not pulled — styles that mention them
@@ -92,7 +92,7 @@ fetch_face roboto-condensed 5.0.4 400 normal "roboto/RobotoCondensed-Regular.ttf
 fetch_face roboto-condensed 5.0.4 700 normal "roboto/RobotoCondensed-Bold.ttf"    "RobotoCondensed"
 fetch_face roboto-condensed 5.0.4 400 italic "roboto/RobotoCondensed-Italic.ttf"  "RobotoCondensed"
 
-# JetBrains Mono — free mono fallback for claude-tufte / openai-tufte.
+# JetBrains Mono — free mono fallback for orange-happy / bluewhite.
 # Apache 2.0.
 echo "JetBrains Mono:"
 fetch_face jetbrains-mono 5.0.21 400 normal "jetbrains-mono/JetBrainsMono-Regular.ttf"
@@ -100,12 +100,43 @@ fetch_face jetbrains-mono 5.0.21 700 normal "jetbrains-mono/JetBrainsMono-Bold.t
 fetch_face jetbrains-mono 5.0.21 400 italic "jetbrains-mono/JetBrainsMono-Italic.ttf"
 
 # Inter extra weights — back the existing Inter-Regular / Italic so
-# semibold / medium heading specs in claude-tufte / openai-tufte
+# semibold / medium heading specs in orange-happy / bluewhite
 # resolve to real glyphs instead of synthesized bold. SIL OFL.
 echo "Inter:"
 fetch_face inter 5.2.6 500 normal "inter/Inter-Medium.ttf"
 fetch_face inter 5.2.6 600 normal "inter/Inter-SemiBold.ttf"
 fetch_face inter 5.2.6 700 normal "inter/Inter-Bold.ttf"
 
+# Public Sans — free Colfax substitute for the `terpret` style. SIL OFL.
+echo "Public Sans:"
+fetch_face public-sans 5.2.6 400 normal "public-sans/PublicSans-Regular.ttf"
+fetch_face public-sans 5.2.6 500 normal "public-sans/PublicSans-Medium.ttf"
+fetch_face public-sans 5.2.6 600 normal "public-sans/PublicSans-SemiBold.ttf"
+fetch_face public-sans 5.2.6 400 italic "public-sans/PublicSans-Italic.ttf"
+
+# Space Grotesk — terpret heading font. SIL OFL.
+echo "Space Grotesk:"
+fetch_face space-grotesk 5.2.6 500 normal "space-grotesk/SpaceGrotesk-Medium.ttf"
+fetch_face space-grotesk 5.2.6 700 normal "space-grotesk/SpaceGrotesk-Bold.ttf"
+
+# Newsreader — orange-happy body. Humanist serif. SIL OFL.
+echo "Newsreader:"
+fetch_face newsreader 5.2.6 400 normal "newsreader/Newsreader-Regular.ttf"
+fetch_face newsreader 5.2.6 500 normal "newsreader/Newsreader-Medium.ttf"
+fetch_face newsreader 5.2.6 600 normal "newsreader/Newsreader-SemiBold.ttf"
+fetch_face newsreader 5.2.6 400 italic "newsreader/Newsreader-Italic.ttf"
+
+# Fraunces — orange-happy heading. SIL OFL.
+echo "Fraunces:"
+fetch_face fraunces 5.2.6 500 normal "fraunces/Fraunces-Medium.ttf"
+fetch_face fraunces 5.2.6 600 normal "fraunces/Fraunces-SemiBold.ttf"
+fetch_face fraunces 5.2.6 700 normal "fraunces/Fraunces-Bold.ttf"
+
+# Source Serif 4 — bluewhite body + heading. SIL OFL.
+echo "Source Serif 4:"
+fetch_face source-serif-4 5.2.6 400 normal "source-serif-4/SourceSerif4-Regular.ttf"
+fetch_face source-serif-4 5.2.6 600 normal "source-serif-4/SourceSerif4-SemiBold.ttf"
+fetch_face source-serif-4 5.2.6 400 italic "source-serif-4/SourceSerif4-Italic.ttf"
+
 echo ""
-echo "done. Verify with: typst fonts --font-path assets/fonts | grep -iE 'roboto cond|jetbrains|inter'"
+echo "done. Verify with: typst fonts --font-path assets/fonts | grep -iE 'roboto cond|jetbrains|inter|grotesk|news|fraunces|source serif'"

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dual-tufte-typst — write Tufte once, ship PDF + HTML</title>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<header class="hero">
+  <h1>Write a Tufte document once. Ship both formats.</h1>
+  <p class="lede">
+    A Typst template in the spirit of Edward Tufte. One <code>.typ</code>
+    source compiles to a print-ready PDF (via the <code>marginalia</code>
+    package) and a web page in canonical
+    <a href="https://edwardtufte.github.io/tufte-css/">tufte-css</a> markup.
+    Sidenotes, margin figures, full-width plates, epigraphs. Five styles,
+    both formats, from the same body.
+  </p>
+  <p class="hero-meta">
+    <a href="https://github.com/LuxxxLucy/dual-tufte-typst">github</a>
+    &middot;
+    <a href="example.typ">view example.typ</a>
+  </p>
+  <p class="hero-meta">
+    <span class="meta-label">styles:</span>
+    <span id="style-links" class="style-links"></span>
+  </p>
+</header>
+
+<section class="viewer" id="viewer">
+  <div class="viewer-controls">
+    <div class="tabs" role="tablist">
+      <button type="button" data-mode="scroll"  class="active">Showcase</button>
+      <button type="button" data-mode="compare">Side-by-side</button>
+      <button type="button" data-mode="grid">Grid</button>
+    </div>
+    <div class="viewer-format-slot"></div>
+  </div>
+  <div class="viewer-stage" id="viewer-stage"></div>
+</section>
+
+<footer class="page-footer">
+  <p>MIT-licensed repo on <a href="https://github.com/LuxxxLucy/dual-tufte-typst">dual-tufte-typst</a>.</p>
+</footer>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
