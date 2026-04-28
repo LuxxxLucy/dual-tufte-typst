@@ -79,7 +79,7 @@
 }
 
 #let _quote-block(cfg, body, attribution) = block(
-    inset: (left: 2em, right: 1em, top: 2em, bottom: 2em),
+    inset: cfg.quote.inset,
     {
         set text(style: "italic", size: cfg.quote.size)
         set par(leading: cfg.quote.leading)
@@ -136,7 +136,7 @@
     // right-aligned content flush with the page edge.
     let push = -(cfg.margin-col.width + cfg.margin-col.sep)
     pad(right: push, align(right, if cfg.header.upper { upper(title) } else { title }))
-    v(2.5em)
+    v(cfg.header.v-after)
 }
 
 #let _render-title-block(title, author, email, date, cfg) = {
@@ -149,16 +149,16 @@
     if cfg.title-block.font != auto {
         title-text-args.insert("font", cfg.title-block.font)
     }
-    let meta-style = cfg.title-block.at("meta-style", default: "normal")
+    let meta-style = cfg.title-block.meta-style
     // Italic metadata uses the body serif (matches tufte-css `.subtitle`);
     // upright metadata defaults to sans Gill Sans.
     let meta-font = if meta-style == "italic" { cfg.fonts.body } else { cfg.fonts.sans }
     let meta-args = (size: cfg.title-block.meta-size, font: meta-font, style: meta-style)
     block(width: 100%)[
-        #h(-0.1em)
+        #h(cfg.title-block.lead-kern)
         #text(..title-text-args, title)
         #if author != none {
-            v(0.3em)
+            v(cfg.title-block.v-between)
             text(..meta-args, author)
         }
         #if email != none {
@@ -176,22 +176,22 @@
     if abstract == none { return }
     set par(first-line-indent: 0em)
     text(font: cfg.fonts.body, size: cfg.sizes.small, style: "italic", abstract)
-    v(1.5em)
+    v(cfg.abstract.v-after)
 }
 
-#let _render-toc(toc) = {
+#let _render-toc(toc, cfg) = {
     if toc != true { return }
-    outline(title: [Contents], indent: auto, depth: 2)
-    v(1.5em)
+    outline(title: cfg.toc.title, indent: auto, depth: cfg.toc.depth)
+    v(cfg.toc.v-after)
 }
 
-// h1 gets a small negative h() so the italic body doesn't visually
-// creep right of the baseline; h2/h3 don't need it.
-#let _heading-rule(spec, lead-kern: 0em) = it => {
+// `lead-kern` pulls the italic h1 left so it doesn't visually creep
+// right of the baseline.
+#let _heading-rule(spec) = it => {
     set par(first-line-indent: 0em)
     text(weight: spec.weight, size: spec.size, style: spec.style, {
         v(spec.v-before)
-        if lead-kern != 0em { h(lead-kern) }
+        if spec.lead-kern != 0em { h(spec.lead-kern) }
         it.body
         v(spec.v-after)
     })
@@ -235,15 +235,15 @@
     )
     set par(
         first-line-indent: cfg.text.first-line-indent,
-        justify: cfg.text.at("justify", default: true),
+        justify: cfg.text.justify,
     )
     let leading = cfg.text.at("leading", default: auto)
     if leading != auto { set par(leading: leading) }
     if cfg.text.par-spacing != auto {
         set par(spacing: cfg.text.par-spacing)
     }
-    set list(indent: 1em, body-indent: 1em)
-    set enum(indent: 1em, body-indent: 1em)
+    set list(indent: cfg.list.indent, body-indent: cfg.list.body-indent)
+    set enum(indent: cfg.list.indent, body-indent: cfg.list.body-indent)
     show enum: set par(justify: true)
     show list: set par(justify: true)
 
@@ -253,8 +253,8 @@
     set math.equation(numbering: "(1)")
 
     show raw.where(block: true): it => {
-        set par(leading: 0.25em)
-        block(inset: (left: 2em, right: 0.9em, top: 0.5em, bottom: 0.5em), it)
+        set par(leading: cfg.raw-block.leading)
+        block(inset: cfg.raw-block.inset, it)
     }
     show raw.where(block: false): set text(font: cfg.fonts.mono)
 
@@ -267,19 +267,19 @@
     show figure: it => context {
         if _in-margin-figure.get() { return it }
         if it.caption != none {
-            note(dy: 1em, counter: none, text-style: _caption-style(cfg))[#it.caption]
+            note(dy: cfg.figure-caption.dy, counter: none, text-style: _caption-style(cfg))[#it.caption]
         }
         it.body
     }
 
     show footnote: it => sidenote-pdf(true, auto, it.body)
 
-    show heading.where(level: 1): _heading-rule(cfg.headings.h1, lead-kern: -0.1em)
+    show heading.where(level: 1): _heading-rule(cfg.headings.h1)
     show heading.where(level: 2): _heading-rule(cfg.headings.h2)
     show heading.where(level: 3): _heading-rule(cfg.headings.h3)
 
     _render-title-block(title, author, email, date, cfg)
     _render-abstract(abstract, cfg)
-    _render-toc(toc)
+    _render-toc(toc, cfg)
     body
 }

@@ -28,9 +28,9 @@
         normal: 1em,
     ),
     headings: (
-        h1: (weight: "extralight", size: 1.2em, style: "italic", v-before: 0.35em, v-after: -0.3em),
-        h2: (weight: "extralight", size: 1em,   style: "italic", v-before: 0.4em,  v-after: 0.1em),
-        h3: (weight: "extralight", size: 1em,   style: "italic", v-before: 0.4em,  v-after: 0.1em),
+        h1: (weight: "extralight", size: 1.2em, style: "italic", v-before: 0.35em, v-after: -0.3em, lead-kern: -0.1em),
+        h2: (weight: "extralight", size: 1em,   style: "italic", v-before: 0.4em,  v-after: 0.1em,  lead-kern: 0em),
+        h3: (weight: "extralight", size: 1em,   style: "italic", v-before: 0.4em,  v-after: 0.1em,  lead-kern: 0em),
     ),
     margin-note: (
         size: 0.65em,
@@ -64,6 +64,7 @@
         weight: "bold",
         tracking: 1.25pt,
         upper: true,
+        v-after: 2.5em,
     ),
     // Title set in Gill Sans (matches the bezierlogue handout). Author /
     // email / date metadata at 0.85em (~7.7pt over 9pt body) reads as a
@@ -75,6 +76,8 @@
         meta-size: 0.85em,
         meta-style: "normal",
         meta-sep: 1.2em,
+        v-between: 0.3em,
+        lead-kern: -0.1em,
         v-after: 2em,
     ),
     text: (
@@ -86,8 +89,20 @@
     // Block-quote inset + size. ETBembo italic at 1.25em reads right;
     // sans body fonts (Inter, etc.) look too heavy at the same multiplier
     // and styles using them override `size` to ~1em.
-    quote: (size: 1.25em, leading: 0.6em),
+    quote: (
+        size: 1.25em,
+        leading: 0.6em,
+        inset: (left: 2em, right: 1em, top: 2em, bottom: 2em),
+    ),
     link: (fill: blue, underline: true),
+    abstract: (v-after: 1.5em),
+    toc: (title: [Contents], depth: 2, v-after: 1.5em),
+    list: (indent: 1em, body-indent: 1em),
+    raw-block: (
+        leading: 0.25em,
+        inset: (left: 2em, right: 0.9em, top: 0.5em, bottom: 0.5em),
+    ),
+    figure-caption: (dy: 1em),
 )
 
 #let _is-dict(v) = type(v) == dictionary
