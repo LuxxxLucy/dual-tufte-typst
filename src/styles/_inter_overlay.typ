@@ -20,4 +20,7 @@
     + (if link-underline { "underline" } else { "none" }) + ";"
     + " text-decoration-skip-ink: auto; text-underline-offset: 0.15em; }"
     + (if not link-underline { "a:hover { text-decoration: underline; }" } else { "" })
+    // tufte-css ships block quotes at 2.2rem (italic ETBembo); Inter at the
+    // same size reads heavier than the surrounding sans body.
+    + " article blockquote, article blockquote p { font-size: 1.4rem; line-height: 2rem; }"
 )

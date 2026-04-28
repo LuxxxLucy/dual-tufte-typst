@@ -4,8 +4,6 @@ export const FORMATS = {
     png:  { label: "PNG stack", kind: "stack" },
 };
 
-export const formatOptions = Object.entries(FORMATS).map(([k, v]) => [k, v.label]);
-
 export function makeSelect(options, value, onChange) {
     const sel = document.createElement("select");
     for (const [v, label] of options) {
@@ -16,6 +14,25 @@ export function makeSelect(options, value, onChange) {
     }
     sel.addEventListener("change", () => onChange(sel.value));
     return sel;
+}
+
+export function makeFormatToggle(value, onChange, formats = ["html", "pdf"]) {
+    const group = document.createElement("div");
+    group.className = "btn-group";
+    const buttons = formats.map(f => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = FORMATS[f].label;
+        btn.dataset.format = f;
+        btn.classList.toggle("active", f === value);
+        btn.addEventListener("click", () => {
+            for (const b of buttons) b.classList.toggle("active", b === btn);
+            onChange(f);
+        });
+        group.append(btn);
+        return btn;
+    });
+    return group;
 }
 
 export function makePane(ctrlChildren) {

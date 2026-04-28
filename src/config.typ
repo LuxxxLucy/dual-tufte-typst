@@ -83,6 +83,10 @@
         par-spacing: auto,
         justify: true,
     ),
+    // Block-quote inset + size. ETBembo italic at 1.25em reads right;
+    // sans body fonts (Inter, etc.) look too heavy at the same multiplier
+    // and styles using them override `size` to ~1em.
+    quote: (size: 1.25em, leading: 0.6em),
     link: (fill: blue, underline: true),
 )
 

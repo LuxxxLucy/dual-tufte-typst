@@ -1,15 +1,13 @@
-// Horizontal-scroll view: ←/→ pages between style cards.
-
-import { renderBody, formatOptions, makeSelect, makeStyleLinks } from "./_panes.js";
+import { renderBody, makeFormatToggle, makeStyleLinks } from "./_panes.js";
 
 export function mount(root, manifest) {
     const state = { format: "html" };
 
     const ctrls = document.createElement("div");
-    ctrls.className = "scroll-controls";
+    ctrls.className = "view-controls";
     ctrls.append(
-        Object.assign(document.createElement("label"), { textContent: "Format:" }),
-        makeSelect(formatOptions, state.format, v => { state.format = v; renderRow(); }),
+        Object.assign(document.createElement("label"), { textContent: "Format" }),
+        makeFormatToggle(state.format, v => { state.format = v; renderRow(); }),
         Object.assign(document.createElement("span"), {
             className: "hint", textContent: "← → to page through styles",
         }),
@@ -17,7 +15,7 @@ export function mount(root, manifest) {
     root.append(ctrls);
 
     const row = document.createElement("div");
-    row.className = "scroll-row";
+    row.className = "showcase-row";
     row.tabIndex = 0;
     root.append(row);
 
@@ -41,7 +39,7 @@ export function mount(root, manifest) {
 
 function makeCard(style, format, manifest) {
     const card = document.createElement("article");
-    card.className = "scroll-card";
+    card.className = "showcase-card";
 
     const head = document.createElement("div");
     head.className = "head";

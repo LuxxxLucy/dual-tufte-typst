@@ -2,7 +2,7 @@ import { renderBody, makeStyleLinks } from "./_panes.js";
 
 export function mount(root, manifest) {
     const wrap = document.createElement("div");
-    wrap.className = "grid";
+    wrap.className = "all-styles";
     for (const style of manifest.styles) wrap.append(makeRow(style, manifest));
     root.append(wrap);
 }

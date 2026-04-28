@@ -81,8 +81,8 @@
 #let _quote-block(cfg, body, attribution) = block(
     inset: (left: 2em, right: 1em, top: 2em, bottom: 2em),
     {
-        set text(style: "italic", size: cfg.sizes.normal * 1.25)
-        set par(leading: 0.6em)
+        set text(style: "italic", size: cfg.quote.size)
+        set par(leading: cfg.quote.leading)
         body
         if attribution != none {
             linebreak()

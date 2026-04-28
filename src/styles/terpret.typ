@@ -15,4 +15,5 @@
         par-spacing: 1.3em,
         leading: auto,
     ),
+    quote: (size: 1em, leading: 0.5em),
 ))

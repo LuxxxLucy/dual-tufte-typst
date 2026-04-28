@@ -4,9 +4,9 @@
 
 import { makePane } from "./_panes.js";
 
-const SNIPPET_URL    = "https://cdn.jsdelivr.net/npm/@myriaddreamin/typst.ts@0.6.1/dist/esm/contrib/snippet.mjs";
-const COMPILER_WASM  = "https://cdn.jsdelivr.net/npm/@myriaddreamin/typst-ts-web-compiler@0.6.1/pkg/typst_ts_web_compiler_bg.wasm";
-const RENDERER_WASM  = "https://cdn.jsdelivr.net/npm/@myriaddreamin/typst-ts-renderer@0.6.1/pkg/typst_ts_renderer_bg.wasm";
+const SNIPPET_URL    = "https://cdn.jsdelivr.net/npm/@myriaddreamin/typst.ts@0.6.0/dist/esm/contrib/snippet.mjs";
+const COMPILER_WASM  = "https://cdn.jsdelivr.net/npm/@myriaddreamin/typst-ts-web-compiler@0.6.0/pkg/typst_ts_web_compiler_bg.wasm";
+const RENDERER_WASM  = "https://cdn.jsdelivr.net/npm/@myriaddreamin/typst-ts-renderer@0.6.0/pkg/typst_ts_renderer_bg.wasm";
 
 let typstReady = null;
 

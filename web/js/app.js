@@ -1,10 +1,10 @@
 const VIEW_MOUNTERS = {
-    scroll: () => import("./views/scroll.js"),
-    sxs:    () => import("./views/sxs.js"),
-    grid:   () => import("./views/grid.js"),
-    editor: () => import("./views/editor.js"),
+    showcase: () => import("./views/showcase.js"),
+    editor:   () => import("./views/editor.js"),
+    compare:  () => import("./views/compare.js"),
+    all:      () => import("./views/all.js"),
 };
-const DEFAULT_VIEW = "scroll";
+const DEFAULT_VIEW = "showcase";
 
 async function loadManifest() {
     const r = await fetch("manifest.json", { cache: "no-cache" });

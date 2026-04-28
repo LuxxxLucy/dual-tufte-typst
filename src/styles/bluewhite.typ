@@ -26,6 +26,7 @@
         par-spacing: 1em,
         leading: auto,
     ),
+    quote: (size: 1em, leading: 0.5em),
     link: (fill: rgb("#0066cc"), underline: false),
     "html-color-scheme": "light",
     css: ("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",),
