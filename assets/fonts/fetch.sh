@@ -114,5 +114,29 @@ fetch_face public-sans 5.2.6 500 normal "public-sans/PublicSans-Medium.ttf"
 fetch_face public-sans 5.2.6 600 normal "public-sans/PublicSans-SemiBold.ttf"
 fetch_face public-sans 5.2.6 400 italic "public-sans/PublicSans-Italic.ttf"
 
+# Space Grotesk — terpret heading font. SIL OFL.
+echo "Space Grotesk:"
+fetch_face space-grotesk 5.2.6 500 normal "space-grotesk/SpaceGrotesk-Medium.ttf"
+fetch_face space-grotesk 5.2.6 700 normal "space-grotesk/SpaceGrotesk-Bold.ttf"
+
+# Newsreader — orange-happy body. Humanist serif. SIL OFL.
+echo "Newsreader:"
+fetch_face newsreader 5.2.6 400 normal "newsreader/Newsreader-Regular.ttf"
+fetch_face newsreader 5.2.6 500 normal "newsreader/Newsreader-Medium.ttf"
+fetch_face newsreader 5.2.6 600 normal "newsreader/Newsreader-SemiBold.ttf"
+fetch_face newsreader 5.2.6 400 italic "newsreader/Newsreader-Italic.ttf"
+
+# Fraunces — orange-happy heading. SIL OFL.
+echo "Fraunces:"
+fetch_face fraunces 5.2.6 500 normal "fraunces/Fraunces-Medium.ttf"
+fetch_face fraunces 5.2.6 600 normal "fraunces/Fraunces-SemiBold.ttf"
+fetch_face fraunces 5.2.6 700 normal "fraunces/Fraunces-Bold.ttf"
+
+# Source Serif 4 — bluewhite body + heading. SIL OFL.
+echo "Source Serif 4:"
+fetch_face source-serif-4 5.2.6 400 normal "source-serif-4/SourceSerif4-Regular.ttf"
+fetch_face source-serif-4 5.2.6 600 normal "source-serif-4/SourceSerif4-SemiBold.ttf"
+fetch_face source-serif-4 5.2.6 400 italic "source-serif-4/SourceSerif4-Italic.ttf"
+
 echo ""
-echo "done. Verify with: typst fonts --font-path assets/fonts | grep -iE 'roboto cond|jetbrains|inter'"
+echo "done. Verify with: typst fonts --font-path assets/fonts | grep -iE 'roboto cond|jetbrains|inter|grotesk|news|fraunces|source serif'"

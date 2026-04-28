@@ -8,6 +8,7 @@
 // as a free sans alternative to commercial faces (Söhne).
 #let inter = ("Inter", "Helvetica Neue", "Helvetica", "Arial")
 #let inter-mono = ("JetBrains Mono", "Menlo", "Monaco", "Courier")
+#let jetbrains-mono = ("JetBrains Mono", "Menlo", "Monaco", "Courier")
 
 // Public Sans (USWDS, OFL) — free humanist sans close to Colfax. Used by
 // terpret. "Input" mono follows the original 2020 page; falls back to
@@ -19,3 +20,8 @@
 // because Typst 0.14 strips axis-suffix words (turning "Roboto
 // Condensed" into "Roboto"). The no-space form survives.
 #let roboto-condensed = ("RobotoCondensed", "Roboto", "Helvetica Neue", "Helvetica", "Arial")
+
+#let space-grotesk = ("Space Grotesk", "Inter", "Helvetica Neue", "Helvetica", "Arial")
+#let newsreader   = ("Newsreader", "Source Serif 4", "Georgia", "Palatino", "serif")
+#let fraunces     = ("Fraunces", "Newsreader", "Georgia", "Palatino", "serif")
+#let source-serif = ("Source Serif 4", "Source Serif Pro", "Georgia", "Palatino", "serif")
