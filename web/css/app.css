@@ -1,0 +1,171 @@
+/* Web app shell. Views render into <main id="view">. */
+
+:root {
+    --bg: #ffffff;
+    --fg: #222;
+    --muted: #888;
+    --border: #ddd;
+    --accent: #06c;
+    --pane-bg: #fafafa;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    color: var(--fg);
+    background: var(--bg);
+    font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+
+.bar {
+    padding: 1rem 1.5rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+.bar h1 { font-weight: 400; margin: 0; font-size: 1.2rem; }
+.bar .lede { color: var(--muted); margin: 0.2rem 0 0.6rem; font-size: 0.85rem; }
+.bar .repo { font-size: 0.8rem; color: var(--muted); margin: 0; position: absolute; top: 1rem; right: 1.5rem; }
+.bar .repo a { color: var(--accent); text-decoration: none; }
+
+.tabs { display: flex; gap: 0.2rem; }
+.tabs a {
+    padding: 0.4rem 0.9rem;
+    color: var(--muted);
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    font-size: 0.9rem;
+}
+.tabs a:hover { color: var(--fg); }
+.tabs a.active {
+    color: var(--fg);
+    border-color: var(--border);
+    background: var(--bg);
+    margin-bottom: -1px;
+    border-bottom: 1px solid var(--bg);
+}
+
+main#view { padding: 1rem 1.5rem; }
+
+/* Scroll view: horizontal-snap row of style cards. */
+.scroll-controls {
+    display: flex; gap: 1rem; align-items: center; margin-bottom: 0.6rem;
+}
+.scroll-controls label { font-size: 0.85rem; color: var(--muted); }
+.scroll-controls select { font: inherit; padding: 0.2rem; }
+.scroll-controls .hint { color: var(--muted); font-size: 0.8rem; margin-left: auto; }
+
+.scroll-row {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.5rem;
+    scroll-behavior: smooth;
+}
+.scroll-card {
+    flex: 0 0 min(85vw, 60rem);
+    scroll-snap-align: center;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--pane-bg);
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 12rem);
+    min-height: 30rem;
+}
+.scroll-card .head {
+    padding: 0.5rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 1rem;
+}
+.scroll-card .head .name { font-family: ui-monospace, Menlo, monospace; }
+.scroll-card .head .links { margin-left: auto; font-size: 0.8rem; }
+.scroll-card .head .links a { color: var(--accent); margin-left: 0.6rem; text-decoration: none; }
+.scroll-card .body { flex: 1; overflow: auto; background: white; }
+.scroll-card .body iframe { width: 100%; height: 100%; border: 0; display: block; }
+.scroll-card .body .png-stack img { display: block; width: 100%; height: auto; }
+.scroll-card .body .png-stack img + img { border-top: 1px dashed #eee; }
+
+/* Two-pane views (sxs, editor) share the same pane scaffold. */
+.sxs, .editor {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    height: calc(100vh - 11rem);
+}
+.sxs .pane, .editor .pane {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex; flex-direction: column;
+    background: var(--pane-bg);
+}
+.sxs .pane .ctrl, .editor .pane .ctrl {
+    display: flex; gap: 0.5rem; padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    font-size: 0.85rem;
+}
+.sxs .pane .ctrl select, .editor .pane .ctrl select { font: inherit; padding: 0.15rem; }
+.sxs .pane .body, .editor .pane .body { flex: 1; overflow: auto; background: white; }
+.sxs .pane .body iframe, .editor .pane .body iframe { width: 100%; height: 100%; border: 0; display: block; }
+.sxs .pane .body .png-stack img { display: block; width: 100%; height: auto; }
+
+/* Grid view: every style at once. */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(28rem, 1fr));
+    gap: 0.8rem;
+}
+.grid details {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--pane-bg);
+}
+.grid details > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 0.5rem 0.8rem;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 0.9rem;
+    display: flex; gap: 1rem; align-items: center;
+}
+.grid details > summary::-webkit-details-marker { display: none; }
+.grid details > summary::before { content: "▶"; font-size: 0.7em; color: var(--muted); }
+.grid details[open] > summary::before { content: "▼"; }
+.grid details > summary .links { margin-left: auto; font-size: 0.8rem; }
+.grid details > summary .links a { color: var(--accent); margin-left: 0.5rem; text-decoration: none; }
+.grid .panes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+    padding: 0 0.8rem 0.8rem;
+}
+.grid .panes > div {
+    border: 1px solid #e3e3e3;
+    background: white;
+    height: 40rem;
+    overflow: auto;
+}
+.grid .panes iframe { width: 100%; height: 100%; border: 0; display: block; }
+.grid .panes .png-stack img { display: block; width: 100%; height: auto; }
+
+.editor .pane textarea {
+    width: 100%; height: 100%;
+    border: 0; padding: 0.8rem 1rem;
+    font: 13px/1.5 ui-monospace, Menlo, monospace;
+    background: #fafafa; color: #222; resize: none;
+    tab-size: 2;
+}
+.editor .compile-btn { margin-left: auto; cursor: pointer; }
+.editor .editor-output { background: #fffff8; }
+.editor .editor-output svg { max-width: 100%; height: auto; display: block; }
+.editor .status { padding: 0.4rem 0.8rem; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--muted); }
+.editor .status.error { color: #b00; }
+
+.view-error { padding: 2rem; color: #b00; }

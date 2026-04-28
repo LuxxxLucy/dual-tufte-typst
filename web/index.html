@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dual-tufte-typst — gallery and live editor</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<header class="bar">
+  <h1>dual-tufte-typst</h1>
+  <p class="lede">
+    Write a Tufte-style document once in Typst. Get a print-ready PDF (handout
+    layout, sidenotes in the margin) and a tufte-css web page from the same
+    source. This gallery shows five styles in both formats, plus an in-browser
+    editor that compiles your edits live.
+  </p>
+  <nav class="tabs">
+    <a href="#scroll" data-view="scroll" title="Page through every style with ← / →">Scroll all styles</a>
+    <a href="#sxs"    data-view="sxs"    title="Compare PDF-of-X vs HTML-of-Y, any pair">Side by side</a>
+    <a href="#grid"   data-view="grid"   title="Every style, PDF and HTML, at once">Grid</a>
+    <a href="#editor" data-view="editor" title="Live Typst → SVG (first compile downloads ~15 MB of WASM)">Editor</a>
+  </nav>
+  <p class="repo">
+    <a href="https://github.com/LuxxxLucy/dual-tufte-typst">github</a>
+    · <a href="example.typ">example.typ (the source both outputs render from)</a>
+  </p>
+</header>
+<main id="view"></main>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
