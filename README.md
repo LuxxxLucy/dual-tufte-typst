@@ -29,6 +29,18 @@ Content with #sidenote[a margin note].
 
 `example/example.typ` is the feature tour; read it alongside the rendered output to learn the API.
 
+### Create a new doc
+
+`bin/dual-typst create <folder>` creates a doc folder with `src/` and `assets/` symlinked into this clone:
+
+```bash
+ln -s "$(pwd)/bin/dual-typst" ~/.local/bin/dual-typst   # one-time, anywhere on PATH
+dual-typst create ~/papers/my-doc
+cd ~/papers/my-doc && ./build.sh                        # produces main.{pdf,html}
+```
+
+The created folder holds `main.typ`, `refs.bib`, an executable `build.sh`, and `src` / `assets` symlinks pointing into this clone. The symlinks are absolute, so the folder can move.
+
 ## Status
 
 Pre-1.0. The API surface (helpers + `tufte.with(...)` parameters) is stable, but field names inside `config:` records can move between minor versions. Pin to a tag if you depend on a specific layout.
@@ -188,6 +200,7 @@ src/                  template engine + style registry
   pdf.typ             PDF target (marginalia handout)
   html.typ            HTML target (tufte-css)
   styles/             per-style configs (`tufte-original` is the pivot)
+bin/dual-typst        create-doc CLI
 example/              demo doc (rendered in the live web app)
 assets/fonts/         optional fonts (gitignored; run fetch.sh)
 tests/                regression harness + local style gallery

@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+script="${BASH_SOURCE[0]}"
+hops=0
+while [ -L "$script" ]; do
+  hops=$((hops + 1))
+  [ "$hops" -gt 40 ] && { echo "dual-typst: symlink cycle resolving $script" >&2; exit 1; }
+  script_dir="$(cd -P "$(dirname "$script")" && pwd)"
+  target="$(readlink "$script")"
+  case "$target" in
+    /*) script="$target" ;;
+    *) script="$script_dir/$target" ;;
+  esac
+done
+
+script_dir="$(cd -P "$(dirname "$script")" && pwd)"
+repo="$(cd "$script_dir/.." && pwd)"
+
+usage() {
+  cat <<EOF
+Usage:
+  dual-typst create <folder>
+  dual-typst help
+
+Repo: $repo
+EOF
+}
+
+die() {
+  printf 'dual-typst: %s\n' "$*" >&2
+  exit 1
+}
+
+create_doc() {
+  [ "$#" -eq 1 ] || die "create requires one folder"
+
+  case "$1" in
+    /*) folder="$1" ;;
+    *) folder="$PWD/$1" ;;
+  esac
+
+  if [ -e "$folder" ] || [ -L "$folder" ]; then
+    die "path already exists: $folder"
+  fi
+
+  mkdir -p "$folder"
+  ln -s "$repo/src" "$folder/src"
+  ln -s "$repo/assets" "$folder/assets"
+
+  cat > "$folder/main.typ" <<'EOF'
+#import "src/lib.typ": tufte, sidenote
+
+#show: tufte.with(
+  title: [Untitled],
+  author: "Author",
+  date: datetime.today(),
+  bib: bibliography("refs.bib"),
+)
+
+= Introduction
+
+This paragraph uses #sidenote[A short note in the margin.] and cites @tufte2001.
+EOF
+
+  cat > "$folder/refs.bib" <<'EOF'
+@book{tufte2001,
+  author = {Edward R. Tufte},
+  title = {The Visual Display of Quantitative Information},
+  year = {2001},
+  edition = {2nd},
+  publisher = {Graphics Press},
+}
+EOF
+
+  cat > "$folder/build.sh" <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")"
+typst compile --root . --font-path assets/fonts main.typ main.pdf &
+typst compile --root . --font-path assets/fonts --features html --input target=html main.typ main.html &
+wait
+echo "Built: $(pwd)/main.pdf $(pwd)/main.html"
+EOF
+  chmod +x "$folder/build.sh"
+
+  cat <<EOF
+Created: $folder
+  src -> $repo/src
+  assets -> $repo/assets
+  main.typ, refs.bib, build.sh
+EOF
+}
+
+case "${1:-help}" in
+  create)
+    shift
+    create_doc "$@"
+    ;;
+  help|-h|--help)
+    usage
+    ;;
+  *)
+    usage >&2
+    exit 1
+    ;;
+esac

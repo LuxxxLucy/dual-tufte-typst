@@ -98,11 +98,14 @@
               else if "css" in cfg and cfg.css != auto { cfg.css }
               else { auto }
 
-    if _IS-HTML {
-        html.setup-html(cfg, title, author, email, date, abstract, toc, lang, css, body)
-    } else {
-        pdf.setup-pdf(cfg, title, author, email, date, abstract, toc, body)
+    let body-with-bib = {
+        body
+        if bib != none { bib }
     }
 
-    if bib != none { bib }
+    if _IS-HTML {
+        html.setup-html(cfg, title, author, email, date, abstract, toc, lang, css, body-with-bib)
+    } else {
+        pdf.setup-pdf(cfg, title, author, email, date, abstract, toc, body-with-bib)
+    }
 }
