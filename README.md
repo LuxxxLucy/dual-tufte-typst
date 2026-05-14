@@ -4,14 +4,27 @@ Write a Tufte-style document once in [Typst](https://typst.app/). Get a print-re
 
 **[→ Live web app](https://luxxxlucy.github.io/dual-tufte-typst/)** — every public style rendered side-by-side as PDF and HTML. Rebuilt by `.github/workflows/build-web.yml` on every push to `main`.
 
-## Try it locally
+## Install
 
-Requires Typst >= 0.14. Clone, fetch fonts, build the example:
+One-liner on a fresh machine — clones into `~/.local/share/dual-tufte-typst`, fetches fonts, and links `dual-typst` into `~/.local/bin`:
 
 ```bash
-git clone https://github.com/LuxxxLucy/dual-tufte-typst
-cd dual-tufte-typst
-./assets/fonts/fetch.sh
+curl -fsSL https://raw.githubusercontent.com/LuxxxLucy/dual-tufte-typst/main/install.sh | bash
+```
+
+Inside an existing clone (skips clone, just links the CLI):
+
+```bash
+./install.sh                                  # or: --bindir ~/bin --no-fonts
+```
+
+Requires `git`, [Typst](https://github.com/typst/typst) >= 0.14, and [`uv`](https://github.com/astral-sh/uv) (for the font fetch step; pass `--no-fonts` to skip).
+
+## Try it locally
+
+Build the bundled example from a clone:
+
+```bash
 typst compile --root . --font-path assets/fonts example/example.typ           # PDF
 typst compile --root . --font-path assets/fonts \
     --features html --input target=html example/example.typ example.html      # HTML
@@ -31,15 +44,14 @@ Content with #sidenote[a margin note].
 
 ### Create a new doc
 
-`bin/dual-typst create <folder>` creates a doc folder with `src/` and `assets/` symlinked into this clone:
+Once `dual-typst` is on `$PATH` (see Install), scaffold a new doc anywhere:
 
 ```bash
-ln -s "$(pwd)/bin/dual-typst" ~/.local/bin/dual-typst   # one-time, anywhere on PATH
 dual-typst create ~/papers/my-doc
 cd ~/papers/my-doc && ./build.sh                        # produces main.{pdf,html}
 ```
 
-The created folder holds `main.typ`, `refs.bib`, an executable `build.sh`, and `src` / `assets` symlinks pointing into this clone. The symlinks are absolute, so the folder can move.
+The created folder holds `main.typ`, `refs.bib`, an executable `build.sh`, and `src` / `assets` symlinks pointing into the dual-typst clone. The symlinks are absolute, so the doc folder can move freely; only moving the clone itself breaks them.
 
 ## Status
 
@@ -201,6 +213,7 @@ src/                  template engine + style registry
   html.typ            HTML target (tufte-css)
   styles/             per-style configs (`tufte-original` is the pivot)
 bin/dual-typst        create-doc CLI
+install.sh            one-liner installer (clone + fonts + PATH symlink)
 example/              demo doc (rendered in the live web app)
 assets/fonts/         optional fonts (gitignored; run fetch.sh)
 tests/                regression harness + local style gallery
