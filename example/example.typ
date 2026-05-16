@@ -52,6 +52,10 @@ The `tufte.with()` function accepts additional parameters:
   lang: "en",
   bib: bibliography("refs.bib"),             // runs after body
   config: (page: (paper: "us-letter")),
+  head-extra: [                              // HTML only: injected inside <head>
+    #html.elem("meta", attrs: (("name"): "description", ("content"): "..."))[]
+    #html.elem("link", attrs: (("rel"): "canonical", ("href"): "..."))[]
+  ],
 )
 ```
 

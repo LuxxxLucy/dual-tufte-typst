@@ -87,6 +87,7 @@
     html-css: auto,
     style: "tufte-original",
     config: auto,
+    head-extra: none,
     body,
 ) = {
     set text(lang: lang)
@@ -104,7 +105,7 @@
     }
 
     if _IS-HTML {
-        html.setup-html(cfg, title, author, email, date, abstract, toc, lang, css, body-with-bib)
+        html.setup-html(cfg, title, author, email, date, abstract, toc, lang, css, head-extra, body-with-bib)
     } else {
         pdf.setup-pdf(cfg, title, author, email, date, abstract, toc, body-with-bib)
     }

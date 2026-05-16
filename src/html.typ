@@ -153,7 +153,7 @@ h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem;
     ]
 }
 
-#let setup-html(cfg, title, author, email, date, abstract, toc, lang, css-urls, body) = {
+#let setup-html(cfg, title, author, email, date, abstract, toc, lang, css-urls, head-extra, body) = {
     let doc-title = if title != none { title } else { "Document" }
     let html-css = if css-urls == auto { _default-css }
                    else if type(css-urls) == str { (css-urls,) }
@@ -226,6 +226,11 @@ h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem;
             )
             #html.elem("meta", attrs: (("name"): "color-scheme", ("content"): scheme))[]
             #html.elem("title")[#doc-title]
+            // Caller-supplied head injection: any extra `<meta>`, `<link>`,
+            // `<script>`, or other head-level content. Construct with
+            // `html.elem` so Typst emits real elements rather than escaped
+            // text.
+            #if head-extra != none { head-extra }
             #for css-link in html-css {
                 html.elem("link", attrs: (
                     ("rel"): "stylesheet",

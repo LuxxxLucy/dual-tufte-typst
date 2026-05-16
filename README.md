@@ -90,6 +90,7 @@ Typst 0.14 only — Typst's HTML emit is still evolving and we track upstream.
 | `style` | `"tufte-original"` | Registered style name (see Styles). |
 | `config` | `auto` | Per-call config overrides (see Customization). |
 | `html-css` | `auto` | Override the style's HTML stylesheet list. |
+| `head-extra` | `none` | HTML target only. Arbitrary content injected inside `<head>` (after `<title>`, before stylesheets) — `<meta>` tags, `<link>` relations, `<script>`s, preload hints, structured data, anything you need. Construct with `html.elem`. See Examples. |
 
 CLI inputs read at compile time:
 
@@ -125,6 +126,31 @@ Citation rendered as a numbered margin note:
 #show: tufte.with(title: [...], bib: bibliography("refs.bib"))
 
 The result was first reported in #sidecite("smith2024") and later refined.
+```
+
+Inject arbitrary content into the HTML `<head>` (HTML target only — ignored for PDF). Use this for any `<head>`-level content the template doesn't emit on its own: descriptive metadata, social-card tags, canonical links, preload hints, third-party scripts, structured data, etc.
+
+```typst
+#show: tufte.with(
+  title: [Your Post Title],
+  head-extra: [
+    #html.elem("meta", attrs: (
+      ("name"): "description",
+      ("content"): "One-sentence summary of the post."
+    ))[]
+    #html.elem("link", attrs: (
+      ("rel"): "canonical",
+      ("href"): "https://example.com/your-post/"
+    ))[]
+    #html.elem("link", attrs: (
+      ("rel"): "preload",
+      ("as"): "font",
+      ("href"): "/fonts/etbembo.woff2",
+      ("crossorigin"): "anonymous"
+    ))[]
+    #html.elem("script", attrs: (("type"): "application/ld+json"))[#"{\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\",\"headline\":\"Your Post Title\"}"]
+  ],
+)
 ```
 
 ## Styles
