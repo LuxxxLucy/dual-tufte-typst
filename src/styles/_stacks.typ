@@ -13,7 +13,7 @@
 // Public Sans (USWDS, OFL) — free humanist sans close to Colfax. Used by
 // terpret. "Input" mono follows the original 2020 page; falls back to
 // JetBrains Mono if not installed.
-#let public-sans = ("Public Sans", "Colfax", "Neue Helvetica W02", "Helvetica Neue", "Helvetica", "Arial")
+#let public-sans = ("Public Sans", "Helvetica Neue", "Helvetica", "Arial")
 #let input-mono  = ("Input", "JetBrains Mono", "Menlo", "Monaco", "Courier")
 
 // Roboto Condensed renamed in-place to "RobotoCondensed" by fetch.sh
@@ -22,6 +22,6 @@
 #let roboto-condensed = ("RobotoCondensed", "Roboto", "Helvetica Neue", "Helvetica", "Arial")
 
 #let space-grotesk = ("Space Grotesk", "Inter", "Helvetica Neue", "Helvetica", "Arial")
-#let newsreader   = ("Newsreader", "Source Serif 4", "Georgia", "Palatino", "serif")
-#let fraunces     = ("Fraunces", "Newsreader", "Georgia", "Palatino", "serif")
-#let source-serif = ("Source Serif 4", "Source Serif Pro", "Georgia", "Palatino", "serif")
+#let newsreader   = ("Newsreader", "Source Serif 4", "Georgia", "Palatino")
+#let fraunces     = ("Fraunces", "Newsreader", "Georgia", "Palatino")
+#let source-serif = ("Source Serif 4", "Georgia", "Palatino")

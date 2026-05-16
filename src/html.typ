@@ -133,6 +133,7 @@ div.fullwidth { font-size: 1.4rem; line-height: 2rem; }
 div.fullwidth > table { width: 100%; }
 h4 { font-style: italic; font-weight: 400; font-size: 1.4rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }
 h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }
+pre code, pre code span { color: inherit !important; background: transparent !important; }
 .typst-frame use { fill: currentColor; }"
 
 #let _heading-slug(idx) = "h-" + str(idx + 1)
@@ -167,6 +168,7 @@ h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem;
         #set text(fill: html-text-fill)
         #set par(spacing: html-par-spacing)
         #set math.equation(numbering: "(1)")
+        #set raw(theme: none)
         #show heading: it => context {
             let idx = query(heading).position(h => h.location() == it.location())
             let tag = "h" + str(it.level)
@@ -237,9 +239,12 @@ h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem;
                     ("href"): css-link,
                 ))[]
             }
-            #html.elem("style")[#_INLINE_STYLE]
-            #let extra = cfg.at("html-extra-css", default: none)
-            #if extra != none and extra != "" { html.elem("style")[#extra] }
+            #let vendor-only = cfg.at("html-vendor-css-only", default: false)
+            #if not vendor-only {
+                html.elem("style")[#_INLINE_STYLE]
+                let extra = cfg.at("html-extra-css", default: none)
+                if extra != none and extra != "" { html.elem("style")[#extra] }
+            }
         ]
         #html.elem("body")[
             #html.elem("article")[#article-body]

@@ -21,13 +21,15 @@
         font: stacks.roboto-condensed,
         style: "normal",
     ),
-    title-block: (font: stacks.roboto-condensed),
-    text: (fill: rgb("#222222")),
+    sizes: (body: 9.6pt, small: 0.78em),
+    title-block: (font: stacks.roboto-condensed, size: 1.32em, meta-size: 0.8em, meta-style: "normal", v-after: 1.0em),
+    text: (fill: rgb("#2B2B2B"), leading: 0.44em),
+    quote: (size: 0.95em, leading: 0.44em, inset: (left: 1.7em, right: 1em, top: 0.9em, bottom: 0.75em)),
     link: (fill: rgb("#222222"), underline: true),
+    raw-block: (size: 0.82em, leading: 0.22em, inset: (left: 1.6em, right: 0.8em, top: 0.42em, bottom: 0.42em)),
+    "html-vendor-css-only": true,
     css: (
         "https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",
         "https://cdn.jsdelivr.net/gh/rstudio/tufte@main/inst/rmarkdown/templates/tufte_html/resources/envisioned.css",
-    ),
-    // Tufte-css's gradient underline clashes with Roboto descenders.
-    "html-extra-css": "a:link, a:visited { text-shadow: none; background-image: none; text-decoration: underline; text-decoration-skip-ink: auto; text-underline-offset: 0.15em; color: inherit; }",
+    )
 ))

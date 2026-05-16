@@ -246,17 +246,29 @@
     set enum(indent: cfg.list.indent, body-indent: cfg.list.body-indent)
     show enum: set par(justify: true)
     show list: set par(justify: true)
+    // `show footnote` renders margin sidenotes; suppress Typst's
+    // native bottom listing so the note is not duplicated.
+    set footnote.entry(separator: [], clearance: 0pt, gap: 0pt)
+    show footnote.entry: hide
 
     if cfg.link.underline { show link: underline }
     show link: set text(fill: cfg.link.fill)
 
     set math.equation(numbering: "(1)")
+    set raw(theme: none)
 
     show raw.where(block: true): it => {
+        let raw-size = cfg.raw-block.at("size", default: auto)
+        if raw-size == auto { set text(font: cfg.fonts.mono) }
+        else { set text(font: cfg.fonts.mono, size: raw-size) }
         set par(leading: cfg.raw-block.leading)
         block(inset: cfg.raw-block.inset, it)
     }
-    show raw.where(block: false): set text(font: cfg.fonts.mono)
+    show raw.where(block: false): it => {
+        let raw-size = cfg.raw-block.at("inline-size", default: auto)
+        if raw-size == auto { text(font: cfg.fonts.mono, it) }
+        else { text(font: cfg.fonts.mono, size: raw-size, it) }
+    }
 
     show quote.where(block: true): it => _quote-block(cfg, it.body, it.attribution)
 

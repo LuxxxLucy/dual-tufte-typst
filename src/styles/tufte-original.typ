@@ -76,16 +76,16 @@
         tracking: 1.5pt,
         upper: true,
     ),
-    // \maketitle (1561-1589): \LARGE italic title (14pt), \Large italic
-    // author/date (12pt), parskip=4pt between.
+    // PDF keeps Tufte's italic title, but the metadata is quieter
+    // than LaTeX \Large so it reads as byline rather than subtitle.
     title-block: (
         size: 1.4em,
         weight: "regular",
         font: auto,
-        meta-size: 1.2em,
+        meta-size: 0.9em,
         meta-style: "italic",
         meta-sep: 0pt,
-        v-after: 1.5em,
+        v-after: 1.25em,
     ),
     // \parindent = 1pc = 12pt (line 420), \parskip = 0pt (line 421),
     // \normalbaselineskip = 14pt (line 375), justified (line 199).
@@ -96,7 +96,9 @@
         leading: 0.4em,
         justify: true,
     ),
-    quote: (size: 1.25em, leading: 0.6em),
+    quote: (size: 1.05em, leading: 0.48em, inset: (left: 1.8em, right: 1em, top: 1.05em, bottom: 0.85em)),
     link: (fill: rgb("#111111"), underline: true),
+    raw-block: (size: 0.84em, leading: 0.22em, inset: (left: 1.7em, right: 0.8em, top: 0.45em, bottom: 0.45em)),
+    "html-vendor-css-only": true,
     css: ("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",),
 )
