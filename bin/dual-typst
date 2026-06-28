@@ -84,11 +84,26 @@ echo "Built: $(pwd)/main.pdf $(pwd)/main.html"
 EOF
   chmod +x "$folder/build.sh"
 
+  mkdir -p "$folder/.vscode"
+  cat > "$folder/.vscode/settings.json" <<'EOF'
+{
+  // Live preview (tinymist). Open this folder in VS Code with the tinymist
+  // extension, open main.typ, and run "Typst Preview" from the palette.
+  // Fonts come from the assets symlink; the preview compiles in memory.
+  "tinymist.fontPaths": ["assets/fonts"],
+  "tinymist.exportPdf": "never",
+  "tinymist.formatterMode": "typstyle",
+  "[typst]": {
+    "editor.defaultFormatter": "myriad-dreamin.tinymist"
+  }
+}
+EOF
+
   cat <<EOF
 Created: $folder
   src -> $repo/src
   assets -> $repo/assets
-  main.typ, refs.bib, build.sh
+  main.typ, refs.bib, build.sh, .vscode/settings.json
 EOF
 }
 
