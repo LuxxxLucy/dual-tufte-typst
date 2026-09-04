@@ -44,7 +44,6 @@ emit_triples() {
 gated_triples() {
     emit_triples cases
     emit_triples reproductions html
-    emit_triples limitations
 }
 
 # --update copies every live artifact (HTML + PDF + PNGs) for every group
@@ -54,7 +53,6 @@ gated_triples() {
 update_triples() {
     emit_triples cases
     emit_triples reproductions all
-    emit_triples limitations
 }
 
 if [[ $UPDATE -eq 1 ]]; then

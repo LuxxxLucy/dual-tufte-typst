@@ -7,7 +7,6 @@ out/
 
 # Diff metadata next to live test artifacts (stats for the index).
 tests/cases/*/*/diff.txt
-tests/limitations/*/diff.txt
 tests/reproductions/*/diff.txt
 
 # OS / editor / accidents
@@ -43,5 +42,3 @@ tests/reproductions/*/out-*.png
 tests/reproductions/*/asset/
 tests/reproductions/*/cover.png
 tests/cases/*/*/diff.png
-tests/limitations/*/diff.png
-tests/limitations/*/out.png

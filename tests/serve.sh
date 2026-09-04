@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build everything (cases + reproductions + limitations), run the
+# Build everything (cases + reproductions), run the
 # structural smoke test, regenerate the index, and serve tests/ on
 # http://localhost:8765 for browser inspection.
 #
@@ -9,10 +9,9 @@ set -euo pipefail
 cd "$(dirname "$0")"
 PORT="${1:-8765}"
 
-echo "==> building cases, reproductions, limitations, gallery (parallel groups)"
+echo "==> building cases, reproductions, gallery (parallel groups)"
 ( cd cases         && ./build-all.sh ) &
 ( cd reproductions && ./build-all.sh ) &
-( cd limitations   && ./build-all.sh ) &
 ( cd gallery       && ./build.sh )     &
 wait
 

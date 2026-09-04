@@ -28,7 +28,7 @@ def collect(group: str) -> list[dict]:
     if not base.exists():
         return []
     src_name = "_main.typ" if group == "reproductions" else "case.typ"
-    # Cases & limitations enter via case.typ; reproductions via build.sh.
+    # Cases enter via case.typ; reproductions via build.sh.
     entries = sorted(base.rglob("case.typ")) + sorted(base.glob("*/build.sh"))
     rows = []
     for entry in entries:
@@ -221,7 +221,6 @@ PAGE = """<!doctype html>
 
 {cases_section}
 {repros_section}
-{limits_section}
 
 <script>
 function setAll(open) {{
@@ -257,13 +256,11 @@ def banner(name: str, label: str) -> str:
 def main() -> None:
     cases = collect("cases")
     repros = collect("reproductions")
-    limits = collect("limitations")
     print(PAGE.format(
         banners=banner("_smoke.log", "structural smoke test")
               + banner("_check.log", "ref-diff check"),
         cases_section=section("Cases", cases),
         repros_section=section("Reproductions", repros),
-        limits_section=section("Limitations (documented broken patterns)", limits),
     ))
 
 

@@ -41,7 +41,7 @@ tc_png() {
 
 # Build every <dir>/case.typ under the calling script's cwd to sibling
 # out.{html,png}. `root` is the path from each case dir back to the project
-# root. Used by tests/cases/ and tests/limitations/ build-all.sh.
+# root. Used by tests/cases/build-all.sh.
 #
 # Each case.typ is wrapped via tests/_wrap.py into _wrapped.typ in the same
 # directory; the wrapper applies the shared `tufte.with(style: "jialin")`

@@ -148,15 +148,6 @@ def check_one(path: Path, expectations: dict) -> list[str]:
     return issues
 
 
-# Per-limitation classifier. The smoke test catches *structural* breaks
-# (block-inside-inline-span, missing scaffold). Content drops (math, CeTZ)
-# leave structurally valid HTML — only vision can flag them.
-LIMITATION_KIND = {
-    "multi-paragraph-sidenote":   "structural",
-    "multi-paragraph-marginnote": "structural",
-}
-
-
 def expectations_for(path: Path) -> dict:
     rel = path.relative_to(ROOT).as_posix()
     if rel.startswith("cases/figures/"):
@@ -172,44 +163,26 @@ def main() -> int:
 
     cases = sorted(ROOT.glob("cases/*/*/out.html"))
     repros = sorted(ROOT.glob("reproductions/*/out.html"))
-    limits = sorted(ROOT.glob("limitations/*/out.html"))
-    if not (cases or repros or limits):
+    if not (cases or repros):
         print("no out.html files found — run build-all.sh first", file=sys.stderr)
         return 1
 
     real_failed = 0
     repro_issue_files = 0
-    unexpected_pass = 0
 
     def report(t: Path, group: str) -> None:
-        nonlocal real_failed, repro_issue_files, unexpected_pass
+        nonlocal real_failed, repro_issue_files
         rel = t.relative_to(ROOT).as_posix()
         issues = check_one(t, expectations_for(t))
-        if group == "limitations":
-            # Limitations: structural ones are expected to fail an invariant;
-            # content-level ones (math drop) leave valid HTML so the smoke
-            # test simply records them.
-            kind = LIMITATION_KIND.get(t.parent.name, "structural")
-            if kind == "content":
-                if not args.quiet:
-                    print(f"LIMIT {rel}  (content-only; vision required)")
-            elif issues:
-                if not args.quiet:
-                    print(f"LIMIT {rel}  ({len(issues)} known structural issue"
-                          f"{'s' if len(issues)!=1 else ''})")
-            else:
-                unexpected_pass += 1
-                print(f"GRADUATED {rel}  (structural issue gone — move out of limitations/)")
-        elif group == "reproductions":
+        if group == "reproductions":
             # Reproductions are holistic visual tests, not structural.
-            # Issues here usually trace to known limitations exercised by
-            # the source — informational only, do not block exit.
+            # Issues here usually trace to unsupported blocks inside notes
+            # (see README "Limitations") — informational only, do not block exit.
             if issues:
                 repro_issue_files += 1
                 if not args.quiet:
                     n = len(issues)
-                    print(f"INFO {rel}  ({n} structural issue{'s' if n!=1 else ''}; "
-                          "see tests/limitations/)")
+                    print(f"INFO {rel}  ({n} structural issue{'s' if n!=1 else ''})")
             elif not args.quiet:
                 print(f"PASS {rel}")
         else:
@@ -223,18 +196,14 @@ def main() -> int:
 
     for t in cases: report(t, "cases")
     for t in repros: report(t, "reproductions")
-    for t in limits: report(t, "limitations")
 
-    summary = (f"\n{len(cases)} case(s), {len(repros)} reproduction(s), "
-               f"{len(limits)} limitation(s)")
+    summary = f"\n{len(cases)} case(s), {len(repros)} reproduction(s)"
     if real_failed:
         print(f"{summary}\n{real_failed} unexpected case failure(s)")
         return 1
     notes = []
     if repro_issue_files:
         notes.append(f"{repro_issue_files} reproduction(s) carry known-limitation patterns")
-    if unexpected_pass:
-        notes.append(f"{unexpected_pass} limitation(s) graduated — move them to cases/")
     if notes:
         print(summary)
         for n in notes:
