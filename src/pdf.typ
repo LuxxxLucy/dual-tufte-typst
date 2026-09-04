@@ -49,8 +49,6 @@
     )[#body]
 }
 
-#let main-figure-pdf(content, caption) = figure(content, caption: caption)
-
 #let margin-figure-pdf(content, caption, dy) = context {
     notefigure(
         content,
@@ -60,11 +58,6 @@
         text-style: _caption-style(_cfg()),
     )
 }
-
-#let full-width-figure-pdf(content, caption) = wideblock(
-    side: "outer",
-    figure(content, caption: caption),
-)
 
 #let _quote-block(cfg, body, attribution) = block(
     inset: cfg.quote.inset,

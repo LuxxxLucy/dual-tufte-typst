@@ -1,5 +1,6 @@
 // Per-style HTML overlay on top of canonical tufte-css. The result is
-// inlined into <head>; tufte-css supplies geometry, this layer paints.
+// inlined into <head>; tufte-css supplies geometry, this layer paints and
+// sets the shared vertical rhythm.
 
 // Link normalization shared by every style. tufte-css paints links with a
 // background-gradient underline plus a white text-shadow mask, calibrated for
@@ -39,6 +40,8 @@
     let n-color = if note-color == none { fg } else { note-color }
     (
         import-css
+        + ".subtitle + p { margin-top: 2.5em; } p + h2 { margin-top: 5.5rem; }"
+        + " div.fullwidth { font-size: 1.4rem; line-height: 2rem; }"
         + "html { background-color: " + bg + "; }"
         + "body { background-color: " + bg + "; color: " + fg + ";"
         + " font-family: " + body-font + ";"
@@ -49,7 +52,7 @@
         + ".sidenote, .marginnote, .sidenote-number, figcaption {"
         + " font-family: " + body-font + "; font-style: normal;"
         + " color: " + n-color + "; line-height: 1.35; }"
-        + "article > h1 { width: 70%; } article p.subtitle { width: 65%; }"
+        + "article p.subtitle { width: 65%; }"
         + "pre { overflow-x: auto; font-size: 0.88em; line-height: 1.45; padding: 0.75em 1em; }"
         + "pre code, pre code span { font-size: inherit; line-height: inherit; }"
         + "@media (max-width: 760px), (orientation: portrait) {"

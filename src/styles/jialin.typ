@@ -69,7 +69,6 @@
     ),
     link: (fill: rgb(_link), underline: true),
     "html-color-scheme": "light",
-    "html-vendor-css-only": false,
     css: ("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",),
     "html-extra-css": html-overlay(
         import-css: "",

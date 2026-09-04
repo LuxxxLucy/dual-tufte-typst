@@ -1,4 +1,4 @@
-// Main-figure: image and caption stay in the main column.
+// Plain figure: image and caption stay in the main column.
 
 Body text before the figure.
 

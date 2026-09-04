@@ -1,19 +1,6 @@
 // HTML target. Emits canonical tufte-css markup.
 // Reference: https://edwardtufte.github.io/tufte-css/ (1.8.0).
 
-#let _CLS = (
-    sidenote: "sidenote",
-    marginnote: "marginnote",
-    sidenote-num: "sidenote-number",
-    margin-toggle: "margin-toggle",
-    newthought: "newthought",
-    fullwidth: "fullwidth",
-    epigraph: "epigraph",
-    sans: "sans",
-    subtitle: "subtitle",
-    figure-caption: "figure-caption",
-)
-
 // Inner span style for newthought: explicit font-variant ensures small
 // caps render even without the tufte stylesheet.
 #let _NEWTHOUGHT_INNER = "font-variant-caps: small-caps"
@@ -27,77 +14,58 @@
 // label+input wrapped in `box[...]` so Typst doesn't break the
 // surrounding paragraph between the toggle and the trailing visible
 // `<span>`. The span sits as a sibling outside the box.
-#let _toggle(prefix, glyph: "", extra-class: "") = context {
+#let _toggle(prefix, glyph: "", label-class: "margin-toggle") = context {
     _id-counter.step()
     let id = prefix + str(_id-counter.get().first())
-    let cls = if extra-class != "" { _CLS.margin-toggle + " " + extra-class }
-              else { _CLS.margin-toggle }
     box[
-        #html.elem("label", attrs: (("for"): id, ("class"): cls))[#glyph]
-        #html.elem("input", attrs: (("type"): "checkbox", ("id"): id, ("class"): _CLS.margin-toggle))[]
+        #html.elem("label", attrs: (("for"): id, ("class"): label-class))[#glyph]
+        #html.elem("input", attrs: (("type"): "checkbox", ("id"): id, ("class"): "margin-toggle"))[]
     ]
 }
 
-// A <p>, <ol> or <ul> inside the note <span> closes the enclosing <p> and
-// drops the note into the main column, so emit block-level spans instead.
-// Inline styles survive `html-vendor-css-only`.
+// A block element inside the note <span> closes the enclosing <p> and drops
+// the note into the main column, so blocks become block-level spans.
+// Figures, code blocks and block math split the paragraph before any show
+// rule runs; they stay unsupported.
 #let _note-body(body) = {
-    let span(style, body) = html.elem("span", attrs: (("style"): "display: block; " + style))[#body]
-    show parbreak: span("height: 0.6rem;")[]
-    show enum: it => for (i, item) in it.children.enumerate() {
-        let n = if item.number != none { item.number } else { it.start + i }
-        span("")[#numbering(it.numbering, n) #item.body]
+    let div(style: "", body) = html.elem("span", attrs: (("style"): "display: block; " + style))[#body]
+    show parbreak: div(style: "height: 0.6rem;")[]
+    show enum: it => {
+        let n = if it.start == auto { 0 } else { it.start - 1 }
+        for item in it.children {
+            let given = item.at("number", default: auto)
+            n = if given == auto { n + 1 } else { given }
+            div[#numbering(it.numbering, n) #item.body]
+        }
     }
-    show list: it => for item in it.children { span("")[#sym.bullet #item.body] }
+    show list: it => for item in it.children { div[#sym.bullet #item.body] }
+    show align: it => div(style: if it.alignment.x == none { "" } else { "text-align: " + repr(it.alignment.x) + ";" })[#it.body]
     body
 }
 
 #let _sidenote-triplet(body) = {
-    _toggle("sn-", extra-class: _CLS.sidenote-num)
-    html.elem("span", attrs: (("class"): _CLS.sidenote))[#_note-body(body)]
+    _toggle("sn-", label-class: "margin-toggle sidenote-number")
+    html.elem("span", attrs: (("class"): "sidenote"))[#_note-body(body)]
 }
 
 #let _marginnote-triplet(body) = {
     _toggle("mn-", glyph: _MN-GLYPH)
-    html.elem("span", attrs: (("class"): _CLS.marginnote))[#_note-body(body)]
+    html.elem("span", attrs: (("class"): "marginnote"))[#_note-body(body)]
 }
 
 #let sidenote-html(numbered, body) = {
     if numbered { _sidenote-triplet(body) } else { _marginnote-triplet(body) }
 }
 
-#let main-figure-html(content, caption) = {
-    html.elem("figure")[
-        #content
-        #if caption != none {
-            html.elem("figcaption")[#caption]
-        }
-    ]
-}
-
 // Margin figure: image + caption live inside the marginnote span (not
 // wrapped in <figure>), matching web-tufte-typst.
-#let margin-figure-html(content, caption) = {
-    _toggle("mn-fig-", glyph: _MN-GLYPH)
-    html.elem("span", attrs: (("class"): _CLS.marginnote))[
-        #box[#content]
-        #if caption != none {
-            html.elem("span", attrs: (("class"): _CLS.figure-caption))[#caption]
-        }
-    ]
-}
-
-#let full-width-figure-html(content, caption) = {
-    html.elem("figure", attrs: (("class"): _CLS.fullwidth))[
-        #content
-        #if caption != none {
-            html.elem("figcaption")[#caption]
-        }
-    ]
-}
+#let margin-figure-html(content, caption) = _marginnote-triplet({
+    box[#content]
+    if caption != none { html.elem("span", attrs: (("class"): "figure-caption"))[#caption] }
+})
 
 #let epigraph-html(quote, author) = {
-    html.elem("div", attrs: (("class"): _CLS.epigraph))[
+    html.elem("div", attrs: (("class"): "epigraph"))[
         #html.elem("blockquote")[
             #html.p(quote)
             #if author != none { html.elem("footer")[#author] }
@@ -106,16 +74,16 @@
 }
 
 #let new-thought-html(body) = {
-    html.elem("span", attrs: (("class"): _CLS.newthought))[
+    html.elem("span", attrs: (("class"): "newthought"))[
         #html.elem("span", attrs: (("style"): _NEWTHOUGHT_INNER))[#body]
     ]
 }
 
-#let full-width-html(body) = html.elem("div", attrs: (("class"): _CLS.fullwidth))[#body]
+#let full-width-html(body) = html.elem("div", attrs: (("class"): "fullwidth"))[#body]
 
 #let sidecite-html(key) = _sidenote-triplet(cite(key, form: "full"))
 
-#let sans-html(body) = html.elem("p", attrs: (("class"): _CLS.sans))[#body]
+#let sans-html(body) = html.elem("p", attrs: (("class"): "sans"))[#body]
 
 #let _format-meta-parts(author, email, date) = {
     let parts = ()
@@ -131,30 +99,25 @@
     if title != none { html.elem("h1")[#title] }
     let parts = _format-meta-parts(author, email, date)
     if parts.len() > 0 {
-        html.elem("p", attrs: (("class"): _CLS.subtitle))[#parts.join(", ")]
+        html.elem("p", attrs: (("class"): "subtitle"))[#parts.join(", ")]
     }
 }
 
 // CDN by default. For offline / pinned builds pass `html-css: "tufte.min.css"`.
 #let _default-css = ("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",)
 
-// Inline overrides on top of tufte-css: subtitle margin, h1..h3 width
-// (so heading-embedded sidenotes float into the right margin), full-width
-// scoping for div.fullwidth + nested table, and h4/h5 styling that
-// tufte-css doesn't cover.
-#let _INLINE_STYLE = ".subtitle + p { margin-top: 2.5em; }
-p + h2 { margin-top: 5.5rem; }
-article h1, article h2, article h3 { max-width: 55%; }
-div.fullwidth { font-size: 1.4rem; line-height: 2rem; }
+// Fixes on top of tufte-css: captions sit under the figure as in the PDF
+// target instead of floating into the margin; h1..h3 get the column width
+// so a heading sidenote lands in the margin; h4/h5 rules tufte-css lacks.
+#let _INLINE_STYLE = "figcaption { float: none; clear: both; max-width: 100%; margin: 0.4rem 0 0; }
+div.fullwidth > figure { max-width: 100%; }
 div.fullwidth > table { width: 100%; }
-h4 { font-style: italic; font-weight: 400; font-size: 1.4rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }
-h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }
-pre code, pre code span { color: inherit !important; background: transparent !important; }
-figure img, .marginnote img { height: auto; }
+img { height: auto; }
 .figure-caption { display: block; margin-top: 0.4rem; }
-figure > figcaption { float: none; clear: both; max-width: 100%; margin: 0.4rem 0 0; }
-figure.fullwidth > figcaption { max-width: 55%; margin-right: 0; }
-.typst-frame use { fill: currentColor; }"
+.typst-frame use { fill: currentColor; }
+article h1, article h2, article h3 { max-width: 55%; }
+h4 { font-style: italic; font-weight: 400; font-size: 1.4rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }
+h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }"
 
 #let _heading-slug(idx) = "h-" + str(idx + 1)
 
@@ -202,21 +165,6 @@ figure.fullwidth > figcaption { max-width: 55%; margin-right: 0; }
         #show link: set text(fill: cfg.at("html-link-fill", default: html-text-fill))
         #show list: set block(width: 50%)
 
-        // Raw `#figure(...)` → main-figure. Render
-        // full caption (supplement + counter + body) so "Figure N: ..."
-        // numbering is visible.
-        #show figure: it => {
-            let cap = if it.has("caption") and it.caption != none {
-                {
-                    it.caption.supplement
-                    sym.space.nobreak
-                    it.caption.counter.display()
-                    it.caption.separator
-                    it.caption.body
-                }
-            } else { none }
-            main-figure-html(it.body, cap)
-        }
         #show footnote: it => _sidenote-triplet(it.body)
         // Typst's `line()` is a page-geometry primitive (invisible in
         // HTML by default). Map to <hr/>.
@@ -259,12 +207,8 @@ figure.fullwidth > figcaption { max-width: 55%; margin-right: 0; }
                     ("href"): css-link,
                 ))[]
             }
-            #let vendor-only = cfg.at("html-vendor-css-only", default: false)
-            #if not vendor-only {
-                html.elem("style")[#_INLINE_STYLE]
-            }
-            // Per-style escape hatch, applied even in vendor-css-only mode so a
-            // style can patch the vendored CSS. Emitted last to win on order.
+            #html.elem("style")[#_INLINE_STYLE]
+            // Emitted last so it wins on source order.
             #let extra = cfg.at("html-extra-css", default: none)
             #if extra != none and extra != "" { html.elem("style")[#extra] }
         ]

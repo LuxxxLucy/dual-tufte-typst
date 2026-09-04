@@ -24,19 +24,9 @@
 
 #let marginnote(dy: auto, body) = sidenote(numbered: false, dy: dy, body)
 
-#let main-figure(content, caption: none) = {
-    if _IS-HTML { html.main-figure-html(content, caption) }
-    else        { pdf.main-figure-pdf(content, caption) }
-}
-
 #let margin-figure(content, caption: none, dy: auto) = {
     if _IS-HTML { html.margin-figure-html(content, caption) }
     else        { pdf.margin-figure-pdf(content, caption, dy) }
-}
-
-#let full-width-figure(content, caption: none) = {
-    if _IS-HTML { html.full-width-figure-html(content, caption) }
-    else        { pdf.full-width-figure-pdf(content, caption) }
 }
 
 #let epigraph(quote, author: none) = {
@@ -53,6 +43,12 @@
     if _IS-HTML { html.full-width-html(body) }
     else        { pdf.full-width-pdf(body) }
 }
+
+#let main-figure(content, caption: none) = figure(content, caption: caption)
+
+// A label after the call binds to the wrapper, not the figure; write
+// `#full-width[#figure(..) <fig>]` to reference one.
+#let full-width-figure(content, caption: none) = full-width(figure(content, caption: caption))
 
 #let sidecite(key, dy: auto) = {
     if _IS-HTML { html.sidecite-html(key) }

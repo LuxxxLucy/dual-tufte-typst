@@ -5,7 +5,7 @@
 
 #import "../../../src/lib.typ": (
     tufte, sidenote, marginnote, new-thought, sans,
-    main-figure, margin-figure, full-width-figure, full-width, epigraph,
+    margin-figure, full-width, epigraph,
 )
 
 #show: tufte.with(
@@ -249,7 +249,7 @@ label or margin note goes in a regular margin note inside the figure. For
 example, most of the time one should introduce a figure directly into the
 main flow of discussion, like so:
 
-#main-figure(
+#figure(
     image("../../../assets/images/exports-imports.png", width: 100%),
     caption: [From Edward Tufte, _Visual Display of Quantitative Information_, page 92.],
 )
@@ -269,10 +269,10 @@ the screen. This approach is demonstrated below using Edward Tufte's
 English translation of the Napoleon's March data visualization. From
 _Beautiful Evidence_, page 122-124.
 
-#full-width-figure(
+#full-width[#figure(
     image("../../../assets/images/napoleons-march.png", width: 100%),
     caption: [Figurative map of the successive losses of the French Army in the Russian campaign, 1812-1813.],
-)
+)]
 
 = Code
 
@@ -318,16 +318,16 @@ images just as you would any other `figure`.
 This is an ImageQuilt surveying Chinese calligraphy, placed in a full-width
 figure to accomodate its girth:
 
-#full-width-figure(
+#full-width[#figure(
     image("../../../assets/images/imagequilt-chinese-calligraphy.png", width: 100%),
     caption: none,
-)
+)]
 
 Here is an ImageQuilt of 47 animal sounds over and over, in a figure
 constrained to the main text region. This quilt has ragged edges, but the
 image itself is of course still rectangular.
 
-#main-figure(
+#figure(
     image("../../../assets/images/imagequilt-animal-sounds.png", width: 100%),
     caption: none,
 )

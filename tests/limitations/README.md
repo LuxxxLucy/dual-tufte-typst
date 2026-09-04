@@ -13,10 +13,7 @@ limitation was fixed (rejoice and graduate it back into `tests/cases/`).
 
 ## Current limitations
 
-- `multi-paragraph-sidenote/`  — sidenote body spans multiple paragraphs.
-  `<p>` inside `<span class="sidenote">` is reparented by browsers.
-- `multi-paragraph-marginnote/` — same root cause, marginnote variant.
-  This is what hits the bezierlogue reproductions.
+None.
 
 ## Graduating a limitation
 

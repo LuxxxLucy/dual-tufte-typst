@@ -34,7 +34,6 @@
     link: (fill: rgb(_link), underline: false),
     raw-block: (size: 0.82em, leading: 0.22em, inset: (left: 1.3em, right: 0.75em, top: 0.36em, bottom: 0.36em)),
     "html-color-scheme": "light",
-    "html-vendor-css-only": false,
     css: ("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",),
     "html-extra-css": html-overlay(
         import-css: "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');",

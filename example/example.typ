@@ -3,7 +3,7 @@
 // A dual-format template for Tufte's design principles.
 // Compile this file to PDF or HTML—same source, both outputs.
 
-#import "../src/lib.typ": tufte, sidenote, marginnote, main-figure, margin-figure, full-width-figure, epigraph, new-thought, full-width, sidecite
+#import "../src/lib.typ": tufte, sidenote, marginnote, margin-figure, epigraph, new-thought, full-width, sidecite
 
 // `--input style=<name>` selects a registered style (jialin,
 // tufte-original, envision, terpret, orange-happy, bluewhite). The
@@ -120,9 +120,9 @@ Tufte emphasizes tight integration of graphics with text—figures stay with the
 
 == Standard Figures
 
-Most figures sit in the text column with captions in the margin using `main-figure`:
+A plain Typst `figure` sits in the text column:
 
-#main-figure(
+#figure(
   image("../assets/images/exports-imports.png", width: 100%),
   caption: [Exports and imports to and from Denmark & Norway from 1700 to 1780. From Tufte's _Visual Display of Quantitative Information_, page 92.],
 )
@@ -140,10 +140,12 @@ Smaller graphics fit entirely in the margin. Text flows uninterrupted while the 
 
 Data-dense visualizations may require the full page width:
 
-#full-width-figure(
+#full-width[#figure(
   image("../assets/images/napoleons-march.png", width: 100%),
   caption: [Minard's 1869 map of Napoleon's Russian campaign. Tufte called it "probably the best statistical graphic ever drawn."],
-)
+)]
+
+`#full-width-figure(image(..), caption: [..])` writes the same in one call. Use the block form above when the figure carries a label, so `@reference` binds to the figure and not to the wrapper.
 
 = Epigraphs
 
