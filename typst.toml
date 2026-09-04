@@ -8,5 +8,5 @@ description = "Tufte-style documents with dual PDF/HTML output from a single sou
 repository = "https://github.com/LuxxxLucy/dual-tufte-typst"
 keywords = ["tufte", "html", "sidenote", "margin-note", "dual-format"]
 categories = ["paper", "report", "layout"]
-exclude = ["references/", "out/", "tests/", "*.pdf", "*.html", "!index.html", "!example/example.html"]
+exclude = ["references/", "out/", "tests/", "*.pdf", "*.html", "!index.html"]
 
