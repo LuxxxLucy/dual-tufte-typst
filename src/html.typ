@@ -37,14 +37,28 @@
     ]
 }
 
+// A <p>, <ol> or <ul> inside the note <span> closes the enclosing <p> and
+// drops the note into the main column, so emit block-level spans instead.
+// Inline styles survive `html-vendor-css-only`.
+#let _note-body(body) = {
+    let span(style, body) = html.elem("span", attrs: (("style"): "display: block; " + style))[#body]
+    show parbreak: span("height: 0.6rem;")[]
+    show enum: it => for (i, item) in it.children.enumerate() {
+        let n = if item.number != none { item.number } else { it.start + i }
+        span("")[#numbering(it.numbering, n) #item.body]
+    }
+    show list: it => for item in it.children { span("")[#sym.bullet #item.body] }
+    body
+}
+
 #let _sidenote-triplet(body) = {
     _toggle("sn-", extra-class: _CLS.sidenote-num)
-    html.elem("span", attrs: (("class"): _CLS.sidenote))[#body]
+    html.elem("span", attrs: (("class"): _CLS.sidenote))[#_note-body(body)]
 }
 
 #let _marginnote-triplet(body) = {
     _toggle("mn-", glyph: _MN-GLYPH)
-    html.elem("span", attrs: (("class"): _CLS.marginnote))[#body]
+    html.elem("span", attrs: (("class"): _CLS.marginnote))[#_note-body(body)]
 }
 
 #let sidenote-html(numbered, body) = {
