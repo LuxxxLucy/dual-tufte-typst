@@ -102,7 +102,6 @@
         leading: 0.25em,
         inset: (left: 2em, right: 0.9em, top: 0.5em, bottom: 0.5em),
     ),
-    figure-caption: (dy: 1em),
 )
 
 #let _is-dict(v) = type(v) == dictionary

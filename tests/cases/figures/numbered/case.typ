@@ -1,5 +1,5 @@
-// Two main-figures in sequence — verifies figure counter advances and
-// margin captions stack correctly without overlap.
+// Two main-figures in sequence verify that the counter advances and
+// captions stack without overlap.
 
 Body before the first figure.
 

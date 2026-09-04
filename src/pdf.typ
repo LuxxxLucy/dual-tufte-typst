@@ -6,11 +6,6 @@
 #let _config-state = state("dual-tufte-config", default-config)
 #let _cfg() = _config-state.get()
 
-// Gate the `show figure: ...` rule. notefigure builds its own figure
-// and renders its own caption; without this flag the show rule stomps
-// the inner caption.
-#let _in-margin-figure = state("in-margin-figure", false)
-
 #let _dy(dy) = if dy == auto { 0pt } else { dy }
 
 #let _margin-text-style(cfg) = (
@@ -57,7 +52,6 @@
 #let main-figure-pdf(content, caption) = figure(content, caption: caption)
 
 #let margin-figure-pdf(content, caption, dy) = context {
-    _in-margin-figure.update(true)
     notefigure(
         content,
         caption: caption,
@@ -65,18 +59,12 @@
         counter: none,
         text-style: _caption-style(_cfg()),
     )
-    _in-margin-figure.update(false)
 }
 
-// Caption hoisted into the right margin via marginalia.note (mirrors
-// tufte-css `.fullwidth figcaption` floating right with margin-right: 24%).
-#let full-width-figure-pdf(content, caption) = context {
-    let cfg = _cfg()
-    wideblock(side: "outer", content)
-    if caption != none {
-        note(dy: 0pt, counter: none, text-style: _caption-style(cfg))[#caption]
-    }
-}
+#let full-width-figure-pdf(content, caption) = wideblock(
+    side: "outer",
+    figure(content, caption: caption),
+)
 
 #let _quote-block(cfg, body, attribution) = block(
     inset: cfg.quote.inset,
@@ -274,16 +262,10 @@
 
     show quote.where(block: true): it => _quote-block(cfg, it.body, it.attribution)
 
-    // Hoist figure caption into the margin (matches tufte-LaTeX
-    // \@tufte@caption@font), aligned ~1em below the figure top so the
-    // marginalia anchor lines up with the image. Skip when inside
-    // marginalia.notefigure (margin-figure-pdf), which owns its caption.
-    show figure: it => context {
-        if _in-margin-figure.get() { return it }
-        if it.caption != none {
-            note(dy: cfg.figure-caption.dy, counter: none, text-style: _caption-style(cfg))[#it.caption]
-        }
-        it.body
+    show figure.caption: it => {
+        set align(left)
+        set text(.._caption-style(cfg))
+        it
     }
 
     show footnote: it => sidenote-pdf(true, auto, it.body)

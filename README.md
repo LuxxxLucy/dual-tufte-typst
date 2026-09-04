@@ -58,7 +58,7 @@ The created folder contains `main.typ`, `refs.bib`, an executable `build.sh`, an
 | `sidenote(numbered: true, body)` | Numbered margin note with inline reference. |
 | `marginnote(body)` | Unnumbered margin note. |
 | `sidecite(key)` | Bibliography citation rendered as a numbered margin note. |
-| `main-figure(content, caption)` | Figure in the text column, caption in the margin. |
+| `main-figure(content, caption)` | Figure and caption in the text column. |
 | `margin-figure(content, caption)` | Figure entirely in the margin. |
 | `full-width-figure(content, caption)` | Figure spans text column + margin. |
 | `full-width(body)` | Block content spanning the full width. |

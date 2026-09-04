@@ -11,6 +11,7 @@
     epigraph: "epigraph",
     sans: "sans",
     subtitle: "subtitle",
+    figure-caption: "figure-caption",
 )
 
 // Inner span style for newthought: explicit font-variant ensures small
@@ -67,11 +68,10 @@
 
 #let main-figure-html(content, caption) = {
     html.elem("figure")[
-        #if caption != none {
-            _toggle("mn-fig-", glyph: _MN-GLYPH)
-            html.elem("span", attrs: (("class"): _CLS.marginnote))[#caption]
-        }
         #content
+        #if caption != none {
+            html.elem("figcaption")[#caption]
+        }
     ]
 }
 
@@ -81,7 +81,9 @@
     _toggle("mn-fig-", glyph: _MN-GLYPH)
     html.elem("span", attrs: (("class"): _CLS.marginnote))[
         #box[#content]
-        #if caption != none [ #caption]
+        #if caption != none {
+            html.elem("span", attrs: (("class"): _CLS.figure-caption))[#caption]
+        }
     ]
 }
 
@@ -148,6 +150,10 @@ div.fullwidth > table { width: 100%; }
 h4 { font-style: italic; font-weight: 400; font-size: 1.4rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }
 h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }
 pre code, pre code span { color: inherit !important; background: transparent !important; }
+figure img, .marginnote img { height: auto; }
+.figure-caption { display: block; margin-top: 0.4rem; }
+figure > figcaption { float: none; clear: both; max-width: 100%; margin: 0.4rem 0 0; }
+figure.fullwidth > figcaption { max-width: 55%; margin-right: 0; }
 .typst-frame use { fill: currentColor; }"
 
 #let _heading-slug(idx) = "h-" + str(idx + 1)
@@ -196,7 +202,7 @@ pre code, pre code span { color: inherit !important; background: transparent !im
         #show link: set text(fill: cfg.at("html-link-fill", default: html-text-fill))
         #show list: set block(width: 50%)
 
-        // Raw `#figure(...)` → main-figure (caption in margin). Render
+        // Raw `#figure(...)` → main-figure. Render
         // full caption (supplement + counter + body) so "Figure N: ..."
         // numbering is visible.
         #show figure: it => {

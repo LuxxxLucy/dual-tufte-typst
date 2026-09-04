@@ -1,4 +1,4 @@
-// Main-figure: image in main column, caption hoisted into the margin.
+// Main-figure: image and caption stay in the main column.
 
 Body text before the figure.
 
