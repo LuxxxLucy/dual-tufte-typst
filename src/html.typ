@@ -11,6 +11,8 @@
 
 #let _MN-GLYPH = "⊕"
 
+#let _in-frame = state("dual-tufte-in-frame", false)
+
 // label+input wrapped in `box[...]` so Typst doesn't break the
 // surrounding paragraph between the toggle and the trailing visible
 // `<span>`. The span sits as a sibling outside the box.
@@ -115,6 +117,8 @@ div.fullwidth > table { width: 100%; }
 img { height: auto; }
 .figure-caption { display: block; margin-top: 0.4rem; }
 .typst-frame use { fill: currentColor; }
+p.equation { text-align: center; position: relative; }
+p.equation > .equation-number { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
 article h1, article h2, article h3 { max-width: 55%; }
 h4 { font-style: italic; font-weight: 400; font-size: 1.4rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }
 h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem; margin-top: 2rem; margin-bottom: 0; }"
@@ -158,10 +162,18 @@ h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem;
             html.elem(tag, attrs: (("id"): _heading-slug(idx)))[#it.body]
         }
         // typst/typst#5512: no native MathML emit; inline SVG via html.frame.
-        #show math.equation: it => {
-            show: if it.block { x => x } else { box }
-            html.frame(it)
-        }
+        // The <p> gives the equation the paragraph type size and centres it
+        // as in the PDF target. The frame lays out an unnumbered copy; the
+        // original element steps the counter and carries the label.
+        #show math.equation: it => context if _in-frame.get() { it } else if it.block {
+            html.elem("p", attrs: (("class"): "equation"))[#box(html.frame({
+                _in-frame.update(true)
+                math.equation(block: true, numbering: none, it.body)
+                _in-frame.update(false)
+            }))#if it.numbering != none {
+                html.elem("span", attrs: (("class"): "equation-number"))[#counter(math.equation).display(it.numbering)]
+            }]
+        } else { box(html.frame(it)) }
         #show link: set text(fill: cfg.at("html-link-fill", default: html-text-fill))
         #show list: set block(width: 50%)
 
