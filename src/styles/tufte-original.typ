@@ -98,6 +98,6 @@
     ),
     quote: (size: 1.05em, leading: 0.48em, inset: (left: 1.8em, right: 1em, top: 1.05em, bottom: 0.85em)),
     link: (fill: rgb("#111111"), underline: true),
-    raw-block: (size: 0.84em, leading: 0.30em, inset: (left: 1.7em, right: 0.8em, top: 0.45em, bottom: 0.45em)),
+    raw-block: (size: 0.84em, inset: (left: 1.7em, right: 0.8em, top: 0.45em, bottom: 0.45em)),
     css: ("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",),
 )

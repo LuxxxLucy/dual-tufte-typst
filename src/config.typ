@@ -99,7 +99,7 @@
     toc: (title: [Contents], depth: 2, v-after: 1.5em),
     list: (indent: 1em, body-indent: 1em),
     raw-block: (
-        leading: 0.30em,
+        leading: auto,
         inset: (left: 2em, right: 0.9em, top: 0.5em, bottom: 0.5em),
     ),
 )

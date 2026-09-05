@@ -15,6 +15,21 @@
 )
 #let _margin-par-style(cfg) = (leading: cfg.margin-note.leading)
 
+// `raw-block.leading: auto` holds the code line gap at this fraction of the
+// body gap. An em follows the code font, which is smaller than the body, so
+// dividing by the size ratio stops the gap shrinking twice. 0.65em is
+// Typst's own default leading, used when a config leaves the body at `auto`.
+#let _RAW-LEADING-RATIO = 0.62
+
+#let _raw-leading(cfg, raw-size) = {
+    let given = cfg.raw-block.at("leading", default: auto)
+    if given != auto { return given }
+    let body = cfg.text.at("leading", default: auto)
+    let body-em = if body == auto or body.em == 0.0 { 0.65 } else { body.em }
+    let size-em = if raw-size == auto or raw-size.em == 0.0 { 1.0 } else { raw-size.em }
+    _RAW-LEADING-RATIO * body-em / size-em * 1em
+}
+
 // Tufte-LaTeX `\@tufte@caption@font = \@tufte@marginfont`: caption
 // inherits margin-note typography.
 #let _caption-style(cfg) = (
@@ -244,7 +259,7 @@
         let raw-size = cfg.raw-block.at("size", default: auto)
         if raw-size == auto { set text(font: cfg.fonts.mono) }
         else { set text(font: cfg.fonts.mono, size: raw-size) }
-        set par(leading: cfg.raw-block.leading)
+        set par(leading: _raw-leading(cfg, raw-size))
         block(inset: cfg.raw-block.inset, it)
     }
     show raw.where(block: false): it => {
