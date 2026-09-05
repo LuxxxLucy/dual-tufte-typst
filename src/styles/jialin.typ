@@ -64,7 +64,7 @@
     ),
     quote: (size: 1em, leading: 0.48em, inset: (left: 1.5em, right: 1em, top: 0.9em, bottom: 0.7em)),
     raw-block: (
-        leading: 0.26em,
+        leading: 0.30em,
         inset: (left: 1.25em, right: 0.7em, top: 0.38em, bottom: 0.38em),
     ),
     link: (fill: rgb(_link), underline: true),

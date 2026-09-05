@@ -27,7 +27,7 @@
     text: (fill: rgb("#2B2B2B"), leading: 0.44em),
     quote: (size: 0.95em, leading: 0.44em, inset: (left: 1.7em, right: 1em, top: 0.9em, bottom: 0.75em)),
     link: (fill: rgb("#222222")),
-    raw-block: (size: 0.82em, leading: 0.22em, inset: (left: 1.6em, right: 0.8em, top: 0.42em, bottom: 0.42em)),
+    raw-block: (size: 0.82em, leading: 0.30em, inset: (left: 1.6em, right: 0.8em, top: 0.42em, bottom: 0.42em)),
     // tufte-css underlines links with a background-gradient trick calibrated
     // for et-book; under Roboto Condensed it renders as a strikethrough.
     // Replace it with a plain font-aware underline (same shared rule the

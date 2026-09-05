@@ -31,7 +31,7 @@
     text: (fill: rgb(_fg), leading: 0.42em),
     quote: (size: 0.88em, leading: 0.4em, inset: (left: 1.35em, right: 0.9em, top: 0.72em, bottom: 0.58em)),
     link: (fill: rgb(_link), underline: true),
-    raw-block: (size: 0.84em, leading: 0.22em, inset: (left: 1.25em, right: 0.7em, top: 0.36em, bottom: 0.36em)),
+    raw-block: (size: 0.84em, leading: 0.30em, inset: (left: 1.25em, right: 0.7em, top: 0.36em, bottom: 0.36em)),
     "html-color-scheme": "light",
     css: ("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",),
     "html-extra-css": html-overlay(
