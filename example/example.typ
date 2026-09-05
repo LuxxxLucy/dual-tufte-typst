@@ -69,7 +69,15 @@ Pick a style by name, or pass `--input style=<name>` at the command line:
 typst compile --input style=envision --input target=html --features html doc.typ out.html
 ```
 
-Registered styles: `tufte-original`, `envision`, `jialin`, `terpret`, `orange-happy`, `bluewhite`. Each style record can also carry a `css:` field listing one or more stylesheet URLs that the HTML target injects (`envision` loads tufte.min.css plus rstudio's envisioned overlay this way). Override the active style's CSS for a single document with the `html-css:` parameter:
+We have the following styles:
+- `tufte-original`
+- `envision`
+- `jialin`
+- `terpret`
+- `orange-happy`
+- `bluewhite`.
+
+Each style record can also carry a `css:` field listing one or more stylesheet URLs that the HTML target injects (`envision` loads tufte.min.css plus rstudio's envisioned overlay this way). Override the active style's CSS for a single document with the `html-css:` parameter:
 
 ```typst
 #show: tufte.with(
@@ -92,35 +100,36 @@ View source alongside output to learn the features.
 
 == Sections and Headings
 
-Organize your document with titles and headings. The document title is set via `tufte.with(title: ...)`. Use `=` for sections and `==` for subsections. Third-level headings (`===`) exist but are discouraged in the Tufte philosophy.#sidenote[Tufte: "The Feynman lectures write about all of physics in 1800 pages using only 2 levels of headings. Undergraduate Caltech physics is complicated material, but it didn't require elaborate hierarchy."]
+Organize your document with titles and headings.
+- Set document title via `tufte.with(title: ...)`.
+- Use `=` for sections and `==` for subsections.
+- Third-level headings (`===`) exist but are discouraged in the Tufte philosophy.#sidenote[Tufte: "The Feynman lectures write about all of physics in 1800 pages using only 2 levels of headings. Undergraduate Caltech physics is complicated material, but it didn't require elaborate hierarchy."]
 
-#new-thought[In his later books], Tufte starts sections with vertical space, a non-indented paragraph, and the first few words in small caps. Use `new-thought` for this. Be consistent: don't alternate headers and `new-thought`. Pick one.
+#new-thought[In his later books], Tufte starts sections with a non-indented paragraph, and the first few words of the paragraph in small caps. Use `new-thought` for this.
 
 == Text
 
-Body text uses ET Book (or Palatino/Georgia fallback), with slightly muted colors for reduced contrast.#sidenote[PDF: `fill: luma(20%)`. HTML: `#111` on `#fffff8` background.] Links appear as #link("#")[underlined text], matching body color rather than distracting blue.
+Body text uses ET Book (or Palatino/Georgia fallback), with slightly muted colors for reduced contrast.#sidenote[PDF: `fill: luma(20%)`. HTML: `#111` on `#fffff8` background.] Links are shown as #link("#")[underlined text].
 
-Standard formatting: _emphasis_, *strong*, `code`. Math is covered in its own section below.
+Standard formatting: _emphasis_, *strong*, `code`.
 
 = Sidenotes
 
-#new-thought[Sidenotes are the signature] Tufte element.#sidenote[This is a sidenote.] They display in the margin rather than forcing readers to the page bottom. On small screens (HTML), they collapse to toggleable content.
+#new-thought[Sidenotes are the signature] Tufte element.#sidenote[This is a sidenote.] They display in the margin rather than forcing readers to the footnote or the end of the document. On small screens (HTML), they collapse to toggleable content.
 
-Sidenotes have two parts: a superscript reference number inline, and the note content in the margin. The template handles both automatically.
+Sidenotes have two parts: a superscript reference inline number, and the note content in the margin column.
 
 If you want a sidenote without numbering, use a margin note.#marginnote[This is a margin note. No number precedes it.] On large screens, margin notes are sidenotes without reference numbers. On small screens, they toggle with ⊕ instead of a number.
 
 Regular Typst footnotes convert to sidenotes automatically.#footnote[Like this one!]
 
-For citations, use `sidecite()` to place the reference in the margin alongside the text.#sidecite(<tufte2001>) This keeps the text flowing while providing immediate access to sources without jumping to a bibliography.
+For citations, use `sidecite()` to place the reference in the margin alongside the text.#sidecite(<tufte2001>) This provides immediate access to sources in the margin column without jumping to a bibliography.
 
 = Figures
 
-Tufte emphasizes tight integration of graphics with text—figures stay with the discussion, not relegated to separate pages.
-
 == Standard Figures
 
-A plain Typst `figure` sits in the text column:
+A native Typst `figure` is supported which appears in the main text column:
 
 #figure(
   image("../assets/images/exports-imports.png", width: 100%),
@@ -129,23 +138,26 @@ A plain Typst `figure` sits in the text column:
 
 == Margin Figures
 
+We also have figures in the margin column using `#margin-figure()`
+
 #margin-figure(
   image("../assets/images/rhino.png", width: 100%),
   caption: [Dürer's 1515 rhinoceros woodcut, from Tufte's _Visual Explanations_.],
 )
 
-Smaller graphics fit entirely in the margin. Text flows uninterrupted while the figure provides visual context. Works well for portraits, icons, or supporting details.
+This makes the text flow uninterrupted by placing the images and captions in the margin side column.
+Works well for portraits, icons, or supporting details.
 
 == Full-Width Figures
 
-Data-dense visualizations may require the full page width:
+Large figures can use full page width with `#full-width[#figure(...)]`:
 
 #full-width[#figure(
   image("../assets/images/napoleons-march.png", width: 100%),
   caption: [Minard's 1869 map of Napoleon's Russian campaign. Tufte called it "probably the best statistical graphic ever drawn."],
 )]
 
-`#full-width-figure(image(..), caption: [..])` writes the same in one call. Use the block form above when the figure carries a label, so `@reference` binds to the figure and not to the wrapper.
+`#full-width-figure(image(..), caption: [..])` is a quick alias for it.
 
 = Epigraphs
 
@@ -163,7 +175,7 @@ Epigraphs introduce sections with thematic quotations:
 
 = Mathematics
 
-Inline math sits in running text, e.g. $E = m c^2$, $alpha + beta = gamma$, or a triangle-inequality bound $norm(u + v) <= norm(u) + norm(v)$. Greek and common symbols use Typst names: $alpha, beta, gamma, pi, infinity, partial, nabla, plus.minus, tilde.equiv$.
+Inline math is supported: $E = m c^2$, $alpha + beta = gamma$, $norm(u + v) <= norm(u) + norm(v)$. Greek and common symbols use Typst names: $alpha, beta, gamma, pi, infinity, partial, nabla, plus.minus, tilde.equiv$.
 
 Display math centers on its own line and auto-numbers#sidenote[Numbering set in `setup-html` / `setup-pdf` via `set math.equation(numbering: "(1)")`. Override locally with another `set math.equation(...)` rule.]:
 
@@ -173,6 +185,8 @@ Aligned multi-line derivations use `&` to mark the alignment column:
 
 $ (a + b)^2 &= (a + b)(a + b) \
             &= a^2 + 2 a b + b^2 $
+
+More examples.
 
 Sums and products with bounds:
 
@@ -210,11 +224,7 @@ Code blocks use monospace typography:
   (prn (* b d)))
 ```
 
-Inline code like `tufte.with()` integrates naturally with prose.
-
 = Lists and Block Quotes
-
-Lists work as expected in Typst:
 
 Unordered lists for non-sequential items:
 - First item shows basic usage
@@ -226,7 +236,7 @@ Ordered lists for sequential steps:
 + Compile the same source to HTML
 + Compare the outputs side-by-side
 
-Block quotes set off extended quotations with appropriate attribution:
+Block quotes:
 
 #quote(block: true, attribution: [Edward Tufte])[
   Above all else show the data.
@@ -260,7 +270,5 @@ The unified API means you write once:
 = Conclusion
 
 Many thanks to Edward Tufte for leading the way with his work. This project builds on Tufte-LaTeX, Tufte CSS, and various Typst implementations by the community.#sidenote[See `src/lib.typ` header for full references.]
-
-The source of this document demonstrates every feature. View it alongside the rendered output—in both PDF and HTML—to see how each element translates across formats.
 
 #bibliography("../refs.bib", style: "chicago-author-date")

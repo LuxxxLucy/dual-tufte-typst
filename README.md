@@ -58,10 +58,11 @@ The created folder contains `main.typ`, `refs.bib`, an executable `build.sh`, an
 | `sidenote(numbered: true, body)` | Numbered margin note with inline reference. |
 | `marginnote(body)` | Unnumbered margin note. |
 | `sidecite(key)` | Bibliography citation rendered as a numbered margin note. |
-| `main-figure(content, caption)` | Figure and caption in the text column. |
+| `figure(content, caption: ..)` | the native Typst figure. |
+| `main-figure(content, caption)` | alias to `figure(...)`. |
 | `margin-figure(content, caption)` | Figure entirely in the margin. |
-| `full-width-figure(content, caption)` | Figure spans text column + margin. |
 | `full-width(body)` | Block content spanning the full width. |
+| `full-width-figure(content, caption)` | alias to `full-width(figure(..))`. |
 | `epigraph(quote, author)` | Section-opening quotation. |
 | `new-thought(body)` | Tufte's small-caps section opener. |
 | `sans(body)` | Sans-serif paragraph. |
@@ -96,11 +97,11 @@ CeTZ figure with the same source compiling for both targets:
 
 ```typst
 #import "@preview/cetz:0.4.2"
-#import "src/lib.typ": tufte, diagram, main-figure
+#import "src/lib.typ": tufte, diagram
 
 #show: tufte.with(title: [...])
 
-#main-figure(
+#figure(
   diagram(cetz.canvas({
     import cetz.draw: *
     circle((0, 0), radius: 1)
@@ -202,9 +203,11 @@ config: (page: (width: 25cm, height: 230cm))          // poster
 
 ## Limitations
 
+known not supported and bugs
+
 - **HTML math.** Typst HTML has no native MathML emit (tracking [typst/typst#5512](https://github.com/typst/typst/issues/5512)). Each `$...$` renders as inline SVG via `html.frame`. PDF math stays native. SVG glyphs use `currentColor` and follow surrounding text colour, but they are not selectable and lack MathML semantics.
 - **Mobile sidenote toggle.** Typst's HTML emit does not preserve tufte-css's `label + input + span` adjacent-sibling pattern across paragraphs. Sidenotes render inline on small screens. Click-to-expand toggle is unimplemented.
-- **Multi-paragraph sidenote / marginnote.** A sidenote or marginnote whose body spans multiple paragraphs emits `<p>` inside `<span class="sidenote">`, which browsers reparent out of the inline span. Cases under `tests/limitations/multi-paragraph-{sidenote,marginnote}/` reproduce the failure.
+- **Blocks inside notes (HTML).** Figures, code blocks and block math does not work for HTML margin notes. (PDF is fine).
 - **HTML CeTZ / drawables.** HTML target drops raw frames. Wrap canvases in `diagram(...)` to emit them as inline SVG.
 - **HTML TOC.** Anchors are positional (`h-1`, `h-2`, ...), not semantic slugs.
 
