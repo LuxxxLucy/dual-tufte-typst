@@ -101,6 +101,7 @@
     raw-block: (
         leading: auto,
         inset: (left: 2em, right: 0.9em, top: 0.5em, bottom: 0.5em),
+        html-inline-size: "0.85em", // HTML inline code relative to the text around it
     ),
 )
 

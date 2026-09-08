@@ -219,7 +219,7 @@ h5 { font-style: italic; font-weight: 400; font-size: 1.2rem; line-height: 2rem;
                     ("href"): css-link,
                 ))[]
             }
-            #html.elem("style")[#_INLINE_STYLE]
+            #html.elem("style")[#("code, .sidenote > code, .marginnote > code { font-size: " + cfg.raw-block.at("html-inline-size", default: "0.85em") + "; }\n" + _INLINE_STYLE)]
             // Emitted last so it wins on source order.
             #let extra = cfg.at("html-extra-css", default: none)
             #if extra != none and extra != "" { html.elem("style")[#extra] }

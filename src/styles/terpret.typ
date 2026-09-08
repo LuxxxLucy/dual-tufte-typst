@@ -48,6 +48,6 @@
             + " article section > h1 { font-size: 1.48rem; line-height: 1.25; margin-top: 2.2rem; margin-bottom: 0.45rem; }"
             + " article .epigraph + h1 { margin-top: 2rem; }"
             + " article h2 { font-size: 1.15rem; line-height: 1.35; margin-top: 1.9rem; border-bottom: 1px solid #E1DED4; padding-bottom: 0.18em; }"
-            + " code:not(pre code) { background: #F1F0E8; padding: 0.08em 0.28em; border-radius: 3px; font-size: 0.9em; }",
+            + " code:not(pre code) { background: #F1F0E8; padding: 0.08em 0.28em; border-radius: 3px; }",
     ),
 ))
