@@ -24,8 +24,8 @@
     ),
     sizes: (body: 9pt),
     headings: (
-        h1: (weight: "regular", size: 1.15em, style: "italic", v-before: 0.45em, v-after: 0.05em, lead-kern: -0.05em),
-        h2: (weight: "regular", size: 1em, style: "italic", v-before: 0.35em, v-after: 0.1em, lead-kern: 0em),
+        h1: (weight: "regular", size: 1.3em, style: "italic", v-before: 0.45em, v-after: 0.05em, lead-kern: -0.05em),
+        h2: (weight: "regular", size: 1.12em, style: "italic", v-before: 0.35em, v-after: 0.1em, lead-kern: 0em),
         h3: (weight: "regular", size: 1em, style: "italic", v-before: 0.35em, v-after: 0.1em, lead-kern: 0em),
     ),
     margin-note: (

@@ -183,8 +183,12 @@
 
 // `lead-kern` pulls the italic h1 left so it doesn't visually creep
 // right of the baseline.
-#let _heading-rule(spec) = it => {
+// Typst scales heading text by level (1.4em / 1.2em / 1em) before a show
+// rule runs. Resetting to the body size first makes `headings.hN.size` mean
+// what it says, a multiple of the body, and keeps the title above h1.
+#let _heading-rule(cfg, spec) = it => {
     set par(first-line-indent: 0em)
+    set text(size: cfg.sizes.body)
     text(weight: spec.weight, size: spec.size, style: spec.style, {
         v(spec.v-before)
         if spec.lead-kern != 0em { h(spec.lead-kern) }
@@ -278,9 +282,9 @@
 
     show footnote: it => sidenote-pdf(true, auto, it.body)
 
-    show heading.where(level: 1): _heading-rule(cfg.headings.h1)
-    show heading.where(level: 2): _heading-rule(cfg.headings.h2)
-    show heading.where(level: 3): _heading-rule(cfg.headings.h3)
+    show heading.where(level: 1): _heading-rule(cfg, cfg.headings.h1)
+    show heading.where(level: 2): _heading-rule(cfg, cfg.headings.h2)
+    show heading.where(level: 3): _heading-rule(cfg, cfg.headings.h3)
 
     _render-title-block(title, author, email, date, cfg)
     _render-abstract(abstract, cfg)
