@@ -60,11 +60,10 @@
         + " article * { max-width: 100% !important; min-width: 0 !important; box-sizing: border-box; overflow-wrap: anywhere; word-break: normal; }"
         + " body { width: auto !important; padding: 0 !important; margin: 0 !important; } article { width: auto !important; margin: 0 !important; padding: 2rem 1.25rem !important; }"
         + " article > h1, article p.subtitle, article section > h1, article h2, article h3, article p, article ol, article ul, article blockquote, article pre { width: 100% !important; max-width: 100% !important; min-width: 0 !important; box-sizing: border-box; overflow-wrap: anywhere; }"
-        + " .sidenote, .marginnote, figcaption { float: none !important; clear: both; display: block; width: 100% !important; max-width: 100% !important; margin: 0.75rem 0; box-sizing: border-box; }"
+        + " figcaption { float: none !important; clear: both; display: block; width: 100% !important; max-width: 100% !important; margin: 0.75rem 0; box-sizing: border-box; }"
         + " article > h1 { font-size: clamp(1.65rem, 7vw, 2.2rem) !important; line-height: 1.1 !important; margin-top: 2rem !important; }"
         + " article section > h1 { font-size: clamp(1.35rem, 5vw, 1.7rem) !important; } article blockquote { margin: 2rem 0 !important; padding: 0 !important; font-size: 1rem !important; line-height: 1.5 !important; } article blockquote p { width: 100% !important; max-width: 100% !important; margin: 0 0 0.7rem 0 !important; font-size: 1rem !important; line-height: 1.5 !important; }"
         + " article blockquote footer { width: 100% !important; max-width: 100% !important; font-size: 0.92rem !important; line-height: 1.35 !important; text-align: left !important; }"
-        + " label.margin-toggle, input.margin-toggle { display: inline; }"
         + "}"
         + "code, pre, .code, kbd, samp { font-family: " + mono-font + "; }"
         + link-rules(link: link, link-underline: link-underline)

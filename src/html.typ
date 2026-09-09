@@ -13,16 +13,13 @@
 
 #let _in-frame = state("dual-tufte-in-frame", false)
 
-// label+input wrapped in `box[...]` so Typst doesn't break the
-// surrounding paragraph between the toggle and the trailing visible
-// `<span>`. The span sits as a sibling outside the box.
+// label, input and note span stay adjacent siblings: tufte-css toggles
+// the note with `.margin-toggle:checked + .sidenote`.
 #let _toggle(prefix, glyph: "", label-class: "margin-toggle") = context {
     _id-counter.step()
     let id = prefix + str(_id-counter.get().first())
-    box[
-        #html.elem("label", attrs: (("for"): id, ("class"): label-class))[#glyph]
-        #html.elem("input", attrs: (("type"): "checkbox", ("id"): id, ("class"): "margin-toggle"))[]
-    ]
+    html.elem("label", attrs: (("for"): id, ("class"): label-class))[#glyph]
+    html.elem("input", attrs: (("type"): "checkbox", ("id"): id, ("class"): "margin-toggle"))[]
 }
 
 // A block element inside the note <span> closes the enclosing <p> and drops

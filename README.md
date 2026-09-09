@@ -206,7 +206,6 @@ config: (page: (width: 25cm, height: 230cm))          // poster
 known not supported and bugs
 
 - **HTML math.** Typst HTML has no native MathML emit (tracking [typst/typst#5512](https://github.com/typst/typst/issues/5512)). Each `$...$` renders as inline SVG via `html.frame`. PDF math stays native. SVG glyphs use `currentColor` and follow surrounding text colour, but they are not selectable and lack MathML semantics.
-- **Mobile sidenote toggle.** Typst's HTML emit does not preserve tufte-css's `label + input + span` adjacent-sibling pattern across paragraphs. Sidenotes render inline on small screens. Click-to-expand toggle is unimplemented.
 - **Blocks inside notes (HTML).** Figures, code blocks and block math does not work for HTML margin notes. (PDF is fine).
 - **HTML CeTZ / drawables.** HTML target drops raw frames. Wrap canvases in `diagram(...)` to emit them as inline SVG.
 - **HTML TOC.** Anchors are positional (`h-1`, `h-2`, ...), not semantic slugs.
