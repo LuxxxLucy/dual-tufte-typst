@@ -1,53 +1,51 @@
-// terpret: plain, nerdy technical style. Inter body + Space Grotesk
-// headings + JetBrains Mono, with a near-white page and restrained blue.
+// terpret: plain technical style. Inter text, Space Grotesk title,
+// JetBrains Mono code.
 
-#import "../config.typ": merge-config
 #import "_stacks.typ" as stacks
-#import "_html_overlay.typ": html-overlay
-#import "tufte-original.typ": tufte-original
 
-#let _bg = "#FAFAF8"
-#let _fg = "#1B1B1F"
-#let _link = "#1F6FEB"
-#let _heading = "#182338"
-#let _note = "#4A4A52"
+#let _space-grotesk = "'Space Grotesk', 'Inter', system-ui, sans-serif"
 
-#let terpret = merge-config(tufte-original, (
-    page: (fill: rgb(_bg)),
-    sizes: (body: 9.4pt, small: 0.78em),
-    fonts: (
-        body:   stacks.inter,
-        sans:   stacks.inter,
-        mono:   stacks.jetbrains-mono,
-        header: stacks.space-grotesk,
+#let terpret = (
+    colors: (bg: "#FAFAF8", fg: "#1B1B1F", link: "#1F6FEB", heading: "#182338", note: "#4A4A52", rule: "#E1DED4", code-bg: "#F1F0E8"),
+    html: (
+        color-scheme: "light",
+        sheets: ("https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap",),
+        overlay: "full",
+        extra: ```css
+            article p.subtitle { margin-top: 0.25rem; }
+            article .epigraph + h1 { margin-top: 2rem; }
+            article h2 { border-bottom: 1px solid var(--rule); padding-bottom: 0.18em; }
+            code:not(pre code) { background: var(--code-bg); padding: 0.08em 0.28em; border-radius: 3px; }
+        ```.text,
     ),
-    headings: (
-        h1: (weight: "medium", size: 1.12em, style: "normal", v-before: 0.7em, v-after: 0.2em),
-        h2: (weight: "medium", size: 1em, style: "normal", v-before: 0.45em, v-after: 0.15em),
-        h3: (weight: "medium", style: "normal"),
+    typography: (
+        print: (
+            body:    (font: stacks.inter, size: 9.4pt, line: 13pt, par: 1.40),
+            sans:    (font: stacks.inter),
+            note:    (size: 0.76, line: 0.63),
+            caption: (size: 0.78, line: 0.69),
+            quote:   (size: 0.88, line: 0.72, before: 2.73, after: 2.26, left: 1.35, right: 0.9),
+            code:    (font: stacks.jetbrains-mono, size: 0.84, line: 0.79, before: 1.52, after: 1.61, left: 1.0, right: 0.56, inline: 0.94),
+            h1:      (weight: 500, style: "normal", size: 1.12, before: 2.14, after: 1.67),
+            h2:      (weight: 500, style: "normal", size: 1.00, before: 1.73, after: 1.51),
+            h3:      (weight: 500, style: "normal", before: 1.69, after: 1.47),
+            title:   (font: stacks.space-grotesk, weight: 500, size: 1.24, after: 1.62),
+            meta:    (style: "normal", size: 0.76, after: 2.13),
+            header:  (font: stacks.space-grotesk),
+            marks:   (anchor: 0.76em, margin: 0.92em),
+            newthought: (lower: 0.87),
+        ),
+        web: (
+            body:    (font: "'Inter', system-ui, sans-serif", size: 17, line: 27),
+            note:    (size: 14, line: 22),
+            quote:   (size: 15, line: 23),
+            code:    (font: "'JetBrains Mono', ui-monospace, monospace", size: 14, line: 22, inline: 0.84),
+            title:   (font: _space-grotesk, size: (30, 40), line: 1.12, before: 48, after: 5),
+            meta:    (style: "normal", size: 14, line: 20),
+            h1:      (font: _space-grotesk, size: (22, 26), line: 1.25, before: 33, after: 7),
+            h2:      (font: _space-grotesk, size: (18, 20), line: 1.35, before: 28),
+            h3:      (font: _space-grotesk, size: 17, line: 1.4),
+            newthought: (font: _space-grotesk),
+        ),
     ),
-    margin-note: (size: 0.76em, font: stacks.inter, style: "normal", leading: 0.42em),
-    title-block: (font: stacks.space-grotesk, weight: "medium", size: 1.24em, meta-style: "normal", meta-size: 0.76em, v-after: 1.0em),
-    text: (fill: rgb(_fg), leading: 0.42em),
-    quote: (size: 0.88em, leading: 0.4em, inset: (left: 1.35em, right: 0.9em, top: 0.72em, bottom: 0.58em)),
-    link: (fill: rgb(_link), underline: true),
-    raw-block: (size: 0.84em, inset: (left: 1.25em, right: 0.7em, top: 0.36em, bottom: 0.36em)),
-    "html-color-scheme": "light",
-    css: ("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",),
-    "html-extra-css": html-overlay(
-        import-css: "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap');",
-        body-font: "'Inter', system-ui, sans-serif",
-        heading-font: "'Space Grotesk', 'Inter', system-ui, sans-serif",
-        mono-font: "'JetBrains Mono', ui-monospace, monospace",
-        bg: _bg, fg: _fg, link: _link, heading-color: _heading, note-color: _note,
-        link-underline: true,
-        body-size: "1rem", body-line-height: "1.55",
-        quote-size: "1.05rem", quote-line-height: "1.55rem",
-        extra: " article > h1 { font-size: 2rem; line-height: 1.12; margin-top: 3.2rem; margin-bottom: 0.35rem; }"
-            + " article p.subtitle { font-size: 0.92rem; line-height: 1.3; font-style: normal; margin-top: 0.25rem; }"
-            + " article section > h1 { font-size: 1.48rem; line-height: 1.25; margin-top: 2.2rem; margin-bottom: 0.45rem; }"
-            + " article .epigraph + h1 { margin-top: 2rem; }"
-            + " article h2 { font-size: 1.15rem; line-height: 1.35; margin-top: 1.9rem; border-bottom: 1px solid #E1DED4; padding-bottom: 0.18em; }"
-            + " code:not(pre code) { background: #F1F0E8; padding: 0.08em 0.28em; border-radius: 3px; }",
-    ),
-))
+)

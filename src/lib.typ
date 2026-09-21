@@ -1,5 +1,5 @@
 // Dual-format Tufte template. One .typ source compiles to PDF (marginalia
-// handout) or HTML (tufte-css). All configuration in `config.typ`.
+// handout) or HTML (tufte-css).
 //
 // Author: Jialin Lu <luxxxlucy@gmail.com>
 // License: MIT
@@ -9,40 +9,28 @@
 //   Tufte CSS:          https://github.com/edwardtufte/tufte-css
 //   marginalia (Typst): https://typst.app/universe/package/marginalia
 
-#import "config.typ": default-config, merge-config
 #import "styles/registry.typ" as styles
 #import "pdf.typ"
-#import "html.typ"
+#import "html.typ" as web
 
-// Resolved once per compile so the dispatch helpers below need no `context`.
-#let _IS-HTML = sys.inputs.at("target", default: "pdf") == "html"
+#let _is-html = sys.inputs.at("target", default: "pdf") == "html"
+#let _target = if _is-html { web } else { pdf }
 
-#let sidenote(numbered: true, dy: auto, body) = {
-    if _IS-HTML { html.sidenote-html(numbered, body) }
-    else        { pdf.sidenote-pdf(numbered, dy, body) }
-}
+#let sidenote(numbered: true, dy: 0pt, body) = _target.sidenote(numbered, dy, body)
 
-#let marginnote(dy: auto, body) = sidenote(numbered: false, dy: dy, body)
+#let marginnote(dy: 0pt, body) = sidenote(numbered: false, dy: dy, body)
 
-#let margin-figure(content, caption: none, dy: auto) = {
-    if _IS-HTML { html.margin-figure-html(content, caption) }
-    else        { pdf.margin-figure-pdf(content, caption, dy) }
-}
+#let sidecite(key, dy: 0pt) = sidenote(dy: dy, cite(key, form: "full"))
 
-#let epigraph(quote, author: none) = {
-    if _IS-HTML { html.epigraph-html(quote, author) }
-    else        { pdf.epigraph-pdf(quote, author) }
-}
+#let margin-figure(content, caption: none, dy: 0pt) = _target.margin-figure(content, caption, dy)
 
-#let new-thought(body) = {
-    if _IS-HTML { html.new-thought-html(body) }
-    else        { pdf.new-thought-pdf(body) }
-}
+#let epigraph(quote, author: none) = _target.epigraph(quote, author)
 
-#let full-width(body) = {
-    if _IS-HTML { html.full-width-html(body) }
-    else        { pdf.full-width-pdf(body) }
-}
+#let new-thought(body) = _target.new-thought(body)
+
+#let full-width(body) = _target.full-width(body)
+
+#let sans(body) = _target.sans(body)
 
 #let main-figure(content, caption: none) = figure(content, caption: caption)
 
@@ -50,27 +38,24 @@
 // `#full-width[#figure(..) <fig>]` to reference one.
 #let full-width-figure(content, caption: none) = full-width(figure(content, caption: caption))
 
-#let sidecite(key, dy: auto) = {
-    if _IS-HTML { html.sidecite-html(key) }
-    else        { pdf.sidecite-pdf(key, dy) }
+// Embed CeTZ or other drawn content as inline SVG in HTML.
+#let diagram(body) = if _is-html { html.frame(body) } else { body }
+
+// Deep merge; `overrides` wins.
+#let merge-config(base, overrides) = {
+    if overrides == none or overrides == auto { return base }
+    let out = base
+    for (k, v) in overrides {
+        if type(out.at(k, default: none)) == dictionary and type(v) == dictionary {
+            out.insert(k, merge-config(out.at(k), v))
+        } else {
+            out.insert(k, v)
+        }
+    }
+    out
 }
 
-#let sans(body) = {
-    if _IS-HTML { html.sans-html(body) }
-    else        { pdf.sans-pdf(body) }
-}
-
-// Wrap CeTZ / arbitrary drawable content so HTML output gets inline SVG.
-// HTML target drops raw frames; `html.frame` lays the body out and embeds
-// the SVG. PDF target needs no wrapper. Use: `#diagram(cetz.canvas(...))`.
-#let diagram(body) = {
-    if _IS-HTML { html.frame(body) }
-    else        { body }
-}
-
-// `style` selects a record from `src/styles/registry.typ` (string name) or
-// uses a passed record literal directly. `config` further overrides on top
-// of the resolved style. Merge order: default-config → style → config.
+// Merge order: tufte-original, the style, then `config`.
 #let tufte(
     title: none,
     author: none,
@@ -87,22 +72,16 @@
     body,
 ) = {
     set text(lang: lang)
-    let style-rec = if type(style) == str { styles.resolve(style) } else { style }
-    let cfg = merge-config(default-config, style-rec)
-    cfg = merge-config(cfg, if config == auto { (:) } else { config })
-    // Per-style CSS for HTML target; overridden by explicit html-css= arg.
-    let css = if html-css != auto { html-css }
-              else if "css" in cfg and cfg.css != auto { cfg.css }
-              else { auto }
+    let cfg = merge-config(merge-config(styles.tufte-original, styles.resolve(style)), config)
+    if html-css != auto { cfg.html.css = if type(html-css) == str { (html-css,) } else { html-css } }
 
-    let body-with-bib = {
-        body
-        if bib != none { bib }
-    }
-
-    if _IS-HTML {
-        html.setup-html(cfg, title, author, email, date, abstract, toc, lang, css, head-extra, body-with-bib)
-    } else {
-        pdf.setup-pdf(cfg, title, author, email, date, abstract, toc, body-with-bib)
-    }
+    let doc = (
+        title: title,
+        meta: (author, email, if type(date) == datetime { date.display() } else { date }).filter(p => p != none),
+        abstract: abstract,
+        toc: toc,
+        lang: lang,
+        head-extra: head-extra,
+    )
+    _target.setup(cfg, doc, { body; bib })
 }

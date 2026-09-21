@@ -1,55 +1,49 @@
-// bluewhite: clean OpenAI/Sakana-like ML blog style. Public Sans in
-// PDF and OpenAI Sans/Public Sans/system sans on the web, with restrained
-// blue accents on a mostly white page.
+// bluewhite: clean ML blog style after the OpenAI and Sakana blogs.
 
-#import "../config.typ": merge-config
 #import "_stacks.typ" as stacks
-#import "_html_overlay.typ": html-overlay
-#import "tufte-original.typ": tufte-original
 
-#let _bg = "#FFFFFF"
-#let _fg = "#17191F"
-#let _link = "#315E9F"
-#let _heading = "#111318"
-#let _note = "#687385"
+#let _inter = "Inter, 'OpenAI Sans', 'Public Sans', system-ui, sans-serif"
 
-#let bluewhite = merge-config(tufte-original, (
-    page: (fill: rgb(_bg)),
-    sizes: (body: 9.5pt, small: 0.78em),
-    fonts: (
-        body:   stacks.inter,
-        sans:   stacks.inter,
-        mono:   stacks.jetbrains-mono,
-        header: stacks.inter,
+#let bluewhite = (
+    link: (underline: false),
+    colors: (bg: "#FFFFFF", fg: "#17191F", link: "#315E9F", heading: "#111318", note: "#687385", meta: "#596273", quote: "#687385"),
+    html: (
+        color-scheme: "light",
+        sheets: ("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap",),
+        overlay: "full",
+        extra: ```css
+            body { font-optical-sizing: auto; }
+            article p.subtitle { margin-top: 0.25rem; }
+            article .epigraph + h1 { margin-top: 1.95rem; }
+        ```.text,
     ),
-    headings: (
-        h1: (weight: "medium", size: 1.12em, style: "normal", v-before: 0.75em, v-after: 0.2em),
-        h2: (weight: "medium", size: 1em, style: "normal", v-before: 0.45em, v-after: 0.15em),
-        h3: (weight: "medium", style: "normal"),
+    typography: (
+        print: (
+            body:    (font: stacks.inter, size: 9.5pt, line: 13pt, par: 1.40),
+            sans:    (font: stacks.inter),
+            note:    (size: 0.76, line: 0.63),
+            caption: (size: 0.78, line: 0.69),
+            quote:   (size: 0.88, line: 0.73, before: 2.75, after: 2.26, left: 1.45, right: 0.9),
+            code:    (font: stacks.jetbrains-mono, size: 0.84, line: 0.80, before: 1.52, after: 1.61, left: 1.04, right: 0.6, inline: 0.94),
+            h1:      (weight: 500, style: "normal", size: 1.12, before: 2.18, after: 1.67),
+            h2:      (weight: 500, style: "normal", size: 1.00, before: 1.73, after: 1.51),
+            h3:      (weight: 500, style: "normal", before: 1.69, after: 1.47),
+            title:   (weight: 600, size: 1.36, after: 1.62),
+            meta:    (style: "normal", size: 0.76, after: 2.12),
+            marks:   (anchor: 0.76em, margin: 0.92em),
+            newthought: (lower: 0.87),
+        ),
+        // After the OpenAI blog type scale.
+        web: (
+            body:    (font: _inter, size: 17, line: 28),
+            note:    (size: 14, line: 22),
+            quote:   (style: "italic", size: 15, line: 24),
+            code:    (font: "'JetBrains Mono', ui-monospace, monospace", size: 14, line: 22, inline: 0.84),
+            title:   (weight: 500, size: (32, 44), line: 1.1, track: -0.02, before: 46, after: 5),
+            meta:    (style: "normal", size: 14, line: 20),
+            h1:      (weight: 500, size: (24, 30), line: 1.25, track: -0.01, before: 32, after: 7),
+            h2:      (weight: 500, size: (20, 22), line: 1.3, track: -0.01, before: 28),
+            h3:      (weight: 500, size: (17, 18), line: 1.4),
+        ),
     ),
-    margin-note: (size: 0.76em, font: stacks.inter, style: "normal", leading: 0.42em),
-    title-block: (font: stacks.inter, weight: "semibold", size: 1.36em, meta-style: "normal", meta-size: 0.76em, v-after: 1.0em),
-    text: (fill: rgb(_fg), leading: 0.42em),
-    quote: (size: 0.88em, leading: 0.42em, inset: (left: 1.45em, right: 0.9em, top: 0.75em, bottom: 0.58em)),
-    link: (fill: rgb(_link), underline: false),
-    raw-block: (size: 0.82em, inset: (left: 1.3em, right: 0.75em, top: 0.36em, bottom: 0.36em)),
-    "html-color-scheme": "light",
-    css: ("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",),
-    "html-extra-css": html-overlay(
-        import-css: "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');",
-        body-font: "Inter, 'OpenAI Sans', 'Public Sans', system-ui, sans-serif",
-        heading-font: "Inter, 'OpenAI Sans', 'Public Sans', system-ui, sans-serif",
-        mono-font: "'JetBrains Mono', ui-monospace, monospace",
-        bg: _bg, fg: _fg, link: _link, heading-color: _heading, note-color: _note,
-        link-underline: false,
-        body-size: "1.02rem", body-line-height: "1.62",
-        quote-size: "1.08rem", quote-line-height: "1.6rem",
-        extra: " body { font-optical-sizing: auto; }"
-            + " article > h1 { font-size: 2.18rem; line-height: 1.1; margin-top: 3.1rem; margin-bottom: 0.3rem; letter-spacing: 0; }"
-            + " article p.subtitle { font-size: 0.9rem; line-height: 1.3; font-style: normal; margin-top: 0.25rem; color: #596273; }"
-            + " article section > h1 { font-size: 1.5rem; line-height: 1.25; margin-top: 2.1rem; margin-bottom: 0.45rem; letter-spacing: 0; }"
-            + " article .epigraph + h1 { margin-top: 1.95rem; }"
-            + " article h2 { font-size: 1.15rem; line-height: 1.35; margin-top: 1.9rem; }"
-            + " article blockquote, article blockquote p { color: " + _note + "; font-style: italic; }",
-    ),
-))
+)

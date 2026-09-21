@@ -6,7 +6,7 @@
 #import "../src/lib.typ": tufte, sidenote, marginnote, margin-figure, epigraph, new-thought, full-width, sidecite
 
 // `--input style=<name>` selects a registered style (jialin,
-// tufte-original, envision, terpret, orange-happy, bluewhite). The
+// tufte-original, envision, terpret, orange-happy, bluewhite, rosa). The
 // gallery uses this to render the same document under every style.
 #show: tufte.with(
   title: [Dual-Tufte-Typst: Tufte Style for Both PDF and HTML],
@@ -75,9 +75,10 @@ We have the following styles:
 - `jialin`
 - `terpret`
 - `orange-happy`
-- `bluewhite`.
+- `bluewhite`
+- `rosa`.
 
-Each style record can also carry a `css:` field listing one or more stylesheet URLs that the HTML target injects (`envision` loads tufte.min.css plus rstudio's envisioned overlay this way). Override the active style's CSS for a single document with the `html-css:` parameter:
+Each style is one data file in `src/styles/`; its `html.sheets` field lists extra stylesheet URLs for the HTML target (`envision` loads rstudio's envisioned overlay this way). Override the active style's CSS for a single document with the `html-css:` parameter:
 
 ```typst
 #show: tufte.with(
@@ -177,7 +178,7 @@ Epigraphs introduce sections with thematic quotations:
 
 Inline math is supported: $E = m c^2$, $alpha + beta = gamma$, $norm(u + v) <= norm(u) + norm(v)$. Greek and common symbols use Typst names: $alpha, beta, gamma, pi, infinity, partial, nabla, plus.minus, tilde.equiv$.
 
-Display math centers on its own line and auto-numbers#sidenote[Numbering set in `setup-html` / `setup-pdf` via `set math.equation(numbering: "(1)")`. Override locally with another `set math.equation(...)` rule.]:
+Display math centers on its own line and auto-numbers#sidenote[Numbering set in `setup` of `src/html.typ` / `src/pdf.typ` via `set math.equation(numbering: "(1)")`. Override locally with another `set math.equation(...)` rule.]:
 
 $ integral_0^infinity e^(-x^2) dif x = sqrt(pi) / 2 $
 

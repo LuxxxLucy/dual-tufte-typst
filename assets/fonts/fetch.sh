@@ -138,5 +138,17 @@ fetch_face source-serif-4 5.2.6 400 normal "source-serif-4/SourceSerif4-Regular.
 fetch_face source-serif-4 5.2.6 600 normal "source-serif-4/SourceSerif4-SemiBold.ttf"
 fetch_face source-serif-4 5.2.6 400 italic "source-serif-4/SourceSerif4-Italic.ttf"
 
+# Alegreya family + Inconsolata — `rosa` style. SIL OFL.
+echo "Alegreya:"
+fetch_face alegreya 5.3.0 400 normal "alegreya/Alegreya-Regular.ttf"
+fetch_face alegreya 5.3.0 400 italic "alegreya/Alegreya-Italic.ttf"
+fetch_face alegreya 5.3.0 700 normal "alegreya/Alegreya-Bold.ttf"
+fetch_face alegreya-sc 5.3.0 400 normal "alegreya/AlegreyaSC-Regular.ttf"
+fetch_face alegreya-sc 5.3.0 700 normal "alegreya/AlegreyaSC-Bold.ttf"
+fetch_face alegreya-sans 5.3.0 400 normal "alegreya/AlegreyaSans-Regular.ttf"
+echo "Inconsolata:"
+fetch_face inconsolata 5.3.0 400 normal "inconsolata/Inconsolata-Regular.ttf"
+fetch_face inconsolata 5.3.0 500 normal "inconsolata/Inconsolata-Medium.ttf"
+
 echo ""
-echo "done. Verify with: typst fonts --font-path assets/fonts | grep -iE 'roboto cond|jetbrains|inter|grotesk|news|fraunces|source serif'"
+echo "done. Verify with: typst fonts --font-path assets/fonts | grep -iE 'roboto cond|jetbrains|inter|grotesk|news|fraunces|source serif|alegreya|inconsolata'"

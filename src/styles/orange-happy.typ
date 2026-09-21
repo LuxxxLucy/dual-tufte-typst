@@ -1,57 +1,54 @@
-// orange-happy: warm Claude-like editorial UI. Public Sans carries the
-// reading texture; Newsreader is reserved for the title so the page stays
-// friendly rather than antique.
+// orange-happy: warm editorial style. Source Serif text, Public Sans
+// headings and notes, Newsreader title.
 
-#import "../config.typ": merge-config
 #import "_stacks.typ" as stacks
-#import "_html_overlay.typ": html-overlay
-#import "tufte-original.typ": tufte-original
 
-#let _bg = "#F7F2EA"
-#let _fg = "#2F2A24"
-#let _link = "#A85428"
-#let _heading = "#2A2018"
-#let _note = "#6D6257"
+#let _public-sans = "'Public Sans', system-ui, sans-serif"
+#let _newsreader = "'Newsreader', Georgia, serif"
 
-#let orange-happy = merge-config(tufte-original, (
-    page: (fill: rgb(_bg)),
-    sizes: (body: 9.8pt, small: 0.78em),
-    fonts: (
-        body:   stacks.source-serif,
-        sans:   stacks.public-sans,
-        mono:   stacks.jetbrains-mono,
-        header: stacks.newsreader,
+#let orange-happy = (
+    colors: (bg: "#F7F2EA", fg: "#2F2A24", link: "#A85428", heading: "#2A2018", note: "#6D6257", quote: "#625447", rule: "#d9cdb8"),
+    html: (
+        color-scheme: "light",
+        sheets: ("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,400;0,500;1,400&display=swap",),
+        overlay: "full",
+        extra: ```css
+            body { font-optical-sizing: auto; }
+            article p.subtitle { margin-top: 0.25rem; }
+            article .epigraph + h1 { margin-top: 1.95rem; }
+            article blockquote, article blockquote p { border-left: none; }
+            article blockquote { padding-left: 1em; padding-right: 1em; }
+            hr { border: none; border-top: 1px solid var(--rule); width: 36%; margin: 1.8em auto; }
+        ```.text,
     ),
-    headings: (
-        h1: (weight: "regular", size: 1.08em, style: "normal", v-before: 0.7em, v-after: 0.2em),
-        h2: (weight: "regular", size: 1em, style: "normal", v-before: 0.45em, v-after: 0.15em),
-        h3: (weight: "regular", style: "normal"),
+    typography: (
+        print: (
+            body:    (font: stacks.source-serif, size: 9.8pt, line: 13pt, par: 1.42),
+            sans:    (font: stacks.public-sans),
+            note:    (font: stacks.public-sans, size: 0.76),
+            caption: (size: 0.78),
+            quote:   (size: 0.90, line: 0.74, before: 2.84, after: 2.31, left: 1.45, right: 0.9),
+            code:    (font: stacks.jetbrains-mono, size: 0.81, line: 0.79, before: 1.59, left: 1.04, right: 0.6, inline: 0.89),
+            h1:      (style: "normal", size: 1.08, before: 2.10, after: 1.65),
+            h2:      (style: "normal", size: 1.00, before: 1.76, after: 1.53),
+            h3:      (style: "normal", before: 1.72, after: 1.49),
+            title:   (font: stacks.newsreader, weight: 500, size: 1.34, after: 1.64),
+            meta:    (font: stacks.public-sans, style: "normal", size: 0.78, after: 2.17),
+            header:  (font: stacks.newsreader),
+            marks:   (anchor: 0.81em, margin: 1.03em),
+            newthought: (lower: 0.90),
+        ),
+        web: (
+            body:    (font: "'Source Serif 4', Georgia, serif", size: 18, line: 29),
+            note:    (font: _public-sans, size: 14, line: 22),
+            quote:   (style: "italic", size: 16, line: 26),
+            code:    (font: "'JetBrains Mono', ui-monospace, monospace", size: 14, line: 22, inline: 0.81),
+            title:   (font: _newsreader, size: (32, 40), line: 1.1, before: 46, after: 5),
+            meta:    (font: _public-sans, style: "normal", size: 14, line: 19),
+            h1:      (font: _public-sans, size: (21, 24), line: 1.25, before: 32, after: 7),
+            h2:      (font: _public-sans, size: (18, 20), line: 1.35),
+            h3:      (font: _public-sans, size: 17, line: 1.4),
+            newthought: (font: _newsreader),
+        ),
     ),
-    margin-note: (size: 0.76em, font: stacks.public-sans, style: "normal", leading: 0.42em),
-    title-block: (font: stacks.newsreader, weight: "medium", size: 1.34em, meta-style: "normal", meta-size: 0.78em, v-after: 1.0em),
-    text: (fill: rgb(_fg), leading: 0.42em),
-    quote: (size: 0.9em, leading: 0.42em, inset: (left: 1.45em, right: 0.9em, top: 0.75em, bottom: 0.58em)),
-    link: (fill: rgb(_link), underline: true),
-    raw-block: (size: 0.82em, inset: (left: 1.3em, right: 0.75em, top: 0.36em, bottom: 0.36em)),
-    "html-color-scheme": "light",
-    css: ("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",),
-    "html-extra-css": html-overlay(
-        import-css: "@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,400;0,500;1,400&display=swap');",
-        body-font: "'Source Serif 4', Georgia, serif",
-        heading-font: "'Newsreader', Georgia, serif",
-        mono-font: "'JetBrains Mono', ui-monospace, monospace",
-        bg: _bg, fg: _fg, link: _link, heading-color: _heading, note-color: _note,
-        link-underline: true,
-        body-size: "1rem", body-line-height: "1.6",
-        quote-size: "1.08rem", quote-line-height: "1.6rem",
-        extra: " body { font-optical-sizing: auto; }"
-            + " article > h1 { font-size: 2.25rem; line-height: 1.08; margin-top: 3.1rem; margin-bottom: 0.3rem; }"
-            + " article p.subtitle { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.92rem; line-height: 1.3; font-style: normal; margin-top: 0.25rem; }"
-            + " article section > h1, article h2, article h3 { font-family: 'Public Sans', system-ui, sans-serif; } .sidenote, .marginnote, figcaption { font-family: 'Public Sans', system-ui, sans-serif; }"
-            + " article section > h1 { font-size: 1.45rem; line-height: 1.25; margin-top: 2.15rem; margin-bottom: 0.45rem; }"
-            + " article .epigraph + h1 { margin-top: 1.95rem; }"
-            + " article blockquote, article blockquote p { color: #625447; font-style: italic; border-left: none; }"
-            + " article blockquote { padding-left: 1em; padding-right: 1em; }"
-            + " hr { border: none; border-top: 1px solid #d9cdb8; width: 36%; margin: 1.8em auto; }",
-    ),
-))
+)

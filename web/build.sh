@@ -23,7 +23,7 @@ SRC="$ROOT/example/example.typ"
 # Public styles. Jialin needs Berkeley Mono (paid, not webfont) — exclude
 # from the public app rather than ship a degraded fallback render. The
 # local tests/gallery/ keeps jialin for development.
-STYLES=(tufte-original envision terpret orange-happy bluewhite)
+STYLES=(tufte-original envision terpret orange-happy bluewhite rosa)
 
 source "$ROOT/tests/_compile.sh"
 

@@ -1,40 +1,30 @@
-// envision: rstudio/tufte's "envisioned" overlay (rstudio.github.io/tufte/envisioned/).
-// Roboto Condensed body on warm #fefefe page. Inherits tufte-original sizes
-// and headings; only fonts and colours differ.
+// envision: rstudio/tufte's envisioned variant (rstudio.github.io/tufte/envisioned/).
 
-#import "../config.typ": merge-config
 #import "_stacks.typ" as stacks
-#import "_html_overlay.typ": link-rules
-#import "tufte-original.typ": tufte-original
 
-#let envision = merge-config(tufte-original, (
-    // envisioned.css ships no dark-mode rules; force light so dark-OS
-    // browsers don't recolor surrounding chrome over a light page.
-    "html-color-scheme": "light",
-    page: (fill: rgb("#fefefe")),
-    fonts: (
-        body:   stacks.roboto-condensed,
-        sans:   stacks.roboto-condensed,
-        mono:   ("Roboto Mono", "Menlo", "Monaco", "Courier New"),
-        header: stacks.roboto-condensed,
+#let envision = (
+    colors: (bg: "#fefefe", fg: "#2B2B2B", link: "#222222"),
+    // envisioned.css has no dark-mode rules.
+    html: (
+        color-scheme: "light",
+        sheets: ("https://cdn.jsdelivr.net/gh/rstudio/tufte@main/inst/rmarkdown/templates/tufte_html/resources/envisioned.css",),
+        overlay: "links",
     ),
-    margin-note: (
-        font: stacks.roboto-condensed,
-        style: "normal",
+    typography: (
+        print: (
+            body:    (font: stacks.roboto-condensed, size: 9.6pt, line: 13pt, par: 1.40),
+            sans:    (font: stacks.roboto-condensed),
+            note:    (line: 0.65),
+            caption: (size: 0.78, line: 0.69),
+            quote:   (size: 0.95, line: 0.80, before: 2.92, after: 2.40, left: 1.7),
+            code:    (font: ("Roboto Mono", "Menlo", "Monaco", "Courier New"), size: 0.90, line: 0.86, before: 1.57, after: 1.65, left: 1.28, inline: 1.0),
+            h1:      (before: 2.92, after: 1.84),
+            h2:      (before: 1.87, after: 1.65),
+            h3:      (before: 1.70, after: 1.48),
+            title:   (size: 1.32, after: 1.62),
+            meta:    (style: "normal", size: 0.80, after: 2.14),
+            marks:   (anchor: 0.79em, margin: 0.96em),
+            newthought: (lower: 0.91),
+        ),
     ),
-    sizes: (body: 9.6pt, small: 0.78em),
-    title-block: (font: stacks.roboto-condensed, size: 1.32em, meta-size: 0.8em, meta-style: "normal", v-after: 1.0em),
-    text: (fill: rgb("#2B2B2B"), leading: 0.44em),
-    quote: (size: 0.95em, leading: 0.44em, inset: (left: 1.7em, right: 1em, top: 0.9em, bottom: 0.75em)),
-    link: (fill: rgb("#222222")),
-    raw-block: (size: 0.82em, inset: (left: 1.6em, right: 0.8em, top: 0.42em, bottom: 0.42em)),
-    // tufte-css underlines links with a background-gradient trick calibrated
-    // for et-book; under Roboto Condensed it renders as a strikethrough.
-    // Replace it with a plain font-aware underline (same shared rule the
-    // overlay styles use). Emitted after the vendored CSS, so it wins.
-    "html-extra-css": link-rules(link: "#222222", link-underline: true),
-    css: (
-        "https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",
-        "https://cdn.jsdelivr.net/gh/rstudio/tufte@main/inst/rmarkdown/templates/tufte_html/resources/envisioned.css",
-    )
-))
+)

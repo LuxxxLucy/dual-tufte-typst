@@ -1,30 +1,27 @@
-// Style registry. A style is any record with the same shape as
-// `src/config.typ:default-config`; partial dicts work because `merge-config`
-// deep-merges over the defaults. Add a new style by creating a file here
-// and adding it to `registry` below.
-//
-// `tufte()` reads `style: "<name>"` (registry lookup) or `style: <record>`
-// (literal) and merges: default-config → style → user `config:`.
+// Style registry. A style is data about looks: each file overrides the
+// `tufte-original` base record.
 
-#import "jialin.typ": jialin
 #import "tufte-original.typ": tufte-original
+#import "jialin.typ": jialin
 #import "envision.typ": envision
 #import "terpret.typ": terpret
 #import "orange-happy.typ": orange-happy
 #import "bluewhite.typ": bluewhite
+#import "rosa.typ": rosa
 
 #let registry = (
     jialin: jialin,
     tufte-original: tufte-original,
     envision: envision,
     terpret: terpret,
-    "orange-happy": orange-happy,
+    orange-happy: orange-happy,
     bluewhite: bluewhite,
+    rosa: rosa,
 )
 
-#let names = registry.keys()
-
-#let resolve(name) = {
-    if name in registry { registry.at(name) }
-    else { panic("unknown style: " + name + "  (known: " + names.join(", ") + ")") }
+// A name picks a registered style; a record is used as given.
+#let resolve(style) = {
+    if type(style) != str { return style }
+    assert(style in registry, message: "unknown style: " + style + "  (known: " + registry.keys().join(", ") + ")")
+    registry.at(style)
 }

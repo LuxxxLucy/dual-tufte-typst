@@ -1,293 +1,231 @@
 // PDF target. Handout style on top of the marginalia package.
 
 #import "@preview/marginalia:0.3.1" as marginalia: note, notefigure, wideblock
-#import "config.typ": default-config
 
-#let _config-state = state("dual-tufte-config", default-config)
-#let _cfg() = _config-state.get()
+#let _type-state = state("dual-tufte-type", none)
+#let _type() = _type-state.get()
 
-#let _dy(dy) = if dy == auto { 0pt } else { dy }
-
-#let _margin-text-style(cfg) = (
-    size: cfg.margin-note.size,
-    font: cfg.margin-note.font,
-    style: cfg.margin-note.style,
-)
-#let _margin-par-style(cfg) = (leading: cfg.margin-note.leading)
-
-// `raw-block.leading: auto` holds the code line gap at this fraction of the
-// body gap. An em follows the code font, which is smaller than the body, so
-// dividing by the size ratio stops the gap shrinking twice. 0.65em is
-// Typst's own default leading, used when a config leaves the body at `auto`.
-#let _RAW-LEADING-RATIO = 0.62
-
-#let _raw-leading(cfg, raw-size) = {
-    let given = cfg.raw-block.at("leading", default: auto)
-    if given != auto { return given }
-    let body = cfg.text.at("leading", default: auto)
-    let body-em = if body == auto or body.em == 0.0 { 0.65 } else { body.em }
-    let size-em = if raw-size == auto or raw-size.em == 0.0 { 1.0 } else { raw-size.em }
-    _RAW-LEADING-RATIO * body-em / size-em * 1em
+// Turn a style's `typography.print` record into lengths and fill its fallbacks.
+#let _resolve(p) = {
+    let B = p.body.size
+    let L = p.body.line
+    let units = (size: B, left: B, right: B, indent: B, body-indent: B, line: L, before: L, after: L, par: L)
+    p.caption = p.note + p.caption
+    let out = (:)
+    for (k, r) in p {
+        for (f, u) in units {
+            if type(r.at(f, default: none)) in (int, float) { r.insert(f, r.at(f) * u) }
+        }
+        if "font" not in r { r.font = p.body.font }
+        out.insert(k, r)
+    }
+    out
 }
 
-// Tufte-LaTeX `\@tufte@caption@font = \@tufte@marginfont`: caption
-// inherits margin-note typography.
-#let _caption-style(cfg) = (
-    size: cfg.sizes.small,
-    font: cfg.margin-note.font,
-    style: cfg.margin-note.style,
+// Line boxes are one em tall: 0.8em above the baseline, 0.2em below.
+#let _top = 0.8
+#let _bottom = 0.2
+
+// Block gap that puts baselines `d` apart, from size `a` to size `b`.
+#let _gap(d, a, b) = d - _bottom * a - _top * b
+
+#let _leading(r) = r.line - r.size
+
+// Block with baselines `r.before` and `r.after` from the body text.
+#let _role-block(t, r, ..args, body) = block(
+    above: _gap(r.before, t.body.size, r.size),
+    below: _gap(r.after, r.size, t.body.size),
+    ..args,
+    { set par(leading: _leading(r)); body },
 )
 
-// Body-font superscript glyph for sidenote numbers. Sized independently
-// for the in-text anchor and the margin-side label.
-#let _sn-num(size, font, i) = super(
+#let _text-style(r) = (size: r.size, font: r.font, style: r.style)
+
+// Sidenote number: a body-font superscript, then `sep`.
+#let _sn-mark(t, size, sep: 0pt) = (..i) => [#super(
     typographic: false,
     baseline: -0.5em,
     size: size,
-    text(font: font, numbering("1", ..i)),
-)
-#let _sn-margin-mark(cfg) = (..i) => [#_sn-num(cfg.sidenote-number.margin-size, cfg.fonts.body, i.pos())#h(cfg.margin-note.marker-sep)]
-#let _sn-anchor-mark(cfg) = (..i) => _sn-num(cfg.sidenote-number.anchor-size, cfg.fonts.body, i.pos())
+    text(font: t.body.font, number-type: "lining", numbering("1", ..i.pos())),
+)#h(sep)]
 
-#let sidenote-pdf(numbered, dy, body) = context {
-    let cfg = _cfg()
+#let sidenote(numbered, dy, body) = context {
+    let t = _type()
     let kw = if numbered {
-        (numbering: _sn-margin-mark(cfg), anchor-numbering: _sn-anchor-mark(cfg))
+        (numbering: _sn-mark(t, t.marks.margin, sep: t.note.sep), anchor-numbering: _sn-mark(t, t.marks.anchor))
     } else {
         (counter: none,)
     }
     note(
-        dy: _dy(dy),
-        text-style: _margin-text-style(cfg),
-        par-style: _margin-par-style(cfg),
+        dy: dy,
+        text-style: _text-style(t.note),
+        // Note paragraphs sit apart by the same ratio as body paragraphs.
+        par-style: (leading: _leading(t.note), spacing: t.body.par / t.body.line * t.note.line - t.note.size),
         ..kw,
     )[#body]
 }
 
-#let margin-figure-pdf(content, caption, dy) = context {
+#let margin-figure(content, caption, dy) = context {
+    let t = _type()
     notefigure(
         content,
         caption: caption,
-        dy: _dy(dy),
+        dy: dy,
         counter: none,
-        text-style: _caption-style(_cfg()),
+        text-style: _text-style(t.caption),
+        par-style: (leading: _leading(t.caption)),
     )
 }
 
-#let _quote-block(cfg, body, attribution) = block(
-    inset: cfg.quote.inset,
-    {
-        set text(style: "italic", size: cfg.quote.size)
-        set par(leading: cfg.quote.leading)
+#let _quote(t, body, attribution) = {
+    let q = t.quote
+    _role-block(t, q, inset: (left: q.left, right: q.right), {
+        set text(.._text-style(q))
         body
         if attribution != none {
             linebreak()
-            align(right)[#text(style: "normal", size: cfg.sizes.small, [— ] + attribution)]
+            align(right)[#text(style: "normal", size: t.caption.size, [— ] + attribution)]
         }
-    },
-)
-
-#let epigraph-pdf(quote, author) = context {
-    _quote-block(_cfg(), quote, author)
+    })
 }
+
+#let epigraph(quote, author) = context _quote(_type(), quote, author)
 
 // Synthetic small-caps. Typst's `smallcaps()` no-ops on fonts without
 // smcp glyphs (typst#7009, open). Uppercase the lowercase runs and
 // shrink them so original capitals retain body size.
-#let new-thought-pdf(body) = context {
-    let nt = _cfg().newthought
-    show regex("\p{Ll}+"): m => text(size: nt.lowercase-scale * 1em, upper(m.text))
-    text(size: nt.size, tracking: nt.tracking, body)
-}
-
-#let full-width-pdf(body) = wideblock(side: "outer", body)
-
-#let sidecite-pdf(key, dy) = context {
-    let cfg = _cfg()
-    note(
-        dy: _dy(dy),
-        numbering: _sn-margin-mark(cfg),
-        anchor-numbering: _sn-anchor-mark(cfg),
-        text-style: _margin-text-style(cfg),
-        par-style: _margin-par-style(cfg),
-    )[#cite(key, form: "full")]
-}
-
-#let sans-pdf(body) = context {
-    set text(font: _cfg().fonts.sans)
+#let new-thought(body) = context {
+    let lower = _type().newthought.lower
+    show regex("\p{Ll}+"): m => text(size: lower * 1em, upper(m.text))
     body
 }
 
-#let _render-header(title, cfg) = {
-    if title == none { return }
-    set text(
-        size: cfg.header.size,
-        weight: cfg.header.weight,
-        tracking: cfg.header.tracking,
-        font: cfg.fonts.header,
-    )
-    // Push the header to the page right edge. The text frame here ends at
-    // the main-column right; the margin column + sep sits between it and
-    // the page edge, so a negative right pad of (sep + width) lands the
-    // right-aligned content flush with the page edge.
+#let full-width(body) = wideblock(side: "outer", body)
+
+#let sans(body) = context {
+    set text(font: _type().sans.font)
+    body
+}
+
+#let _running-header(title, cfg, t) = {
+    let r = t.header
+    set text(size: r.size, weight: r.weight, tracking: r.track, font: r.font)
+    // Extend over the margin column to the page right edge.
     let push = -(cfg.margin-col.width + cfg.margin-col.sep)
-    pad(right: push, align(right, if cfg.header.upper { upper(title) } else { title }))
-    v(cfg.header.v-after)
+    pad(right: push, align(right, if r.upper { upper(title) } else { title }))
+    v(r.after)
 }
 
-#let _render-title-block(title, author, email, date, cfg) = {
-    if title == none { return }
-    set par(first-line-indent: 0em)
-    let title-text-args = (
-        weight: cfg.title-block.weight,
-        size: cfg.title-block.size,
-    )
-    if cfg.title-block.font != auto {
-        title-text-args.insert("font", cfg.title-block.font)
-    }
-    let meta-style = cfg.title-block.meta-style
-    // Italic metadata uses the body serif (matches tufte-css `.subtitle`);
-    // upright metadata defaults to sans Gill Sans.
-    let meta-font = if meta-style == "italic" { cfg.fonts.body } else { cfg.fonts.sans }
-    let meta-args = (size: cfg.title-block.meta-size, font: meta-font, style: meta-style)
-    block(width: 100%)[
-        #h(cfg.title-block.lead-kern)
-        #text(..title-text-args, title)
-        #if author != none {
-            v(cfg.title-block.v-between)
-            text(..meta-args, author)
-        }
-        #if email != none {
-            text(..meta-args)[#h(cfg.title-block.meta-sep)#email]
-        }
-        #if date != none {
-            let d = if type(date) == datetime { date.display() } else { date }
-            text(..meta-args)[#h(cfg.title-block.meta-sep)#d]
-        }
-        #v(cfg.title-block.v-after)
-    ]
-}
-
-#let _render-abstract(abstract, cfg) = {
-    if abstract == none { return }
-    set par(first-line-indent: 0em)
-    text(font: cfg.fonts.body, size: cfg.sizes.small, style: "italic", abstract)
-    v(cfg.abstract.v-after)
-}
-
-#let _render-toc(toc, cfg) = {
-    if toc != true { return }
-    outline(title: cfg.toc.title, indent: auto, depth: cfg.toc.depth)
-    v(cfg.toc.v-after)
-}
-
-// `lead-kern` pulls the italic h1 left so it doesn't visually creep
-// right of the baseline.
-// Typst scales heading text by level (1.4em / 1.2em / 1em) before a show
-// rule runs. Resetting to the body size first makes `headings.hN.size` mean
-// what it says, a multiple of the body, and keeps the title above h1.
-#let _heading-rule(cfg, spec) = it => {
-    set par(first-line-indent: 0em)
-    set text(size: cfg.sizes.body)
-    text(weight: spec.weight, size: spec.size, style: spec.style, {
-        v(spec.v-before)
-        if spec.lead-kern != 0em { h(spec.lead-kern) }
-        it.body
-        v(spec.v-after)
+#let _title-block(doc, t) = {
+    if doc.title == none { return }
+    let (ti, m, B) = (t.title, t.meta, t.body.size)
+    let gap = if doc.meta.len() > 0 { _gap(ti.after, ti.size, m.size) } else { _gap(m.after, ti.size, B) }
+    set par(first-line-indent: 0em, justify: false)
+    block(below: gap, {
+        set par(leading: _leading(ti))
+        text(font: ti.font, weight: ti.weight, size: ti.size)[#h(ti.kern)#doc.title]
     })
+    if doc.meta.len() > 0 {
+        block(above: gap, below: _gap(m.after, m.size, B),
+            text(font: m.font, style: m.style, size: m.size, doc.meta.join([ #h(m.sep)])))
+    }
 }
 
-#let setup-pdf(config, title, author, email, date, abstract, toc, body) = {
-    let cfg = config
-    _config-state.update(cfg)
+#let setup(cfg, doc, body) = {
+    let t = _resolve(cfg.typography.print)
+    _type-state.update(t)
 
-    let w = cfg.page.at("width", default: none)
-    let h = cfg.page.at("height", default: none)
-    let scroll = h == auto
-    let page-args = (fill: cfg.page.at("fill", default: none))
-    if w != none { page-args.insert("width", w) }
-    if h != none { page-args.insert("height", h) }
-    if w == none and h == none { page-args.insert("paper", cfg.page.paper) }
-    // Suppress the running header in scroll mode; it would render once on
-    // the single tall page.
-    if title != none and not scroll {
-        page-args.insert("header", _render-header(title, cfg))
-    }
-    set page(..page-args)
+    let (margin-x, margin-y, paper, ..size) = cfg.page
+    let bg = cfg.colors.bg
+    set page(
+        paper: paper,
+        ..size,
+        fill: if bg != none { rgb(bg) },
+        // A scroll page (height: auto) has no running header.
+        header: if doc.title != none and size.at("height", default: none) != auto {
+            _running-header(doc.title, cfg, t)
+        },
+    )
 
     show: marginalia.setup.with(
-        inner: (far: cfg.page.margin-x, width: 0pt, sep: 0pt),
-        outer: (far: cfg.page.margin-x, width: cfg.margin-col.width, sep: cfg.margin-col.sep),
-        top: cfg.page.margin-y,
-        bottom: cfg.page.margin-y,
+        inner: (far: margin-x, width: 0pt, sep: 0pt),
+        outer: (far: margin-x, width: cfg.margin-col.width, sep: cfg.margin-col.sep),
+        top: margin-y,
+        bottom: margin-y,
         book: false,
     )
 
     // Hyphenation explicit so it survives a custom `lang:`. Typst has no
-    // microtype-equivalent (typst#638), so hyphenation is the only
-    // available adjustment against visible inter-word stretch in
-    // justified columns.
+    // microtype-equivalent (typst#638).
     set text(
-        font: cfg.fonts.body,
-        size: cfg.sizes.body,
-        fill: cfg.text.fill,
+        font: t.body.font,
+        size: t.body.size,
+        top-edge: _top * 1em,
+        bottom-edge: -_bottom * 1em,
+        fill: rgb(cfg.colors.fg),
         hyphenate: true,
     )
+    let par-gap = _gap(t.body.par, t.body.size, t.body.size)
     set par(
-        first-line-indent: cfg.text.first-line-indent,
+        leading: _leading(t.body),
+        spacing: par-gap,
+        first-line-indent: t.body.indent,
         justify: cfg.text.justify,
     )
-    let leading = cfg.text.at("leading", default: auto)
-    if leading != auto { set par(leading: leading) }
-    if cfg.text.par-spacing != auto {
-        set par(spacing: cfg.text.par-spacing)
-    }
-    set list(indent: cfg.list.indent, body-indent: cfg.list.body-indent)
-    set enum(indent: cfg.list.indent, body-indent: cfg.list.body-indent)
-    show enum: set par(justify: true)
-    show list: set par(justify: true)
-    // `show footnote` renders margin sidenotes; suppress Typst's
-    // native bottom listing so the note is not duplicated.
+    set block(spacing: par-gap)
+    set list(indent: t.list.indent, body-indent: t.list.body-indent)
+    set enum(indent: t.list.indent, body-indent: t.list.body-indent)
+    show selector.or(enum, list): set par(justify: true)
+    // Footnotes render as sidenotes; hide the page-bottom listing.
     set footnote.entry(separator: [], clearance: 0pt, gap: 0pt)
     show footnote.entry: hide
+    show footnote: it => sidenote(true, 0pt, it.body)
 
     show link: it => {
-        set text(fill: cfg.link.fill)
+        set text(fill: rgb(cfg.colors.link))
         if cfg.link.underline { underline(it) } else { it }
     }
 
     set math.equation(numbering: "(1)")
     set raw(theme: none)
+    // Typst scales raw text by 0.8em; an absolute size replaces the scale.
+    let raw-scale = 0.8
+    let c = t.code
+    show raw.where(block: false): set text(font: c.font, size: c.inline / raw-scale * 1em)
+    show raw.where(block: true): it => _role-block(t, c, inset: (left: c.left, right: c.right), {
+        set text(font: c.font, size: c.size)
+        it
+    })
 
-    show raw.where(block: true): it => {
-        let raw-size = cfg.raw-block.at("size", default: auto)
-        if raw-size == auto { set text(font: cfg.fonts.mono) }
-        else { set text(font: cfg.fonts.mono, size: raw-size) }
-        set par(leading: _raw-leading(cfg, raw-size))
-        block(inset: cfg.raw-block.inset, it)
-    }
-    show raw.where(block: false): it => {
-        let raw-size = cfg.raw-block.at("inline-size", default: auto)
-        if raw-size == auto { text(font: cfg.fonts.mono, it) }
-        else { text(font: cfg.fonts.mono, size: raw-size, it) }
-    }
-
-    show quote.where(block: true): it => _quote-block(cfg, it.body, it.attribution)
+    show quote.where(block: true): it => _quote(t, it.body, it.attribution)
 
     show figure.caption: it => {
         set align(left)
-        set text(.._caption-style(cfg))
+        set text(.._text-style(t.caption))
+        set par(leading: _leading(t.caption))
         it
     }
 
-    show footnote: it => sidenote-pdf(true, auto, it.body)
+    show heading: it => {
+        let r = t.at("h" + str(it.level), default: none)
+        if r == none { return it }
+        _role-block(t, r, sticky: true, {
+            set par(first-line-indent: 0em, justify: false)
+            set text(font: r.font, weight: r.weight, style: r.style, size: r.size)
+            h(r.kern)
+            it.body
+        })
+    }
 
-    show heading.where(level: 1): _heading-rule(cfg, cfg.headings.h1)
-    show heading.where(level: 2): _heading-rule(cfg, cfg.headings.h2)
-    show heading.where(level: 3): _heading-rule(cfg, cfg.headings.h3)
-
-    _render-title-block(title, author, email, date, cfg)
-    _render-abstract(abstract, cfg)
-    _render-toc(toc, cfg)
+    _title-block(doc, t)
+    if doc.abstract != none {
+        set par(first-line-indent: 0em)
+        text(size: t.caption.size, style: "italic", doc.abstract)
+        v(cfg.abstract.v-after)
+    }
+    if doc.toc {
+        outline(title: cfg.toc.title, indent: auto, depth: cfg.toc.depth)
+        v(cfg.toc.v-after)
+    }
     body
 }

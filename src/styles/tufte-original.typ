@@ -1,103 +1,87 @@
-// tufte-original: Tufte-LaTeX `tufte-handout` ported to Typst.
-// Source: .refs/style-research/tufte-common.def + tufte-handout.cls.
-// All numbers below quote those files by line number.
+// tufte-original: Tufte-LaTeX `tufte-handout` ported to Typst. It is the
+// base style: every other style file holds only its differences from it.
 //
-// Pivot style. Other PDF styles `merge-config(tufte-original, <delta>)`
-// so geometry, leading, and heading shape stay coherent gallery-wide.
+// colors: hex strings. PDF reads bg (`none`: no fill), fg and link. HTML
+//   writes every key as `var(--<key>)`. The "full" overlay also reads
+//   heading and note (default fg), meta (default heading, then fg) and
+//   quote (default inherited).
+//
+// toc: title and depth apply to PDF; the HTML list has every heading.
+//
+// html:
+//   css       stylesheets; `html-css:` of `tufte()` replaces them
+//   sheets    extra stylesheets, e.g. web fonts
+//   overlay   none; "links": plain link underline; "full": colours, links, mobile layout
+//   extra     CSS
+//
+// typography.print roles: body, sans, note, caption, quote, code, h1..h3,
+// title, meta, header, marks, newthought, list.
+//   body.size, body.line        lengths; line is baseline to baseline
+//   size, left, right, indent   factor of body.size (also list indents)
+//   line, before, after, par    factor of body.line, baseline to baseline
+//   weight                      number, 400 regular to 700 bold
+//   kern                        space before a heading
+//   sep                         space after a note number; between meta items
+//   code.inline                 em of the surrounding text
+//   header.upper                uppercase the running header
+//   marks.anchor, marks.margin  note number size in the text and in the margin
+//   newthought.lower            size of lowercase letters set as capitals
+//   a length                    used as given
+// A missing font is the body font; a caption takes the note font and style.
+// Measured per font: marks and newthought keep numeral and small-cap height
+// over body x-height as here; code.inline matches the surrounding x-height.
+//
+// typography.web roles: body, note (also captions), quote, code, title,
+// meta, h1..h3, newthought.
+//   size           px, or (a, b): a at a 375px window, b at 1440px
+//   line           px when an int, factor of size when a float
+//   weight         number
+//   track          em
+//   before, after  margin in px
+//   code.inline    em of the surrounding text
+//   code.font      goes on inline and block code; other code fields on `pre`
+// A missing web role keeps the stylesheet value.
 
 #import "_stacks.typ" as stacks
 
 #let tufte-original = (
     // Geometry from tufte-common.def:446: left=1in, textwidth=26pc
     // (4.33in), marginparsep=2pc (0.33in), marginparwidth=12pc (2in).
-    page: (
-        paper: "us-letter",
-        margin-x: 1in,
-        margin-y: 1in,
-        fill: rgb("#fffff8"),
+    page: (paper: "us-letter", margin-x: 1in, margin-y: 1in),
+    margin-col: (width: 2in, sep: 0.333in),
+    abstract: (v-after: 1.5em),
+    toc: (title: [Contents], depth: 2, v-after: 1.5em),
+    text: (justify: true),
+    link: (underline: true),
+    colors: (bg: "#fffff8", fg: "#111111", link: "#111111"),
+    html: (
+        color-scheme: "light dark",
+        css: ("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",),
+        sheets: (),
+        overlay: none,
+        extra: "",
     ),
-    margin-col: (
-        width: 2in,
-        sep: 0.333in,
+    typography: (
+        // 10/14 body, 8pt notes (tufte-common.def:367-389).
+        print: (
+            body:    (font: stacks.etbembo, size: 10pt, line: 14.5pt, par: 1.38, indent: 1.2),
+            sans:    (font: stacks.gillsans),
+            note:    (style: "normal", size: 0.80, line: 0.66, sep: 0.3em),
+            caption: (size: 0.80, line: 0.72),
+            quote:   (style: "italic", size: 1.05, line: 0.93, before: 2.96, after: 2.38, left: 1.8, right: 1.0),
+            code:    (font: ("Menlo", "Monaco", "Courier"), size: 0.69, line: 0.62, before: 1.50, after: 1.63, left: 1.36, right: 0.64, inline: 0.76),
+            h1:      (weight: 400, style: "italic", size: 1.20, line: 1.0, before: 2.81, after: 1.79, kern: -0.1em),
+            h2:      (weight: 400, style: "italic", size: 1.10, line: 1.0, before: 1.82, after: 1.61, kern: 0em),
+            h3:      (weight: 400, style: "italic", size: 1.00, line: 1.0, before: 1.66, after: 1.45, kern: 0em),
+            title:   (weight: 400, size: 1.40, line: 1.2, after: 1.59, kern: -0.1em),
+            meta:    (style: "italic", size: 0.90, after: 2.24, sep: 0em),
+            header:  (weight: 400, size: 8pt, track: 1.5pt, upper: true, after: 20pt),
+            marks:   (anchor: 0.7em, margin: 0.85em),
+            newthought: (lower: 0.78),
+            list:    (indent: 1.0, body-indent: 1.0),
+        ),
+        web: (
+            code: (inline: 0.85),
+        ),
     ),
-    // Bundled `et-book` .ttfs register under family `ETBembo` (per their
-    // `name` table), so listing "ETBook" first would always miss.
-    fonts: (
-        body:   stacks.etbembo,
-        sans:   stacks.gillsans,
-        mono:   ("Menlo", "Monaco", "Courier"),
-        header: ("ETBembo", "Palatino"),
-    ),
-    // \normalsize = 10pt / 14pt leading (tufte-common.def:367-374);
-    // \footnotesize = 8pt / 10pt (tufte-common.def:388-389).
-    sizes: (
-        body: 10pt,
-        small: 0.8em,
-        normal: 1em,
-    ),
-    // tufte-common.def:1622-1647: \section = \Large\itshape (12pt
-    // italic), \subsection = \large\itshape (11pt italic). LaTeX
-    // \titlespacing values trimmed for Typst because `\@startsection`
-    // collapses adjacent skips; Typst stacks v-after + v-before
-    // additively, so sequential h1→h2 ("Fundamentals" → "Sections and
-    // Headings") needs the gap kept small. \subsubsection is disabled
-    // in the handout class; h3 mirrors \paragraph at body size.
-    headings: (
-        h1: (weight: "regular", size: 1.2em, style: "italic", v-before: 1.4em, v-after: 0.3em),
-        h2: (weight: "regular", size: 1.1em, style: "italic", v-before: 0.4em, v-after: 0.2em),
-        h3: (weight: "regular", size: 1em,   style: "italic", v-before: 0.4em, v-after: 0.1em),
-    ),
-    // \@tufte@marginfont = \normalfont\footnotesize (line 471): 8pt
-    // roman upright. Italic / sans variants are tufte-css and the
-    // `sfsidenotes` option, not the handout default.
-    margin-note: (
-        size: 0.8em,
-        font: stacks.etbembo,
-        style: "normal",
-        leading: 0.4em,
-        marker-sep: 0.3em,
-    ),
-    // tufte-common.def:975: superscript at \footnotesize.
-    sidenote-number: (
-        anchor-size: 0.7em,
-        margin-size: 0.85em,
-    ),
-    // tufte-common.def:779-782 `\noindent\textsc{#1}`: body-size,
-    // no tracking; lowercase-scale fakes small caps for fonts without
-    // smcp glyphs (see new-thought-pdf).
-    newthought: (
-        size: 1em,
-        tracking: 0em,
-        lowercase-scale: 0.78,
-    ),
-    header: (
-        size: 8pt,
-        weight: "regular",
-        tracking: 1.5pt,
-        upper: true,
-    ),
-    // PDF keeps Tufte's italic title, but the metadata is quieter
-    // than LaTeX \Large so it reads as byline rather than subtitle.
-    title-block: (
-        size: 1.4em,
-        weight: "regular",
-        font: auto,
-        meta-size: 0.9em,
-        meta-style: "italic",
-        meta-sep: 0pt,
-        v-after: 1.25em,
-    ),
-    // \parindent = 1pc = 12pt (line 420), \parskip = 0pt (line 421),
-    // \normalbaselineskip = 14pt (line 375), justified (line 199).
-    text: (
-        fill: rgb("#111111"),
-        first-line-indent: 1.2em,
-        par-spacing: 0pt,
-        leading: 0.4em,
-        justify: true,
-    ),
-    quote: (size: 1.05em, leading: 0.48em, inset: (left: 1.8em, right: 1em, top: 1.05em, bottom: 0.85em)),
-    link: (fill: rgb("#111111"), underline: true),
-    raw-block: (size: 0.84em, inset: (left: 1.7em, right: 0.8em, top: 0.45em, bottom: 0.45em)),
-    css: ("https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",),
 )
