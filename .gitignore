@@ -7,7 +7,6 @@ out/
 
 # Diff metadata next to live test artifacts (stats for the index).
 tests/cases/*/*/diff.txt
-tests/reproductions/*/diff.txt
 
 # OS / editor / accidents
 .DS_Store
@@ -36,9 +35,4 @@ app/assets/
 tests/refs/
 tests/gallery/*/
 tests/gallery/index.html
-tests/reproductions/*/out.*
-tests/reproductions/*/out-*.png
-# Asset trees pulled from upstream; large, regenerable from the source repos.
-tests/reproductions/*/asset/
-tests/reproductions/*/cover.png
 tests/cases/*/*/diff.png
