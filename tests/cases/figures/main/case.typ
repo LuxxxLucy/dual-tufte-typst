@@ -2,7 +2,7 @@
 
 Body text before the figure.
 
-#main-figure(
+#figure(
     image("../../../../assets/images/exports-imports.png", width: 100%),
     caption: [From Edward Tufte, _The Visual Display of Quantitative Information_, page 92.],
 )

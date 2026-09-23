@@ -61,8 +61,6 @@
 
 #let full-width(body) = html.elem("div", attrs: (("class"): "fullwidth"))[#body]
 
-#let sans(body) = html.elem("p", attrs: (("class"): "sans"))[#body]
-
 // Fixes on top of tufte-css: captions sit under the figure as in the PDF
 // target instead of floating into the margin; h1..h3 get the column width
 // so a heading sidenote lands in the margin; h4/h5 rules tufte-css lacks.
@@ -255,11 +253,8 @@ pre code, pre code span { font-size: inherit; line-height: inherit; }
         #html.elem("head")[
             #html.elem("meta", attrs: (("charset"): "utf-8"))[]
             #html.elem("meta", attrs: (("name"): "viewport", ("content"): "width=device-width, initial-scale=1"))[]
-            // `--input color-scheme=light` overrides the style's scheme.
-            #let scheme = sys.inputs.at("color-scheme", default: cfg.html.color-scheme)
-            #html.elem("meta", attrs: (("name"): "color-scheme", ("content"): scheme))[]
+            #html.elem("meta", attrs: (("name"): "color-scheme", ("content"): cfg.html.color-scheme))[]
             #html.elem("title")[#if doc.title != none { doc.title } else { "Document" }]
-            #doc.head-extra
             #for href in cfg.html.css + cfg.html.sheets {
                 html.elem("link", attrs: (("rel"): "stylesheet", ("href"): href))[]
             }

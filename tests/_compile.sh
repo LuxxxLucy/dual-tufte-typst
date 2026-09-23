@@ -17,13 +17,11 @@ tc_pdf() {
         || { echo "FAIL pdf:  $src" >&2; return 1; }
 }
 
-# Compile a typst source to HTML (target=html, --features html).
-# Tests pin `color-scheme=light` so HTML refs are deterministic regardless
-# of the developer's machine preference. Default doc compile is `light dark`.
+# Compile a typst source to HTML.
 tc_html() {
     local root="$1" src="$2" out="$3"; shift 3
     typst compile --root "$root" --font-path "$root/assets/fonts" \
-        --features html --input target=html --input color-scheme=light \
+        --features html \
         "$@" "$src" "$out" >/dev/null 2>&1 \
         || { echo "FAIL html: $src" >&2; return 1; }
 }

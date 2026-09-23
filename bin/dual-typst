@@ -55,12 +55,13 @@ create_doc() {
   title: [Untitled],
   author: "Author",
   date: datetime.today(),
-  bib: bibliography("refs.bib"),
 )
 
 = Introduction
 
 This paragraph uses #sidenote[A short note in the margin.] and cites @tufte2001.
+
+#bibliography("refs.bib")
 EOF
 
   cat > "$folder/refs.bib" <<'EOF'
@@ -78,7 +79,7 @@ EOF
 set -euo pipefail
 cd "$(dirname "$0")"
 typst compile --root . --font-path assets/fonts main.typ main.pdf &
-typst compile --root . --font-path assets/fonts --features html --input target=html main.typ main.html &
+typst compile --root . --font-path assets/fonts --features html main.typ main.html &
 wait
 echo "Built: $(pwd)/main.pdf $(pwd)/main.html"
 EOF

@@ -20,7 +20,6 @@
     typography: (
         print: (
             body:    (font: stacks.alegreya, size: 9.5pt, line: 13.6pt, par: 1.6, indent: 0),
-            sans:    (font: stacks.alegreya-sans),
             note:    (size: 0.79, line: 0.77),
             caption: (size: 0.79, line: 0.77),
             quote:   (size: 1.00, line: 1.0, before: 2.4, after: 2.0, left: 1.5),

@@ -16,5 +16,4 @@
 #let source-serif = ("Source Serif 4", "Georgia", "Palatino")
 #let alegreya     = ("Alegreya", "Georgia", "Palatino")
 #let alegreya-sc  = ("Alegreya SC", "Alegreya", "Georgia")
-#let alegreya-sans = ("Alegreya Sans", "Helvetica Neue", "Helvetica")
 #let inconsolata  = ("Inconsolata", "Menlo", "Monaco")

@@ -20,7 +20,6 @@
     typography: (
         print: (
             body:    (font: stacks.inter, size: 9.5pt, line: 13pt, par: 1.40),
-            sans:    (font: stacks.inter),
             note:    (size: 0.76, line: 0.63),
             caption: (size: 0.78, line: 0.69),
             quote:   (size: 0.88, line: 0.73, before: 2.75, after: 2.26, left: 1.45, right: 0.9),

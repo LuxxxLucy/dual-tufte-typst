@@ -24,7 +24,6 @@
     typography: (
         print: (
             body:    (font: stacks.source-serif, size: 9.8pt, line: 13pt, par: 1.42),
-            sans:    (font: stacks.public-sans),
             note:    (font: stacks.public-sans, size: 0.76),
             caption: (size: 0.78),
             quote:   (size: 0.90, line: 0.74, before: 2.84, after: 2.31, left: 1.45, right: 0.9),

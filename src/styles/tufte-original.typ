@@ -9,12 +9,12 @@
 // toc: title and depth apply to PDF; the HTML list has every heading.
 //
 // html:
-//   css       stylesheets; `html-css:` of `tufte()` replaces them
+//   css       tufte-css stylesheets
 //   sheets    extra stylesheets, e.g. web fonts
 //   overlay   none; "links": plain link underline; "full": colours, links, mobile layout
 //   extra     CSS
 //
-// typography.print roles: body, sans, note, caption, quote, code, h1..h3,
+// typography.print roles: body, note, caption, quote, code, h1..h3,
 // title, meta, header, marks, newthought, list.
 //   body.size, body.line        lengths; line is baseline to baseline
 //   size, left, right, indent   factor of body.size (also list indents)
@@ -65,7 +65,6 @@
         // 10/14 body, 8pt notes (tufte-common.def:367-389).
         print: (
             body:    (font: stacks.etbembo, size: 10pt, line: 14.5pt, par: 1.38, indent: 1.2),
-            sans:    (font: stacks.gillsans),
             note:    (style: "normal", size: 0.80, line: 0.66, sep: 0.3em),
             caption: (size: 0.80, line: 0.72),
             quote:   (style: "italic", size: 1.05, line: 0.93, before: 2.96, after: 2.38, left: 1.8, right: 1.0),

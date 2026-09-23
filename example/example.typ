@@ -50,23 +50,14 @@ The `tufte.with()` function accepts additional parameters:
   abstract: [Brief document summary...],
   toc: true,
   lang: "en",
-  bib: bibliography("refs.bib"),             // runs after body
   config: (page: (paper: "us-letter")),
-  head-extra: [                              // HTML only: injected inside <head>
-    #html.elem("meta", attrs: (("name"): "description", ("content"): "..."))[]
-    #html.elem("link", attrs: (("rel"): "canonical", ("href"): "..."))[]
-  ],
 )
 ```
 
-Pick a style by name, or pass `--input style=<name>` at the command line:
+Pick a style by name:
 
 ```typst
 #show: tufte.with(title: [...], style: "envision")
-```
-
-```bash
-typst compile --input style=envision --input target=html --features html doc.typ out.html
 ```
 
 We have the following styles:
@@ -78,13 +69,12 @@ We have the following styles:
 - `bluewhite`
 - `rosa`.
 
-Each style is one data file in `src/styles/`; its `html.sheets` field lists extra stylesheet URLs for the HTML target (`envision` loads rstudio's envisioned overlay this way). Override the active style's CSS for a single document with the `html-css:` parameter:
+Each style is one data file in `src/styles/`; its `html.sheets` field lists extra stylesheet URLs for the HTML target (`envision` loads rstudio's envisioned overlay this way). Override any style field for a single document with `config:`:
 
 ```typst
 #show: tufte.with(
   title: [...],
-  style: "tufte-original",
-  html-css: ("https://my-cdn.example/custom-tufte.css",),
+  config: (html: (css: ("https://my-cdn.example/custom-tufte.css",))),
 )
 ```
 
@@ -92,7 +82,7 @@ Compile with:
 
 ```bash
 typst compile document.typ                                          # PDF
-typst compile --input target=html --features html document.typ out.html  # HTML
+typst compile --features html document.typ out.html                 # HTML
 ```
 
 View source alongside output to learn the features.
@@ -157,8 +147,6 @@ Large figures can use full page width with `#full-width[#figure(...)]`:
   image("../assets/images/napoleons-march.png", width: 100%),
   caption: [Minard's 1869 map of Napoleon's Russian campaign. Tufte called it "probably the best statistical graphic ever drawn."],
 )]
-
-`#full-width-figure(image(..), caption: [..])` is a quick alias for it.
 
 = Epigraphs
 
@@ -255,7 +243,7 @@ Content sometimes needs more horizontal space. Full-width blocks extend across t
 
 = Dual-Format Notes
 
-The template detects output format at compile time via `sys.inputs.target`. Each function dispatches to format-specific implementations:
+The template detects output format at compile time via `target()`. Each function dispatches to format-specific implementations:
 
 - *PDF*: Uses `marginalia` package for margin notes and wide blocks
 - *HTML*: Generates Tufte CSS-compatible markup with proper classes

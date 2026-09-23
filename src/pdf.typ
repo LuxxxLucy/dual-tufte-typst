@@ -102,11 +102,6 @@
 
 #let full-width(body) = wideblock(side: "outer", body)
 
-#let sans(body) = context {
-    set text(font: _type().sans.font)
-    body
-}
-
 #let _running-header(title, cfg, t) = {
     let r = t.header
     set text(size: r.size, weight: r.weight, tracking: r.track, font: r.font)

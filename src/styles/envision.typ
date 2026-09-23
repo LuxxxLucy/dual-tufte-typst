@@ -13,7 +13,6 @@
     typography: (
         print: (
             body:    (font: stacks.roboto-condensed, size: 9.6pt, line: 13pt, par: 1.40),
-            sans:    (font: stacks.roboto-condensed),
             note:    (line: 0.65),
             caption: (size: 0.78, line: 0.69),
             quote:   (size: 0.95, line: 0.80, before: 2.92, after: 2.40, left: 1.7),
