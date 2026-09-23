@@ -17,7 +17,6 @@
 #   --bindir DIR   directory on PATH to receive the dual-typst symlink
 #                  (default: $HOME/.local/bin)
 #   --no-fonts     skip assets/fonts/fetch.sh
-#   --repo URL     git URL to clone from (default: upstream)
 #   -h, --help     show this help
 
 set -euo pipefail
@@ -31,7 +30,7 @@ bindir="$DEFAULT_BINDIR"
 fetch_fonts=1
 
 usage() {
-  sed -n '2,22p' "$0" | sed 's/^# \{0,1\}//'
+  sed -n '2,21p' "$0" | sed 's/^# \{0,1\}//'
 }
 
 die() {
@@ -51,9 +50,6 @@ while [ "$#" -gt 0 ]; do
     --bindir)
       [ "$#" -ge 2 ] || die "--bindir requires a path"
       bindir="$2"; shift 2 ;;
-    --repo)
-      [ "$#" -ge 2 ] || die "--repo requires a URL"
-      REPO_URL="$2"; shift 2 ;;
     --no-fonts)
       fetch_fonts=0; shift ;;
     -h|--help)
