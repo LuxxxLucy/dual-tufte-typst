@@ -20,10 +20,9 @@ OUT="${1:-web/_site}"
 ROOT="$(pwd)"
 SRC="$ROOT/example/example.typ"
 
-# Public styles. Jialin needs Berkeley Mono (paid, not webfont) — exclude
-# from the public app rather than ship a degraded fallback render. The
-# local tests/gallery/ keeps jialin for development.
+# jialin needs Berkeley Mono, a paid font; only local builds include it.
 STYLES=(tufte-original envision terpret orange-happy bluewhite rosa)
+[[ -z "${CI:-}" ]] && STYLES+=(jialin)
 
 source "$ROOT/tests/_compile.sh"
 

@@ -27,9 +27,7 @@ def collect(group: str) -> list[dict]:
     base = ROOT / group
     if not base.exists():
         return []
-    src_name = "_main.typ" if group == "reproductions" else "case.typ"
-    # Cases enter via case.typ; reproductions via build.sh.
-    entries = sorted(base.rglob("case.typ")) + sorted(base.glob("*/build.sh"))
+    entries = sorted(base.rglob("case.typ")) + sorted(base.glob("*/*.typ"))
     rows = []
     for entry in entries:
         d = entry.parent
@@ -40,7 +38,7 @@ def collect(group: str) -> list[dict]:
         rows.append({
             "label": str(d.relative_to(base)),
             "rel": d.relative_to(ROOT),
-            "src_name": src_name,
+            "src_name": entry.name,
             "live_html": opt(d / "out.html"),
             "ref_html": opt(ref_dir / "out.html"),
             "live_pdf": opt(d / "out.pdf"),
@@ -208,9 +206,7 @@ PAGE = """<!doctype html>
 
 <h1>dual-tufte-typst <small>— test index</small></h1>
 <p>Each row expands to live vs. reference. PNG refs are pixel-diff gated;
-   PDFs ship as artifacts but aren't gated (timestamps, font subsets).
-   Style gallery (same source through every registered style):
-   <a href="gallery/index.html">gallery/index.html</a>.</p>
+   PDFs ship as artifacts but aren't gated (timestamps, font subsets).</p>
 
 <div class="controls">
   <button onclick="setAll(true)">Expand all</button>

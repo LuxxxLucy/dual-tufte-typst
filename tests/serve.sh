@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# Build everything (cases + reproductions), run the
-# structural smoke test, regenerate the index, and serve tests/ on
-# http://localhost:8765 for browser inspection.
+# Build cases and reproductions, run the smoke test and the ref check,
+# write index.html, and serve tests/ on http://localhost:8765.
 #
 # Usage: ./tests/serve.sh [port]
 
@@ -9,16 +8,14 @@ set -euo pipefail
 cd "$(dirname "$0")"
 PORT="${1:-8765}"
 
-echo "==> building cases, reproductions, gallery (parallel groups)"
-( cd cases         && ./build-all.sh ) &
-( cd reproductions && ./build-all.sh ) &
-( cd gallery       && ./build.sh )     &
-wait
+echo "==> building cases and reproductions"
+./cases/build-all.sh
+./reproductions/build-all.sh
 
-echo "==> running structural smoke test (non-fatal; failures surface in the index)"
+echo "==> running structural smoke test (failures surface in the index)"
 ./_smoke.py --quiet > _smoke.log 2>&1 || true
 
-echo "==> running ref diff (non-fatal; diffs surface in the index)"
+echo "==> running ref diff (diffs surface in the index)"
 ./check.sh > _check.log 2>&1 || true
 
 echo "==> generating index.html"

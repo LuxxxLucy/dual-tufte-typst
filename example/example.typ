@@ -7,7 +7,7 @@
 
 // `--input style=<name>` selects a registered style (jialin,
 // tufte-original, envision, terpret, orange-happy, bluewhite, rosa). The
-// gallery uses this to render the same document under every style.
+// web app uses this to render the same document under every style.
 #show: tufte.with(
   title: [Dual-Tufte-Typst: Tufte Style for Both PDF and HTML],
   author: "Jialin Lu",

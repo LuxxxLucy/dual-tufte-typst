@@ -33,6 +33,4 @@ app/assets/
 
 # Test artifacts — regenerated locally
 tests/refs/
-tests/gallery/*/
-tests/gallery/index.html
 tests/cases/*/*/diff.png
