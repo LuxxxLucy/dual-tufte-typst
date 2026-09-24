@@ -1,7 +1,5 @@
 // envision: rstudio/tufte's envisioned variant (rstudio.github.io/tufte/envisioned/).
 
-#import "_stacks.typ" as stacks
-
 #let envision = (
     colors: (bg: "#fefefe", fg: "#2B2B2B", link: "#222222"),
     // envisioned.css has no dark-mode rules.
@@ -12,7 +10,9 @@
     ),
     typography: (
         print: (
-            body:    (font: stacks.roboto-condensed, size: 9.6pt, line: 13pt, par: 1.40),
+            // fetch.sh renames the family to "RobotoCondensed"; Typst reads
+            // "Roboto Condensed" as "Roboto".
+            body:    (font: ("RobotoCondensed", "Roboto", "Helvetica Neue", "Helvetica", "Arial"), size: 9.6pt, line: 13pt, par: 1.40),
             note:    (line: 0.65),
             caption: (size: 0.78, line: 0.69),
             quote:   (size: 0.95, line: 0.80, before: 2.92, after: 2.40, left: 1.7),

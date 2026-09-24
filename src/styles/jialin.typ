@@ -1,8 +1,7 @@
 // jialin: personal handout. The PDF is compact; the HTML is more open
 // for screen reading.
 
-#import "_stacks.typ" as stacks
-
+#let _gill-print = ("Gill Sans", "Helvetica")
 #let _gill = "Gill Sans, Avenir Next, system-ui, sans-serif"
 
 #let jialin = (
@@ -20,15 +19,15 @@
     typography: (
         print: (
             body:    (size: 9pt, line: 13pt, indent: 0),
-            note:    (font: stacks.gillsans, style: "italic", size: 0.68, line: 0.55, sep: 0.35em),
+            note:    (font: _gill-print, style: "italic", size: 0.68, line: 0.55, sep: 0.35em),
             caption: (line: 0.66),
             quote:   (size: 1.00, line: 0.88, before: 2.83, after: 2.28, left: 1.5),
             code:    (font: ("Berkeley Mono", "Menlo", "Monaco", "Courier"), size: 0.72, line: 0.68, before: 1.46, after: 1.59, left: 1.0, right: 0.56, inline: 0.8),
             h1:      (size: 1.30, line: 1.1, before: 2.20, after: 1.67, kern: -0.05em),
             h2:      (size: 1.12, after: 1.56),
             h3:      (before: 1.62),
-            title:   (font: stacks.gillsans, size: 1.65, line: 1.35),
-            meta:    (font: stacks.gillsans, style: "normal", size: 0.80, after: 2.31, sep: 1.1em),
+            title:   (font: _gill-print, size: 1.65, line: 1.35),
+            meta:    (font: _gill-print, style: "normal", size: 0.80, after: 2.31, sep: 1.1em),
             header:  (font: ("Berkeley Mono", "Menlo", "Monaco"), weight: 700, size: 5pt, track: 1.25pt, after: 11.75pt),
             marks:   (margin: 0.91em),
         ),

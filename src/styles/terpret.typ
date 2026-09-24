@@ -1,9 +1,8 @@
 // terpret: plain technical style. Inter text, Space Grotesk title,
 // JetBrains Mono code.
 
-#import "_stacks.typ" as stacks
-
-#let _space-grotesk = "'Space Grotesk', 'Inter', system-ui, sans-serif"
+#let _space-grotesk-print = ("Space Grotesk", "Inter", "Helvetica Neue", "Helvetica", "Arial")
+#let _space-grotesk ="'Space Grotesk', 'Inter', system-ui, sans-serif"
 
 #let terpret = (
     colors: (bg: "#FAFAF8", fg: "#1B1B1F", link: "#1F6FEB", heading: "#182338", note: "#4A4A52", rule: "#E1DED4", code-bg: "#F1F0E8"),
@@ -20,17 +19,17 @@
     ),
     typography: (
         print: (
-            body:    (font: stacks.inter, size: 9.4pt, line: 13pt, par: 1.40),
+            body:    (font: ("Inter", "Helvetica Neue", "Helvetica", "Arial"), size: 9.4pt, line: 13pt, par: 1.40),
             note:    (size: 0.76, line: 0.63),
             caption: (size: 0.78, line: 0.69),
             quote:   (size: 0.88, line: 0.72, before: 2.73, after: 2.26, left: 1.35, right: 0.9),
-            code:    (font: stacks.jetbrains-mono, size: 0.84, line: 0.79, before: 1.52, after: 1.61, left: 1.0, right: 0.56, inline: 0.94),
+            code:    (font: ("JetBrains Mono", "Menlo", "Monaco", "Courier"), size: 0.84, line: 0.79, before: 1.52, after: 1.61, left: 1.0, right: 0.56, inline: 0.94),
             h1:      (weight: 500, style: "normal", size: 1.12, before: 2.14, after: 1.67),
             h2:      (weight: 500, style: "normal", size: 1.00, before: 1.73, after: 1.51),
             h3:      (weight: 500, style: "normal", before: 1.69, after: 1.47),
-            title:   (font: stacks.space-grotesk, weight: 500, size: 1.24, after: 1.62),
+            title:   (font: _space-grotesk-print, weight: 500, size: 1.24, after: 1.62),
             meta:    (style: "normal", size: 0.76, after: 2.13),
-            header:  (font: stacks.space-grotesk),
+            header:  (font: _space-grotesk-print),
             marks:   (anchor: 0.76em, margin: 0.92em),
             newthought: (lower: 0.87),
         ),

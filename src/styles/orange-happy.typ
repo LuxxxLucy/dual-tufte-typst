@@ -1,9 +1,9 @@
 // orange-happy: warm editorial style. Source Serif text, Public Sans
 // headings and notes, Newsreader title.
 
-#import "_stacks.typ" as stacks
-
-#let _public-sans = "'Public Sans', system-ui, sans-serif"
+#let _public-sans-print = ("Public Sans", "Helvetica Neue", "Helvetica", "Arial")
+#let _newsreader-print = ("Newsreader", "Source Serif 4", "Georgia", "Palatino")
+#let _public-sans ="'Public Sans', system-ui, sans-serif"
 #let _newsreader = "'Newsreader', Georgia, serif"
 
 #let orange-happy = (
@@ -23,17 +23,17 @@
     ),
     typography: (
         print: (
-            body:    (font: stacks.source-serif, size: 9.8pt, line: 13pt, par: 1.42),
-            note:    (font: stacks.public-sans, size: 0.76),
+            body:    (font: ("Source Serif 4", "Georgia", "Palatino"), size: 9.8pt, line: 13pt, par: 1.42),
+            note:    (font: _public-sans-print, size: 0.76),
             caption: (size: 0.78),
             quote:   (size: 0.90, line: 0.74, before: 2.84, after: 2.31, left: 1.45, right: 0.9),
-            code:    (font: stacks.jetbrains-mono, size: 0.81, line: 0.79, before: 1.59, left: 1.04, right: 0.6, inline: 0.89),
+            code:    (font: ("JetBrains Mono", "Menlo", "Monaco", "Courier"), size: 0.81, line: 0.79, before: 1.59, left: 1.04, right: 0.6, inline: 0.89),
             h1:      (style: "normal", size: 1.08, before: 2.10, after: 1.65),
             h2:      (style: "normal", size: 1.00, before: 1.76, after: 1.53),
             h3:      (style: "normal", before: 1.72, after: 1.49),
-            title:   (font: stacks.newsreader, weight: 500, size: 1.34, after: 1.64),
-            meta:    (font: stacks.public-sans, style: "normal", size: 0.78, after: 2.17),
-            header:  (font: stacks.newsreader),
+            title:   (font: _newsreader-print, weight: 500, size: 1.34, after: 1.64),
+            meta:    (font: _public-sans-print, style: "normal", size: 0.78, after: 2.17),
+            header:  (font: _newsreader-print),
             marks:   (anchor: 0.81em, margin: 1.03em),
             newthought: (lower: 0.90),
         ),

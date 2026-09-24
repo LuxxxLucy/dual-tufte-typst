@@ -42,8 +42,6 @@
 //   code.font      goes on inline and block code; other code fields on `pre`
 // A missing web role keeps the stylesheet value.
 
-#import "_stacks.typ" as stacks
-
 #let tufte-original = (
     // Geometry from tufte-common.def:446: left=1in, textwidth=26pc
     // (4.33in), marginparsep=2pc (0.33in), marginparwidth=12pc (2in).
@@ -64,7 +62,7 @@
     typography: (
         // 10/14 body, 8pt notes (tufte-common.def:367-389).
         print: (
-            body:    (font: stacks.etbembo, size: 10pt, line: 14.5pt, par: 1.38, indent: 1.2),
+            body:    (font: ("ETBembo", "Palatino", "Georgia"), size: 10pt, line: 14.5pt, par: 1.38, indent: 1.2),
             note:    (style: "normal", size: 0.80, line: 0.66, sep: 0.3em),
             caption: (size: 0.80, line: 0.72),
             quote:   (style: "italic", size: 1.05, line: 0.93, before: 2.96, after: 2.38, left: 1.8, right: 1.0),

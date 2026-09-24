@@ -1,7 +1,5 @@
 // bluewhite: clean ML blog style after the OpenAI and Sakana blogs.
 
-#import "_stacks.typ" as stacks
-
 #let _inter = "Inter, 'OpenAI Sans', 'Public Sans', system-ui, sans-serif"
 
 #let bluewhite = (
@@ -19,11 +17,11 @@
     ),
     typography: (
         print: (
-            body:    (font: stacks.inter, size: 9.5pt, line: 13pt, par: 1.40),
+            body:    (font: ("Inter", "Helvetica Neue", "Helvetica", "Arial"), size: 9.5pt, line: 13pt, par: 1.40),
             note:    (size: 0.76, line: 0.63),
             caption: (size: 0.78, line: 0.69),
             quote:   (size: 0.88, line: 0.73, before: 2.75, after: 2.26, left: 1.45, right: 0.9),
-            code:    (font: stacks.jetbrains-mono, size: 0.84, line: 0.80, before: 1.52, after: 1.61, left: 1.04, right: 0.6, inline: 0.94),
+            code:    (font: ("JetBrains Mono", "Menlo", "Monaco", "Courier"), size: 0.84, line: 0.80, before: 1.52, after: 1.61, left: 1.04, right: 0.6, inline: 0.94),
             h1:      (weight: 500, style: "normal", size: 1.12, before: 2.18, after: 1.67),
             h2:      (weight: 500, style: "normal", size: 1.00, before: 1.73, after: 1.51),
             h3:      (weight: 500, style: "normal", before: 1.69, after: 1.47),

@@ -1,8 +1,7 @@
 // rosa: after David Álvarez Rosa's site (https://david.alvarezrosa.com/).
 
-#import "_stacks.typ" as stacks
-
-#let _alegreya-sc = "'Alegreya SC', serif"
+#let _alegreya-sc-print = ("Alegreya SC", "Alegreya", "Georgia")
+#let _alegreya-sc ="'Alegreya SC', serif"
 
 #let rosa = (
     link: (underline: false),
@@ -19,17 +18,17 @@
     ),
     typography: (
         print: (
-            body:    (font: stacks.alegreya, size: 9.5pt, line: 13.6pt, par: 1.6, indent: 0),
+            body:    (font: ("Alegreya", "Georgia", "Palatino"), size: 9.5pt, line: 13.6pt, par: 1.6, indent: 0),
             note:    (size: 0.79, line: 0.77),
             caption: (size: 0.79, line: 0.77),
             quote:   (size: 1.00, line: 1.0, before: 2.4, after: 2.0, left: 1.5),
-            code:    (font: stacks.inconsolata, size: 0.82, line: 0.74, before: 1.6, after: 1.6, left: 1.0, right: 0.5, inline: 1.0),
-            h1:      (font: stacks.alegreya-sc, weight: 700, style: "normal", size: 1.14, before: 2.2, after: 1.4, kern: 0em),
-            h2:      (font: stacks.alegreya-sc, weight: 700, style: "normal", size: 1.00, before: 1.8, after: 1.4),
+            code:    (font: ("Inconsolata", "Menlo", "Monaco"), size: 0.82, line: 0.74, before: 1.6, after: 1.6, left: 1.0, right: 0.5, inline: 1.0),
+            h1:      (font: _alegreya-sc-print, weight: 700, style: "normal", size: 1.14, before: 2.2, after: 1.4, kern: 0em),
+            h2:      (font: _alegreya-sc-print, weight: 700, style: "normal", size: 1.00, before: 1.8, after: 1.4),
             h3:      (before: 1.6, after: 1.4),
-            title:   (font: stacks.alegreya-sc, size: 2.00, line: 1.1, after: 1.8, kern: 0em),
+            title:   (font: _alegreya-sc-print, size: 2.00, line: 1.1, after: 1.8, kern: 0em),
             meta:    (after: 2.4, sep: 1em),
-            header:  (font: stacks.alegreya-sc, track: 0.5pt, upper: false),
+            header:  (font: _alegreya-sc-print, track: 0.5pt, upper: false),
             marks:   (anchor: 0.82em, margin: 0.99em),
             newthought: (lower: 0.86),
         ),
