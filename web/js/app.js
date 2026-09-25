@@ -1,20 +1,38 @@
-import { mountViewer } from "./viewer.js";
+const styles = (await (await fetch("styles.txt", { cache: "no-cache" })).text()).trim().split("\n");
 
-async function loadManifest() {
-    const r = await fetch("manifest.json", { cache: "no-cache" });
-    if (!r.ok) throw new Error(`manifest.json: ${r.status}`);
-    return r.json();
+document.getElementById("style-links").innerHTML = styles
+    .map(s => `<a href="styles/${s}/out.html">${s}</a>`)
+    .join('<span class="sep">·</span>');
+
+function el(tag, props = {}, ...children) {
+    const e = Object.assign(document.createElement(tag), props);
+    e.append(...children);
+    return e;
 }
 
-function paintStyleLinks(manifest) {
-    const span = document.getElementById("style-links");
-    span.innerHTML = manifest.styles
-        .map(s => `<a href="styles/${s}/out.html">${s}</a>`)
-        .join('<span class="sep">·</span>');
+// A pane with a style menu, an HTML/PDF switch and the output in a frame.
+function pane(style) {
+    let format = "pdf";
+    const frame = el("iframe", { loading: "lazy" });
+    const show = () => { frame.src = `styles/${style}/out.${format}`; };
+
+    const menu = el("select", {}, ...styles.map(s => el("option", { value: s, textContent: s, selected: s === style })));
+    menu.addEventListener("change", () => { style = menu.value; show(); });
+
+    const buttons = ["html", "pdf"].map(f => {
+        const b = el("button", { type: "button", textContent: f.toUpperCase(), className: f === format ? "active" : "" });
+        b.addEventListener("click", () => {
+            format = f;
+            for (const o of buttons) o.classList.toggle("active", o === b);
+            show();
+        });
+        return b;
+    });
+
+    show();
+    return el("article", { className: "card" },
+        el("div", { className: "card-head" }, menu, el("div", { className: "btn-group" }, ...buttons)),
+        el("div", { className: "card-body" }, frame));
 }
 
-const manifest = await loadManifest();
-paintStyleLinks(manifest);
-mountViewer(document.getElementById("viewer-stage"),
-            document.querySelector(".viewer-format-slot"),
-            manifest);
+document.getElementById("viewer-stage").append(pane(styles[0]), pane(styles[1] ?? styles[0]));

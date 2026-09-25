@@ -1,7 +1,5 @@
-# Build the public web app at web/_site/ and deploy it to GitHub Pages
-# on every push to main. The web app renders example/example.typ through
-# every public style and ships three viewer modes (Showcase /
-# Side-by-side / Grid).
+# Build the web app at web/_site/ and deploy it to GitHub Pages on every
+# push to main.
 
 name: build-web
 
