@@ -80,6 +80,22 @@ fetch_face() {
     echo "  ↓ converted: $out_ttf"
 }
 
+# ET Book — tufte-original. MIT. Upstream ships TTF files.
+echo "ET Book:"
+for face in roman-line-figures display-italic-old-style-figures bold-line-figures; do
+    out="et-book/et-book-$face.ttf"
+    if [[ -s "$out" ]]; then echo "  ✓ exists: $out"; continue; fi
+    mkdir -p et-book
+    url="https://raw.githubusercontent.com/edwardtufte/et-book/gh-pages/et-book/et-book-$face/et-book-$face.ttf"
+    curl -sLf --max-time 60 "$url" -o "$out" || { echo "FAIL: $url" >&2; exit 1; }
+    echo "  ↓ downloaded: $out"
+done
+
+# Roboto Mono — envision code. Apache 2.0.
+echo "Roboto Mono:"
+fetch_face roboto-mono 5.2.8 400 normal "roboto/RobotoMono-Regular.ttf"
+fetch_face roboto-mono 5.2.8 700 normal "roboto/RobotoMono-Bold.ttf"
+
 # Roboto Condensed — `envision` style (matches rstudio/tufte's
 # envisioned variant). Apache 2.0.
 #
@@ -92,22 +108,21 @@ fetch_face roboto-condensed 5.0.4 400 normal "roboto/RobotoCondensed-Regular.ttf
 fetch_face roboto-condensed 5.0.4 700 normal "roboto/RobotoCondensed-Bold.ttf"    "RobotoCondensed"
 fetch_face roboto-condensed 5.0.4 400 italic "roboto/RobotoCondensed-Italic.ttf"  "RobotoCondensed"
 
-# JetBrains Mono — free mono fallback for orange-happy / bluewhite.
-# Apache 2.0.
+# JetBrains Mono — bluewhite, orange-happy and terpret code. Apache 2.0.
 echo "JetBrains Mono:"
 fetch_face jetbrains-mono 5.0.21 400 normal "jetbrains-mono/JetBrainsMono-Regular.ttf"
 fetch_face jetbrains-mono 5.0.21 700 normal "jetbrains-mono/JetBrainsMono-Bold.ttf"
 fetch_face jetbrains-mono 5.0.21 400 italic "jetbrains-mono/JetBrainsMono-Italic.ttf"
 
-# Inter extra weights — back the existing Inter-Regular / Italic so
-# semibold / medium heading specs in orange-happy / bluewhite
-# resolve to real glyphs instead of synthesized bold. SIL OFL.
+# Inter — bluewhite and terpret body. SIL OFL.
 echo "Inter:"
+fetch_face inter 5.2.6 400 normal "inter/Inter-Regular.ttf"
+fetch_face inter 5.2.6 400 italic "inter/Inter-Italic.ttf"
 fetch_face inter 5.2.6 500 normal "inter/Inter-Medium.ttf"
 fetch_face inter 5.2.6 600 normal "inter/Inter-SemiBold.ttf"
 fetch_face inter 5.2.6 700 normal "inter/Inter-Bold.ttf"
 
-# Public Sans — free Colfax substitute for the `terpret` style. SIL OFL.
+# Public Sans — orange-happy notes and byline. SIL OFL.
 echo "Public Sans:"
 fetch_face public-sans 5.2.6 400 normal "public-sans/PublicSans-Regular.ttf"
 fetch_face public-sans 5.2.6 500 normal "public-sans/PublicSans-Medium.ttf"
@@ -119,20 +134,14 @@ echo "Space Grotesk:"
 fetch_face space-grotesk 5.2.6 500 normal "space-grotesk/SpaceGrotesk-Medium.ttf"
 fetch_face space-grotesk 5.2.6 700 normal "space-grotesk/SpaceGrotesk-Bold.ttf"
 
-# Newsreader — orange-happy body. Humanist serif. SIL OFL.
+# Newsreader — orange-happy title and running header. SIL OFL.
 echo "Newsreader:"
 fetch_face newsreader 5.2.6 400 normal "newsreader/Newsreader-Regular.ttf"
 fetch_face newsreader 5.2.6 500 normal "newsreader/Newsreader-Medium.ttf"
 fetch_face newsreader 5.2.6 600 normal "newsreader/Newsreader-SemiBold.ttf"
 fetch_face newsreader 5.2.6 400 italic "newsreader/Newsreader-Italic.ttf"
 
-# Fraunces — orange-happy heading. SIL OFL.
-echo "Fraunces:"
-fetch_face fraunces 5.2.6 500 normal "fraunces/Fraunces-Medium.ttf"
-fetch_face fraunces 5.2.6 600 normal "fraunces/Fraunces-SemiBold.ttf"
-fetch_face fraunces 5.2.6 700 normal "fraunces/Fraunces-Bold.ttf"
-
-# Source Serif 4 — bluewhite body + heading. SIL OFL.
+# Source Serif 4 — orange-happy body. SIL OFL.
 echo "Source Serif 4:"
 fetch_face source-serif-4 5.2.6 400 normal "source-serif-4/SourceSerif4-Regular.ttf"
 fetch_face source-serif-4 5.2.6 600 normal "source-serif-4/SourceSerif4-SemiBold.ttf"
@@ -145,10 +154,9 @@ fetch_face alegreya 5.3.0 400 italic "alegreya/Alegreya-Italic.ttf"
 fetch_face alegreya 5.3.0 700 normal "alegreya/Alegreya-Bold.ttf"
 fetch_face alegreya-sc 5.3.0 400 normal "alegreya/AlegreyaSC-Regular.ttf"
 fetch_face alegreya-sc 5.3.0 700 normal "alegreya/AlegreyaSC-Bold.ttf"
-fetch_face alegreya-sans 5.3.0 400 normal "alegreya/AlegreyaSans-Regular.ttf"
 echo "Inconsolata:"
 fetch_face inconsolata 5.3.0 400 normal "inconsolata/Inconsolata-Regular.ttf"
 fetch_face inconsolata 5.3.0 500 normal "inconsolata/Inconsolata-Medium.ttf"
 
 echo ""
-echo "done. Verify with: typst fonts --font-path assets/fonts | grep -iE 'roboto cond|jetbrains|inter|grotesk|news|fraunces|source serif|alegreya|inconsolata'"
+echo "done. Verify with: typst fonts --font-path assets/fonts | grep -iE 'etbembo|roboto|jetbrains|inter|grotesk|news|public|source serif|alegreya|inconsolata'"
