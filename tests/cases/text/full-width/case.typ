@@ -1,9 +1,10 @@
-// full-width body block: spans main + margin column.
+#import "/src/lib.typ": *
+#show: tufte
 
-Normal-width prose first, constrained to the main column.
+Prose in the main column.
 
 #full-width[
-This block spans across the main column and into the margin area. Use sparingly — research suggests 50–75 characters per line optimizes reading comfort, but tables or specifications sometimes benefit from extra width.
+This block spans the main column and the margin. It is long enough to wrap onto a second line at the full width.
 ]
 
 Back to normal-width prose.

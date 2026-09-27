@@ -1,5 +1,7 @@
-// Two figures in sequence: the counter advances, @ref resolves in both
-// targets, and a label inside full-width still lands on the figure.
+#import "/src/lib.typ": *
+#show: tufte
+
+// Figure numbers, and references to a main and a full-width figure.
 
 Body before the first figure. See @playfair and @minard.
 

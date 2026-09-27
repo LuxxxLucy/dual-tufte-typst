@@ -1,217 +1,57 @@
 #!/usr/bin/env python3
-"""Fast structural smoke test for dual-typst HTML output.
+"""Check the HTML structure of each case's out.html; exit 1 on any issue.
 
-Runs in <1s across every `out.html` and checks invariants that, if broken,
-yield obviously bad rendering. Use before/after every emit-affecting change
-so a wrong tag or stray paragraph break is caught immediately, instead of
-sliding through to the slow vision-LLM pass.
-
-Invariants enforced (per case):
-
-  1. Document scaffold:
-     - <article> exists; <h1> (if any) is a direct child of <article>,
-       NOT inside <section>. tufte-css's `section > p` selector relies
-       on this hierarchy.
-     - <section> wraps the body content.
-
-  2. Sidenote / marginnote triplet structure: every label.margin-toggle
-     must have a matching <input type="checkbox" id="..."> and a
-     subsequent <span class="sidenote"> or <span class="marginnote">.
-     The label+input pair must share a parent <span> (the box wrapper).
-
-  3. Block-level elements must NOT appear inside <span class="sidenote">
-     or <span class="marginnote"> — browsers reparent <p>/<ul>/<ol>/<div>
-     out of inline parents, ejecting the body to top-level flow and
-     leaving only the superscript number in the margin. This is the
-     single most common rendering break.
-
-  4. Figure cases must contain at least one <img>. A figure that emits
-     only a caption (the rect()-placeholder failure mode) is a bug.
-
-  5. Every label[for=X] has a matching input[id=X]. ids are unique.
-
-Exit code: 0 on PASS, 1 on FAIL. Use `--quiet` to suppress per-case
-PASS lines.
+- <article> and <section> exist.
+- No block element sits inside a sidenote or marginnote <span>.
+- Each margin-toggle label has an <input> with the same id.
+- Ids outside <svg> are unique.
+- Figure cases contain an <img>.
 """
-from __future__ import annotations
-import argparse
-import re
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
 
-ROOT = Path(__file__).parent
-
-# Block elements that must not appear inside <span class="sidenote|marginnote">.
-BLOCK_TAGS = {"p", "ul", "ol", "div", "table", "blockquote", "figure",
-              "h1", "h2", "h3", "h4", "h5", "h6", "section", "article",
-              "aside", "footer", "header", "pre"}
+BLOCK_TAGS = {"p", "ul", "ol", "div", "table", "blockquote", "figure", "pre",
+              "h1", "h2", "h3", "h4", "h5", "h6", "section", "article", "aside", "footer", "header"}
 
 
-class StructureParser(HTMLParser):
-    """Single-pass parser that records the issues we care about."""
-
-    def __init__(self) -> None:
+class Parser(HTMLParser):
+    def __init__(self):
         super().__init__()
-        self.stack: list[tuple[str, dict]] = []
-        self.issues: list[str] = []
-        self.has_article = False
-        self.has_section = False
-        self.img_count = 0
-        # label/input id tracking
-        self.label_fors: list[str] = []
-        self.input_ids: list[str] = []
-        self.all_ids: list[str] = []
+        self.stack, self.issues, self.tags, self.fors, self.ids = [], [], set(), [], []
 
-    def _classes(self, attrs: dict) -> set[str]:
-        return set((attrs.get("class") or "").split())
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        classes = (attrs.get("class") or "").split()
+        self.tags.add(tag)
+        if tag == "label" and "margin-toggle" in classes:
+            self.fors.append(attrs.get("for"))
+        if "id" in attrs and "svg" not in self.stack:
+            self.ids.append(attrs["id"])
+        if tag in BLOCK_TAGS and "span.note" in self.stack:
+            self.issues.append(f"<{tag}> inside a note span")
+        self.stack.append("span.note" if tag == "span" and {"sidenote", "marginnote"} & set(classes) else tag)
 
-    def _in_inline_note_span(self) -> str | None:
-        for tag, attrs in reversed(self.stack):
-            if tag == "span":
-                cls = self._classes(attrs)
-                if "sidenote" in cls or "marginnote" in cls:
-                    return "sidenote" if "sidenote" in cls else "marginnote"
-        return None
-
-    def _parent_section(self) -> bool:
-        return any(t == "section" for t, _ in self.stack)
-
-    def handle_starttag(self, tag: str, raw_attrs) -> None:
-        attrs = dict(raw_attrs)
-        if tag == "article":
-            self.has_article = True
-        elif tag == "section":
-            self.has_section = True
-        elif tag == "img":
-            self.img_count += 1
-        elif tag == "label" and "margin-toggle" in self._classes(attrs):
-            if "for" in attrs:
-                self.label_fors.append(attrs["for"])
-        elif tag == "input" and attrs.get("type") == "checkbox":
-            if "id" in attrs:
-                self.input_ids.append(attrs["id"])
-
-        # Ids inside <svg> are svg-internal scope (resolved by xlink:href);
-        # `html.frame` reuses the same `<defs>` ids across frames legitimately.
-        if "id" in attrs and not any(t == "svg" for t, _ in self.stack):
-            self.all_ids.append(attrs["id"])
-
-        # Block-inside-inline-note check.
-        if tag in BLOCK_TAGS:
-            ctx = self._in_inline_note_span()
-            if ctx is not None:
-                self.issues.append(
-                    f"<{tag}> inside <span class=\"{ctx}\"> "
-                    "(browsers will reparent and eject the body to top-level flow)"
-                )
-
-        self.stack.append((tag, attrs))
-
-    def handle_endtag(self, tag: str) -> None:
-        # Pop until matching tag (handles unclosed self-closing edge cases).
-        while self.stack and self.stack[-1][0] != tag:
-            self.stack.pop()
-        if self.stack:
-            self.stack.pop()
+    def handle_endtag(self, tag):
+        while self.stack and self.stack.pop().split(".")[0] != tag:
+            pass
 
 
-def check_one(path: Path, expectations: dict) -> list[str]:
-    """Return a list of issue strings for `path`. Empty list means PASS."""
-    parser = StructureParser()
-    parser.feed(path.read_text(encoding="utf-8"))
-    issues = list(parser.issues)
-
-    if not parser.has_article:
-        issues.append("missing <article> wrapper")
-    if not parser.has_section:
-        issues.append("missing <section> wrapper for body")
-
-    # Label / input id pairing
-    for fr in parser.label_fors:
-        if fr not in parser.input_ids:
-            issues.append(f"label for=\"{fr}\" has no matching <input id=\"{fr}\">")
-
-    # Unique ids
-    seen, dupes = set(), []
-    for i in parser.all_ids:
-        if i in seen:
-            dupes.append(i)
-        seen.add(i)
-    if dupes:
-        issues.append(f"duplicate id(s): {sorted(set(dupes))}")
-
-    # Per-expectation: figures must have <img>
-    if expectations.get("requires_img") and parser.img_count == 0:
-        issues.append("figure case missing <img> (Typst dropped the figure body)")
-
-    return issues
+def issues(path):
+    p = Parser()
+    p.feed(path.read_text())
+    out = p.issues
+    out += [f"missing <{t}>" for t in ("article", "section") if t not in p.tags]
+    out += [f'label for="{f}" has no input' for f in p.fors if f not in p.ids]
+    out += [f'duplicate id "{i}"' for i in {i for i in p.ids if p.ids.count(i) > 1}]
+    if "figures" in path.parts and "img" not in p.tags:
+        out.append("figure case has no <img>")
+    return out
 
 
-def expectations_for(path: Path) -> dict:
-    rel = path.relative_to(ROOT).as_posix()
-    if rel.startswith("cases/figures/"):
-        return {"requires_img": True}
-    return {}
-
-
-def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--quiet", action="store_true",
-                    help="suppress PASS lines; only print failures")
-    args = ap.parse_args()
-
-    cases = sorted(ROOT.glob("cases/*/*/out.html"))
-    repros = sorted(ROOT.glob("reproductions/*/out.html"))
-    if not (cases or repros):
-        print("no out.html files found — run build-all.sh first", file=sys.stderr)
-        return 1
-
-    real_failed = 0
-    repro_issue_files = 0
-
-    def report(t: Path, group: str) -> None:
-        nonlocal real_failed, repro_issue_files
-        rel = t.relative_to(ROOT).as_posix()
-        issues = check_one(t, expectations_for(t))
-        if group == "reproductions":
-            # Reproductions are holistic visual tests, not structural.
-            # Issues here usually trace to unsupported blocks inside notes
-            # (see README "Limitations") — informational only, do not block exit.
-            if issues:
-                repro_issue_files += 1
-                if not args.quiet:
-                    n = len(issues)
-                    print(f"INFO {rel}  ({n} structural issue{'s' if n!=1 else ''})")
-            elif not args.quiet:
-                print(f"PASS {rel}")
-        else:
-            if issues:
-                real_failed += 1
-                print(f"FAIL {rel}")
-                for issue in issues:
-                    print(f"  - {issue}")
-            elif not args.quiet:
-                print(f"PASS {rel}")
-
-    for t in cases: report(t, "cases")
-    for t in repros: report(t, "reproductions")
-
-    summary = f"\n{len(cases)} case(s), {len(repros)} reproduction(s)"
-    if real_failed:
-        print(f"{summary}\n{real_failed} unexpected case failure(s)")
-        return 1
-    notes = []
-    if repro_issue_files:
-        notes.append(f"{repro_issue_files} reproduction(s) carry known-limitation patterns")
-    if notes:
-        print(summary)
-        for n in notes:
-            print(n)
-    else:
-        print(f"{summary}\nall expectations met")
-    return 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())
+failed = False
+for path in sorted(Path(__file__).parent.glob("cases/*/*/out.html")):
+    for issue in issues(path):
+        failed = True
+        print(f"FAIL {path.parent.relative_to(path.parents[3])}: {issue}")
+sys.exit(failed)

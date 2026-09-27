@@ -1,5 +1,5 @@
-// List item containing an inline sidenote — checks that the sidenote
-// triplet folds inside <li> without breaking list structure.
+#import "/src/lib.typ": *
+#show: tufte
 
 A short list with a sidenote on the second item:
 

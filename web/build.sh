@@ -6,23 +6,19 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 OUT=web/_site
-ROOT="$(pwd)"
-SRC="$ROOT/example/example.typ"
 
 # jialin needs Berkeley Mono, a paid font; only local builds include it.
 STYLES=(tufte-original envision terpret orange-happy bluewhite rosa)
 [[ -z "${CI:-}" ]] && STYLES+=(jialin)
 
-source "$ROOT/tests/_compile.sh"
-
 rm -rf "$OUT"
 mkdir -p "$OUT/styles"
 
 build_one() {
-    local outdir="$OUT/styles/$1"
-    mkdir -p "$outdir"
-    tc_pdf  "$ROOT" "$SRC" "$outdir/out.pdf"  --input style="$1"
-    tc_html "$ROOT" "$SRC" "$outdir/out.html" --input style="$1"
+    local dir="$OUT/styles/$1" args=(--root . --font-path assets/fonts --input style="$1")
+    mkdir -p "$dir"
+    typst compile "${args[@]}" example/example.typ "$dir/out.pdf"
+    typst compile "${args[@]}" --features html example/example.typ "$dir/out.html"
     echo "==> $1"
 }
 

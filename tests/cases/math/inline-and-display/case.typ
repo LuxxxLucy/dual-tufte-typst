@@ -1,5 +1,5 @@
-// Math — inline + numbered display + labeled reference.
-// Note: HTML target ignores equations (warning).
+#import "/src/lib.typ": *
+#show: tufte
 
 Inline math like $E = m c^2$ flows in the text.
 

@@ -1,4 +1,5 @@
-// Margin note with blank lines, lists and align
+#import "/src/lib.typ": *
+#show: tufte
 
 Body text.#marginnote[
   First paragraph of the note.

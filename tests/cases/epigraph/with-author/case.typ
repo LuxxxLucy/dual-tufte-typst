@@ -1,4 +1,5 @@
-// Epigraph with attribution.
+#import "/src/lib.typ": *
+#show: tufte
 
 #epigraph(
     [Above all else show the data.],

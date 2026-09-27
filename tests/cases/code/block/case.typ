@@ -1,4 +1,5 @@
-// Block code rendering — left-inset, mono font.
+#import "/src/lib.typ": *
+#show: tufte
 
 Inline `code` first, then a block:
 

@@ -1,8 +1,6 @@
-// Scroll mode — `height: auto` produces a single tall page, no
-// pagination, and the running header is suppressed.
-// !with: (config: (page: (width: 6in, height: auto)))
+#import "/src/lib.typ": *
+#show: tufte.with(config: (page: (width: 6in, height: auto)))
 
+The page grows to fit its content#sidenote[A note on the long page.] and has no running header.
 
-A short body to verify the page grows to fit#sidenote[Sidenote on a tall page.] without paginating. Header is suppressed because a running header on a 200cm page is meaningless.
-
-A second paragraph keeps the layout honest; nothing about scroll mode should require the document to fill a fixed page.
+A second paragraph.

@@ -1,3 +1,4 @@
-// Sidenote whose body mixes emph + strong + raw.
+#import "/src/lib.typ": *
+#show: tufte
 
-The body claim#sidenote[A note with _emphasis_, *strong*, and a `code-snippet` — all should render in the margin span.] continues here.
+The body claim#sidenote[A note with _emphasis_, *strong* and `code`.] continues here.

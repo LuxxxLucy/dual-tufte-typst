@@ -1,4 +1,5 @@
-// Horizontal rule between two paragraphs.
+#import "/src/lib.typ": *
+#show: tufte
 
 First paragraph above the rule.
 

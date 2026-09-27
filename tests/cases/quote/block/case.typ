@@ -1,4 +1,5 @@
-// Block quote with attribution.
+#import "/src/lib.typ": *
+#show: tufte
 
 Lead-in prose.
 
