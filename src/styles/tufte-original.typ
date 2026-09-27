@@ -66,7 +66,7 @@
             note:    (style: "normal", size: 0.80, line: 0.66, sep: 0.3em),
             caption: (size: 0.80, line: 0.72),
             quote:   (style: "italic", size: 1.05, line: 0.93, before: 2.96, after: 2.38, left: 1.8, right: 1.0),
-            code:    (font: ("Menlo", "Monaco", "Courier"), size: 0.69, line: 0.62, before: 1.50, after: 1.63, left: 1.36, right: 0.64, inline: 0.76),
+            code:    (font: ("Roboto Mono", "Menlo", "Monaco", "Courier"), size: 0.69, line: 0.62, before: 1.50, after: 1.63, left: 1.36, right: 0.64, inline: 0.76),
             h1:      (weight: 400, style: "italic", size: 1.20, line: 1.0, before: 2.81, after: 1.79, kern: -0.1em),
             h2:      (weight: 400, style: "italic", size: 1.10, line: 1.0, before: 1.82, after: 1.61, kern: 0em),
             h3:      (weight: 400, style: "italic", size: 1.00, line: 1.0, before: 1.66, after: 1.45, kern: 0em),
