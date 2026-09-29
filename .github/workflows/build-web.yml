@@ -1,5 +1,5 @@
-# Build the web app at web/_site/ and deploy it to GitHub Pages on every
-# push to main.
+# Run the tests, build the web app at web/_site/, and deploy it to GitHub
+# Pages on every push to main.
 
 name: build-web
 
@@ -21,22 +21,27 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: typst-community/setup-typst@v4
+      # The version that made tests/refs/.
+      - uses: typst-community/setup-typst@v5
         with:
-          typst-version: latest
+          typst-version: 0.15.0
 
-      - name: Install uv (for the font fetch script)
-        uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          cache-dependency-glob: assets/fonts/fetch.sh
 
-      - name: Fetch optional fonts
+      - name: Fetch fonts
         run: ./assets/fonts/fetch.sh
+
+      - name: Run tests
+        run: ./tests/run.sh
 
       - name: Build web/_site/
         run: ./web/build.sh
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: web/_site
 
@@ -48,4 +53,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
